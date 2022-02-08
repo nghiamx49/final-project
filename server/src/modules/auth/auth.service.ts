@@ -22,7 +22,7 @@ export class AuthService {
     });
   }
 
-  async register(registerDto: RegisterDto, response: Response) {
+  async register(registerDto: RegisterDto, response: Response): Promise<Response> {
     const { username } = registerDto;
     const findUser: User = await this.userRepository.findOne({ username });
     if (findUser) {
@@ -31,7 +31,7 @@ export class AuthService {
       });
       return;
     } else {
-      const newUser = this.userRepository.create({
+      this.userRepository.create({
         ...registerDto,
         password: this.passwordEncoder.encodePassword(registerDto.password),
       });

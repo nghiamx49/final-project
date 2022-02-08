@@ -29,6 +29,6 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    return await this.authService.register(registerDto, response);
+    await this.authService.register(registerDto, response);
   }
 }
