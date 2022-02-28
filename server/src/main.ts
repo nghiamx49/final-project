@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import helmet from 'helmet';
 import * as morgan from 'morgan';
+import { ConfigService } from '@nestjs/config';
 
 async function startup() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({origin: "*", credentials: false})
-  // app.use(helmet());
+  const configService = app.get(ConfigService);
+  const PORT = configService.get('PORT');
   app.use(morgan('dev'));
-  await app.listen(5000);
+  await app.listen(PORT);
 }
 startup();

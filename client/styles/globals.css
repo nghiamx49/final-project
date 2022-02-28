@@ -6,6 +6,22 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: rgba(37, 36, 37, 0.8);
+  backdrop-filter: blur(100px);
+  z-index: 100;
+  animation: fade-background .2s linear alternate;
+}
+
+@keyframes fade-background {
+  from {background-color: rgba(37, 36, 37, 0.5)}
+  to {background-color: inherit}
+}
+
 a {
   color: inherit;
   text-decoration: none;

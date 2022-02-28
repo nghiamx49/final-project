@@ -3,7 +3,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import MyComponent from '../components/Test'
-import { Container, Grid } from '@nextui-org/react'
+import { Container } from '@nextui-org/react'
+import protectedRoute from '../hocs/protectedRouter'
 
 const Home: NextPage = () => {
   return (
@@ -20,4 +21,4 @@ const Home: NextPage = () => {
   );
 }
 
-export default Home
+export default protectedRoute(Home);

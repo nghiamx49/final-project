@@ -1,7 +1,7 @@
 import { Container, Row } from "@nextui-org/react";
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import Image from 'next/image'
-const Footer: FunctionComponent = () => {
+const Footer: FC = () => {
   return (
     <Container md fluid>
       <Row justify="flex-end">

@@ -14,29 +14,36 @@ export class AuthService {
     private readonly passwordEncoder: PasswordEncoder
   ) {}
 
+
   async login(request, response: Response) {
     response.status(HttpStatus.OK).json({
-      data: new UserResponseDto(request.user),
+      user: new UserResponseDto(request.user),
       isAuthenticated: true,
-      token: this.jwtService.sign({ username: request?.user?.username }),
+      token: this.jwtService.sign({ user: request.user }),
     });
   }
 
   async register(registerDto: RegisterDto, response: Response): Promise<Response> {
-    const { username } = registerDto;
-    const findUser: User = await this.userRepository.findOne({ username });
-    if (findUser) {
-      response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Account already existed!',
-      });
-      return;
-    } else {
-      this.userRepository.create({
-        ...registerDto,
-        password: this.passwordEncoder.encodePassword(registerDto.password),
-      });
-      response.status(HttpStatus.CREATED).json({ message: "account created" });
-      return;
+    try {
+      const { username } = registerDto;
+      const findUser: User = await this.userRepository.findOne({ username });
+      if (findUser) {
+        response.status(HttpStatus.BAD_REQUEST).json({
+          message: 'Account already existed!',
+        });
+        return;
+      } else {
+        await this.userRepository.create({
+          ...registerDto,
+          password: this.passwordEncoder.encodePassword(registerDto.password),
+        });
+        response
+          .status(HttpStatus.CREATED)
+          .json({ message: 'account created' });
+        return;
+      }
+    } catch (error) {
+      response.status(500).json({message: error?.message})
     }
   }
 }

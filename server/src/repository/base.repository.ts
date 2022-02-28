@@ -14,11 +14,9 @@ export abstract class BaseRepository<T extends Document> {
   ): Promise<T | null> {
     return this.entityModel
       .findOne(entityFilterQuery, {
-        _id: 0,
         __v: 0,
         ...projection,
       })
-      .exec();
   }
 
   async find(entityFilterQuery: FilterQuery<T>): Promise<T[] | null> {
