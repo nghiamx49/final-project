@@ -12,7 +12,6 @@ const ApplicationLayout: FunctionComponent<ApplicationLayoutProps> = (props) => 
       <>
         <NavBar />
         <Container fluid as="main">{props.children}</Container>
-        <Footer />
       </>
     );
 }

@@ -7,19 +7,59 @@ import {
   Row,
   Spacer,
   Text,
-  Link,
 } from "@nextui-org/react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { IRegistertFormData } from "../type/auth.interface";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
+import { registerApi } from "../axiosClient/auth.api";
+import { toast } from "react-toastify";
+
+const registerValidationSchema = yup.object().shape({
+  username: yup.string().required("Username cannot be empty"),
+  password: yup.string().required("Password cannot be empty"),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Confirm password must match').required('Confirm password cannot be empty'),
+  fullname: yup.string().required("Full Name cannot be empty"),
+  dateOfBirth: yup.date().required("Date of Birth must be selected"),
+  age: yup.number().required("Age cannot be empty"),
+});
 
 const Register: NextPage = () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    const navigateLogin = (e: any): void => {
-        e.preventDefault();
-        router.push('/login');
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<IRegistertFormData>({
+    resolver: yupResolver(registerValidationSchema),
+    mode: "onChange",
+  });
+
+  const navigateLogin = (e: any): void => {
+    e.preventDefault();
+    router.push("/login");
+  };
+
+  const registerAccountHandler = async (
+    formData: IRegistertFormData
+  ): Promise<void> => {
+    try {
+      const { data, status } = await registerApi(formData);
+      if (status === 201) {
+        toast.success(data.message);
+        router.push("/login");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
   return (
     <>
@@ -41,53 +81,168 @@ const Register: NextPage = () => {
                 </Card.Header>
                 <Card.Body>
                   <Spacer y={3} />
-                  <Row>
-                    <Input
-                      width="400px"
-                      aria-labelledby="username"
-                      placeholder="username"
-                      name="username"
-                      clearable
-                      bordered
-                    />
-                  </Row>
-                  <Spacer y={2} />
-                  <Row>
-                    <Input.Password
-                      width="400px"
-                      aria-labelledby="password"
-                      placeholder="password"
-                      name="password"
-                      clearable
-                      bordered
-                    />
-                  </Row>
-                  <Spacer y={2} />
-                  <Row>
-                    <Input
-                      width="400px"
-                      aria-labelledby="Full Name"
-                      placeholder="Full Name"
-                      name="fullname"
-                      clearable
-                      bordered
-                    />
-                  </Row>
-                  <Spacer y={2} />
-                  <Row>
-                    <Input
-                      type="email"
-                      width="400px"
-                      aria-labelledby="Email"
-                      placeholder="Email"
-                      name="email"
-                      clearable
-                      bordered
-                    />
-                  </Row>
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input
+                        width="400px"
+                        aria-labelledby="username"
+                        placeholder="Username"
+                        {...register("username")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="username"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input.Password
+                        width="400px"
+                        aria-labelledby="password"
+                        placeholder="Password"
+                        {...register("password")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="password"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input.Password
+                        width="400px"
+                        aria-labelledby="confirmPassword"
+                        placeholder="Confirm Password"
+                        {...register("confirmPassword")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="confirmPassword"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input
+                        width="400px"
+                        aria-labelledby="fullname"
+                        placeholder="Full Name"
+                        {...register("fullname")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="fullname"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input
+                        width="400px"
+                        aria-labelledby="dateOfBirth"
+                        type="date"
+                        placeholder="Date Of Birth"
+                        {...register("dateOfBirth")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="dateOfBirth"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input
+                        width="400px"
+                        type="number"
+                        aria-labelledby="age"
+                        placeholder="Age"
+                        {...register("age")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="age"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
+                  <Spacer y={1} />
+                  <Grid.Container direction="column" alignItems="center">
+                    <Grid>
+                      <Input
+                        width="400px"
+                        aria-labelledby="address"
+                        placeholder="Address"
+                        {...register("address")}
+                        clearable
+                        bordered
+                      />
+                    </Grid>
+                    <Grid>
+                      <ErrorMessage
+                        name="address"
+                        errors={errors}
+                        render={({ message }) => (
+                          <Text color="red">{message}</Text>
+                        )}
+                      />
+                    </Grid>
+                  </Grid.Container>
                   <Spacer y={1} />
                   <Row justify="center">
-                    <Button size="lg" color="primary">
+                    <Button
+                      onClick={handleSubmit(registerAccountHandler)}
+                      size="lg"
+                      color="primary"
+                    >
                       Register
                     </Button>
                   </Row>

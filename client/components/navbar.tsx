@@ -4,7 +4,7 @@ import {
   Text,
   Button,
   Link,
-  Input,
+  Row,
   Avatar,
 } from "@nextui-org/react";
 import { FC, useEffect, useState } from "react";
@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { IAction } from "../store/interface/action.interface";
 import { logoutAction } from "../store/actions/authenticate";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
-
+import { IoMdSunny , IoMdMoon} from "react-icons/io";
 interface RouterLink {
   link: string;
   title: string;
@@ -46,7 +46,10 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
 
   const { asPath, push } = useRouter();
 
-  const { isAuthenticated } = authenticateReducer;
+  const {
+    isAuthenticated,
+    user,
+  } = authenticateReducer;
 
   const navigateToLoginPage = (): void => {
     push('/login');
@@ -117,25 +120,25 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
               {isAuthenticated ? (
                 <>
                   <Grid>
-                    <Input
-                      aria-labelledby="search"
-                      bordered
-                      clearable
-                      color="secondary"
-                      borderWeight="light"
-                      placeholder={type}
-                    />
-                  </Grid>
-                  <Grid>
                     <Avatar
-                      src={
-                        "https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-6/269891404_1557376167946818_8381890360866751040_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=-VBuQYN_NGoAX_kA96n&_nc_ht=scontent.fhan2-4.fna&oh=00_AT8iuW8Yng85KFlkBvwZW7y4bFQZmLj6rlO5iZnkaVYzoQ&oe=62188749"
-                      }
+                      src={user?.avatar_url || "/images/default_avt.jpg"}
                       size="lg"
                       pointer
                       bordered
                       color="gradient"
                     />
+                  </Grid>
+                  <Grid>
+                    <Row>
+                      <Text weight="bold" size={12} small color="text">
+                        Hello,
+                      </Text>
+                    </Row>
+                    <Row>
+                      <Text weight="bold" size={12} small color="text">
+                        {user?.fullname}
+                      </Text>
+                    </Row>
                   </Grid>
                   <Grid>
                     <Button
@@ -176,6 +179,9 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
               <Grid>
                 <Switch
                   checked={isDark}
+                  iconOff={<IoMdMoon />}
+                  iconOn={<IoMdSunny />}
+                  color='secondary'
                   onChange={(e) =>
                     setTheme(e.target.checked ? "dark" : "light")
                   }

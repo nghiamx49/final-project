@@ -13,7 +13,6 @@ import {Dispatch} from 'redux'
 import { IAction } from "../store/interface/action.interface";
 import { loginAction } from "../store/actions/authenticate";
 import guestRouter from "../hocs/guestRouter";
-
 interface LoginPageProps {
   doLogin: Function
 }
