@@ -13,6 +13,7 @@ import {Dispatch} from 'redux'
 import { IAction } from "../store/interface/action.interface";
 import { loginAction } from "../store/actions/authenticate";
 import guestRouter from "../hocs/guestRouter";
+import { MouseEvent, SyntheticEvent } from "react";
 interface LoginPageProps {
   doLogin: Function
 }
@@ -29,7 +30,7 @@ const Login: NextPage<LoginPageProps> = ({doLogin}) => {
     });
    const router = useRouter();
 
-   const navigateRegister = (e: any): void => {
+   const navigateRegister = (e: SyntheticEvent): void => {
      e.preventDefault();
      router.push("/register");
    };

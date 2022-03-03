@@ -18,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorMessage } from "@hookform/error-message";
 import { registerApi } from "../axiosClient/auth.api";
 import { toast } from "react-toastify";
+import { MouseEvent, MouseEventHandler, SyntheticEvent } from "react";
 
 const registerValidationSchema = yup.object().shape({
   username: yup.string().required("Username cannot be empty"),
@@ -40,7 +41,7 @@ const Register: NextPage = () => {
     mode: "onChange",
   });
 
-  const navigateLogin = (e: any): void => {
+  const navigateLogin = (e: SyntheticEvent): void => {
     e.preventDefault();
     router.push("/login");
   };

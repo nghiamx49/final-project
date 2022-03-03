@@ -20,9 +20,12 @@ import { IAction } from "../store/interface/action.interface";
 import { logoutAction } from "../store/actions/authenticate";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
 import { IoMdSunny , IoMdMoon} from "react-icons/io";
+import {FaHome, FaUserSecret} from 'react-icons/fa'
+import { IconType } from "react-icons";
 interface RouterLink {
   link: string;
   title: string;
+  Icon: IconType
 }
 
 interface NavBarProps {
@@ -34,10 +37,27 @@ const router: Array<RouterLink> = [
   {
     link: "/",
     title: "Home",
+    Icon: FaHome
   },
   {
     link: "/about",
     title: "About",
+    Icon: FaUserSecret
+  },
+  {
+    link: "/",
+    title: "About",
+    Icon: FaHome
+  },
+  {
+    link: "/about",
+    title: "About",
+    Icon: FaUserSecret
+  },
+  {
+    link: "/",
+    title: "About",
+    Icon: FaHome
   },
 ];
 
@@ -59,11 +79,15 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
     push('/register')
   }
 
+  const navigateToOwnProfile = (): void => {
+    push('/profile');
+  }
+
   const logoutHandler = () => {
     doLogout();
   }
 
-  const toggle = () => {
+  const toggle = (): void => {
     if (window.scrollY > 70) {
       SetFixed(true);
     } else {
@@ -78,10 +102,10 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   });
 
   const { setTheme } = useNextTheme();
-  const { isDark, type } = useTheme();
+  const { isDark } = useTheme();
   return (
     <Container className={fixed ? "fixed-navbar" : ""}>
-      <Container md fluid responsive={true}>
+      <Container fluid responsive={true}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <NextLink href="/">
@@ -100,15 +124,15 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
           </Grid>
           <Grid>
             <Grid.Container gap={3} alignItems="center">
-              {router.map((item, index) => (
+              {router.map(({link, Icon}, index) => (
                 <Grid key={index}>
-                  <NextLink href={item.link}>
+                  <NextLink href={link}>
                     <Link
                       block
-                      color={asPath === item.link ? "primary" : "text"}
+                      color={asPath === link ? "primary" : "text"}
                       css={{ fontWeight: "$bold" }}
                     >
-                      {item.title}
+                      <Icon size="40" />
                     </Link>
                   </NextLink>
                 </Grid>
@@ -126,6 +150,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       pointer
                       bordered
                       color="gradient"
+                      onClick={navigateToOwnProfile}
                     />
                   </Grid>
                   <Grid>

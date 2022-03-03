@@ -11,7 +11,7 @@ const ApplicationLayout: FunctionComponent<ApplicationLayoutProps> = (props) => 
     return (
       <>
         <NavBar />
-        <Container fluid as="main">{props.children}</Container>
+        <Container fluid css={{padding: 0}}>{props.children}</Container>
       </>
     );
 }
