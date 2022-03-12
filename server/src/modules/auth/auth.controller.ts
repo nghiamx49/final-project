@@ -6,6 +6,7 @@ import {
   Get,
   Body,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -30,9 +31,10 @@ export class AuthController {
   @Post('login')
   async login(
     @Request() request,
-    @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    return await this.authService.login(request, response);
+    const response = await this.authService.login(request.user);
+    res.status(HttpStatus.OK).json(response);
   }
 
   @Post('register')
@@ -40,6 +42,11 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    await this.authService.register(registerDto, response);
+    try {
+      await this.authService.register(registerDto);
+      response.status(HttpStatus.CREATED).json({message: 'Account Created Successfully'})
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({message: error?.message})
+    }
   }
 }

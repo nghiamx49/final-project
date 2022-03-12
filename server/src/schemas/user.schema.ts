@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { FriendRequest } from './friendRequest.schema';
 
 export type UserDocument = User & Document;
 
@@ -21,16 +22,18 @@ export class User {
   @Prop({
     required: true,
     type: String,
-    enum: ["Admin", "User"],
-    default: "User",
+    enum: ['Admin', 'User'],
+    default: 'User',
   })
   role: string;
+  @Prop([{ type: Types.ObjectId }])
+  sentFriendRequests: FriendRequest[];
+  @Prop([{ type: Types.ObjectId }])
+  receiveFriendRequest: FriendRequest[];
   @Prop({ required: false, type: Date, default: new Date() })
   createdAt: Date;
   @Prop({ required: false, type: Date, default: new Date() })
   updatedAt: Date;
 }
-
-console.log(process.env.USER);
 
 export const UserSchema = SchemaFactory.createForClass(User);

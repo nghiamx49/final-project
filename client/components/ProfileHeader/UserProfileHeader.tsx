@@ -14,7 +14,7 @@ const UserProfileHeader: FC = () => {
             objectFit="cover"
             css={{ backgroundPosition: "center" }}
           />
-          <Button css={{ position: "absolute", right: 100, bottom: "200px" }}>
+          <Button css={{ position: "absolute", right: 100, bottom: "200px", backgroundColor: 'transparent', display: 'flex', gap: '7', alignItems: 'center' }}>
             <FaEdit size={20} /> Edit Cover
           </Button>
         </Grid>

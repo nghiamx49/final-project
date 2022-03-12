@@ -1,7 +1,7 @@
 import { Container, Spacer } from "@nextui-org/react";
 import { NextPage } from "next";
 import FeedItem from "../../components/FeedItem";
-import UserProfileHeader from "../../components/UserProfileHeader";
+import UserProfileHeader from "../../components/ProfileHeader/UserProfileHeader";
 
 const testData = [
   {
