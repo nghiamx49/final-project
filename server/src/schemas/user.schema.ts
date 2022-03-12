@@ -26,10 +26,12 @@ export class User {
     default: 'User',
   })
   role: string;
-  @Prop([{ type: Types.ObjectId }])
+  @Prop([{ type: Types.ObjectId, ref: "FriendRequest" }])
   sentFriendRequests: FriendRequest[];
-  @Prop([{ type: Types.ObjectId }])
-  receiveFriendRequest: FriendRequest[];
+  @Prop([{ type: Types.ObjectId, ref: "FriendRequest" }])
+  receivedFriendRequest: FriendRequest[];
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  allFriends: User[];
   @Prop({ required: false, type: Date, default: new Date() })
   createdAt: Date;
   @Prop({ required: false, type: Date, default: new Date() })

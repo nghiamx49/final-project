@@ -9,7 +9,7 @@ export class Message {
   _id: { type: Types.ObjectId };
   @Prop({ type: String })
   content: string;
-  @Prop({ type: User })
+  @Prop({ type: Types.ObjectId })
   sender: User;
   @Prop({ required: false, type: Date, default: new Date() })
   createdAt: Date;

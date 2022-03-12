@@ -8,11 +8,11 @@ export type FriendRequestDocument = FriendRequest & Document;
 @Schema()
 export class FriendRequest {
     _id: {type: Types.ObjectId}
-    @Prop({type: User})
+    @Prop({type: Types.ObjectId, ref: 'Users'})
     sender: User
-    @Prop({type: User})
+    @Prop({type: Types.ObjectId, ref: "Users"})
     receiver: User
-    @Prop({type: String, enum: FriendRequest_Status, default: FriendRequest_Status.NOT_SENT})
+    @Prop({type: String, enum: [FriendRequest_Status.NOT_SENT, FriendRequest_Status.PENDING, FriendRequest_Status.ACCEPTED, FriendRequest_Status.DECLIEND], default: FriendRequest_Status.PENDING})
     status: string
 }
 
