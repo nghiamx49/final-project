@@ -6,19 +6,21 @@ export type FeedDocument = Feed & Document;
 
 @Schema()
 export class Feed {
-    _id: Types.ObjectId
-    @Prop({type: Date, default: new Date()})
-    createdAt: Date
-    @Prop({type: User})
-    author: User
-    @Prop([{type: Comment}])
-    comments?: Comment[]
-    @Prop([{type: User}])
-    userReactions?: User[]
-    @Prop({type: String})
-    content: String
-    @Prop([{type: String}])
-    contentImage?: String[]
+  _id: Types.ObjectId;
+  @Prop({ type: User })
+  author: User;
+  @Prop([{ type: Comment }])
+  comments?: Comment[];
+  @Prop([{ type: User }])
+  userReactions?: User[];
+  @Prop({ type: String })
+  content: String;
+  @Prop([{ type: String }])
+  contentImage?: String[]
+  @Prop({ required: false, type: Date, default: new Date() })
+  createdAt: Date
+  @Prop({ required: false, type: Date, default: new Date() })
+  updatedAt: Date
 }
 
 export const FeedSchema = SchemaFactory.createForClass(Feed);

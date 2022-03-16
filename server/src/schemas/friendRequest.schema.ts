@@ -14,6 +14,10 @@ export class FriendRequest {
     receiver: User
     @Prop({type: String, enum: [FriendRequest_Status.NOT_SENT, FriendRequest_Status.PENDING, FriendRequest_Status.ACCEPTED, FriendRequest_Status.DECLIEND], default: FriendRequest_Status.PENDING})
     status: string
+    @Prop({ required: false, type: Date, default: new Date() })
+    createdAt: Date;
+    @Prop({ required: false, type: Date, default: new Date() })
+    updatedAt: Date;
 }
 
 export const FriendRequestSchema = SchemaFactory.createForClass(FriendRequest);

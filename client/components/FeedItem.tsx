@@ -1,6 +1,6 @@
 
 
-import { Card, Grid, Row, Spacer, Text, Image, Divider, Button, Input, Avatar } from '@nextui-org/react'
+import { Card, Grid, Row, Spacer, Text, Image, Divider, Button, Input, Avatar, useTheme } from '@nextui-org/react'
 import { FC } from 'react';
 import { IoMdHeartEmpty, IoMdHeart, IoMdChatboxes } from "react-icons/io";
 
@@ -11,10 +11,11 @@ interface FeedProps {
 }
 
 const FeedItem: FC<FeedProps> = ({userId, title, body}) => {
+  const { isDark } = useTheme();
     return (
       <>
         <Row key={userId}>
-          <Card>
+          <Card css={isDark ? { backgroundColor: "#1F1F1E" } : {}}>
             <Card.Header>
               <Grid.Container>
                 <Grid>
@@ -26,7 +27,7 @@ const FeedItem: FC<FeedProps> = ({userId, title, body}) => {
             <Card.Body>
               <Text>{body}</Text>
               <Spacer y={1} />
-              <Image
+              <Card.Image
                 width="100%"
                 height="100%"
                 src={"/images/default_avt.jpg"}

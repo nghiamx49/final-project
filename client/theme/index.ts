@@ -26,7 +26,7 @@ export const darkTheme = {
   className: "dark", // optional
   theme: {
     colors: {
-      background: "#333",
+      cardColor: "#2D2D2A",
       text: "#fff",
     },
     space: {},
@@ -42,5 +42,6 @@ export const darkTheme = {
     shadows: {},
     zIndices: {},
     transitions: {},
+    cardColor: "#2D2D2A",
   },
 };

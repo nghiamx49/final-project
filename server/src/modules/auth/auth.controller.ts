@@ -14,7 +14,7 @@ import { RegisterDto, UserResponseDto } from './dto/user.dto';
 import { JwtAuthenticateGuard, LocalAuthenticateGuard } from 'src/middleware/authenticate.middleware';
 import { Roles, Role, RolesGuard } from 'src/middleware/authorize.middleware';
 
-@Controller('api/v1/auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @UseGuards(JwtAuthenticateGuard, RolesGuard)

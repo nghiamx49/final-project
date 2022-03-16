@@ -104,7 +104,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const { setTheme } = useNextTheme();
   const { isDark } = useTheme();
   return (
-    <Container className={fixed ? "fixed-navbar" : ""}>
+    <Container fluid className={fixed ? "fixed-navbar" : ""}>
       <Container fluid responsive={true}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>

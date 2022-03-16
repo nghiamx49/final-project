@@ -17,6 +17,7 @@ const appLightTheme = createTheme(lightTheme);
 
 const appDarkTheme = createTheme(darkTheme);
 
+
 saga.run(rootSaga);
 
 function MyApp({ Component, pageProps }: AppProps) {

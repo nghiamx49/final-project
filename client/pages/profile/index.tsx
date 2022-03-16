@@ -27,7 +27,7 @@ const testData = [
 
 const Profile: NextPage = () => {
     return (
-      <Container fluid css={{padding: 0}}>
+      <Container fluid css={{ padding: 0 }}>
         <Container
           fluid
           css={{
@@ -41,9 +41,9 @@ const Profile: NextPage = () => {
         </Container>
         <Spacer y={3} />
         <Container fluid xs>
-        {testData.map(({userId, title, body}) => (
-            <FeedItem userId={userId} title={title} body={body} />
-        ))}
+          {testData.map(({ userId, title, body }, index) => (
+            <FeedItem key={index} userId={userId} title={title} body={body} />
+          ))}
         </Container>
       </Container>
     );

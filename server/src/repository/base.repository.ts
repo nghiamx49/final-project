@@ -12,15 +12,17 @@ export abstract class BaseRepository<T extends Document> {
     entityFilterQuery: FilterQuery<T>,
     projection?: Record<string, unknown>,
   ): Promise<T | null> {
-    return await this.entityModel
-      .findOne(entityFilterQuery, {
-        __v: 0,
-        ...projection,
-      })
+    return await this.entityModel.findOne(entityFilterQuery, {
+      __v: 0,
+      ...projection,
+    });
   }
 
-  async find(entityFilterQuery: FilterQuery<T>): Promise<T[] | null> {
-    return await this.entityModel.find(entityFilterQuery);
+  async find(
+    entityFilterQuery: FilterQuery<T>,
+    projection?: Record<string, unknown>,
+  ): Promise<T[] | null> {
+    return await this.entityModel.find(entityFilterQuery, {__v: 0, ...projection});
   }
 
   async create(createEntityData: unknown): Promise<T> {
@@ -40,12 +42,8 @@ export abstract class BaseRepository<T extends Document> {
       },
     );
   }
-  async findOneAndDelete(
-    entityFilterQuery: FilterQuery<T>,
-  ): Promise<T | null> {
-    return await this.entityModel.findOneAndDelete(
-      entityFilterQuery,
-    );
+  async findOneAndDelete(entityFilterQuery: FilterQuery<T>): Promise<T | null> {
+    return await this.entityModel.findOneAndDelete(entityFilterQuery);
   }
 
   async deleteMany(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
