@@ -2,6 +2,7 @@ export interface IUser {
     username?: string;
     fullname?: string;
     dateOfBirth?: Date,
+    email?: string,
     age?: number,
     address?: string,
     role?: string,

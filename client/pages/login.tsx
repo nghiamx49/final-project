@@ -19,11 +19,11 @@ interface LoginPageProps {
 }
 
 const loginValidateSchema = yup.object().shape({
-  username: yup.string().required("username cannot be empty"),
+  username: yup.string().required("Emaill cannot be empty"),
   password: yup.string().required("password cannot be empty"),
 })
 
-const Login: NextPage<LoginPageProps> = ({doLogin}) => {
+const Login: NextPage<LoginPageProps> = ({doLogin}: LoginPageProps) => {
     const {register, handleSubmit, formState: {errors}} = useForm<IAuthFormData>({
       resolver: yupResolver(loginValidateSchema),
       mode: 'onChange',
@@ -46,8 +46,7 @@ const Login: NextPage<LoginPageProps> = ({doLogin}) => {
         <meta name="description" content="Login Page" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container md fluid alignItems="center">
-        <Spacer y={10} />
+      <Container css={{ paddingTop: 100, paddingBottom: 170 }} md fluid alignItems="center">
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Row>
@@ -73,8 +72,8 @@ const Login: NextPage<LoginPageProps> = ({doLogin}) => {
                     <Grid>
                       <Input
                         width="400px"
-                        aria-labelledby="username"
-                        placeholder="username"
+                        aria-labelledby="Email"
+                        placeholder="Email"
                         {...register("username")}
                         clearable
                         bordered

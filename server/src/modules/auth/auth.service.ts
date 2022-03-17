@@ -11,9 +11,24 @@ export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    private readonly passwordEncoder: PasswordEncoder
+    private readonly passwordEncoder: PasswordEncoder,
   ) {}
 
+  async getAccountProfile(profileFilter: string): Promise<UserResponseDto> {
+   try {
+      const userInDb: User = await this.userRepository.findOne({
+        username: profileFilter,
+      });
+      if (userInDb) {
+        return new UserResponseDto(userInDb);
+      }
+      return new UserResponseDto(
+        await this.userRepository.findOne({ _id: profileFilter }),
+      );
+   } catch (error) {
+     throw new Error('Cannot Found')
+   }
+  }
 
   async login(user: User) {
     return {
@@ -25,10 +40,10 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<Response> {
     try {
-      const { username } = registerDto;
-      const findUser: User = await this.userRepository.findOne({ username });
+      const { email } = registerDto;
+      const findUser: User = await this.userRepository.findOne({ email });
       if (findUser) {
-        throw new Error('Account already existed')
+        throw new Error('Account already existed');
       } else {
         await this.userRepository.create({
           ...registerDto,
@@ -37,7 +52,7 @@ export class AuthService {
         return;
       }
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error);
     }
   }
 }

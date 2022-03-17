@@ -1,8 +1,13 @@
-import { Container, Grid , Image, Avatar, Button} from "@nextui-org/react";
+import { Container, Grid , Image, Avatar, Button, Text} from "@nextui-org/react";
 import { FC } from "react";
 import {FaEdit} from 'react-icons/fa/'
 import ActiveProfileTab from "./ActiveProfileTab";
-const UserProfileHeader: FC = () => {
+
+interface UserProfileProps {
+  isYou: boolean
+}
+
+const UserProfileHeader: FC<UserProfileProps> = ({isYou}) => {
   return (
     <Container fluid css={{ position: "relative" }}>
       <Grid.Container direction="column" alignItems="center">
@@ -12,11 +17,27 @@ const UserProfileHeader: FC = () => {
             width={1200}
             height={500}
             objectFit="cover"
-            css={{ backgroundPosition: "center" }}
+            css={{
+              backgroundPosition: "center",
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+            }}
           />
-          <Button css={{ position: "absolute", right: 100, bottom: "200px", backgroundColor: 'transparent', display: 'flex', gap: '7', alignItems: 'center' }}>
-            <FaEdit size={20} /> Edit Cover
-          </Button>
+          {isYou && (
+            <Button
+              css={{
+                position: "absolute",
+                right: 100,
+                bottom: "200px",
+                backgroundColor: "transparent",
+                display: "flex",
+                gap: "7",
+                alignItems: "center",
+              }}
+            >
+              <FaEdit size={20} /> Edit Cover
+            </Button>
+          )}
         </Grid>
         <Grid>
           <Grid.Container
@@ -24,7 +45,7 @@ const UserProfileHeader: FC = () => {
             alignItems="center"
             css={{ width: 1100, marginTop: "-40px" }}
           >
-            <Grid>
+            <Grid css={{ display: "flex", alignItems: "center", gap: 20 }}>
               <Avatar
                 src="/images/default_avt.jpg"
                 bordered
@@ -33,12 +54,15 @@ const UserProfileHeader: FC = () => {
                 color="gradient"
                 css={{ size: "$40", borderWidth: "5px" }}
               />
+              <Text h2>Mai Xuan Nghia</Text>
             </Grid>
             <Grid>
-              <Button size="sm">
-                <FaEdit size={20} />
-                Edit Profile
-              </Button>
+              {isYou && (
+                <Button size="sm">
+                  <FaEdit size={20} />
+                  Edit Profile
+                </Button>
+              )}
             </Grid>
           </Grid.Container>
         </Grid>

@@ -80,7 +80,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   }
 
   const navigateToOwnProfile = (): void => {
-    push('/profile');
+    push(`/profile/${user?.username || user?._id}`);
   }
 
   const logoutHandler = () => {
@@ -88,7 +88,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   }
 
   const toggle = (): void => {
-    if (window.scrollY > 70) {
+    if (window.scrollY > 100) {
       SetFixed(true);
     } else {
       SetFixed(false);
@@ -104,7 +104,11 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const { setTheme } = useNextTheme();
   const { isDark } = useTheme();
   return (
-    <Container fluid className={fixed ? "fixed-navbar" : ""}>
+    <Container
+      css={{ margin: 0, background: '$background' }}
+      fluid
+      className={fixed ? "fixed-navbar" : ""}
+    >
       <Container fluid responsive={true}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
@@ -124,7 +128,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
           </Grid>
           <Grid>
             <Grid.Container gap={3} alignItems="center">
-              {router.map(({link, Icon}, index) => (
+              {router.map(({ link, Icon }, index) => (
                 <Grid key={index}>
                   <NextLink href={link}>
                     <Link
@@ -132,7 +136,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       color={asPath === link ? "primary" : "text"}
                       css={{ fontWeight: "$bold" }}
                     >
-                      <Icon size="40" />
+                      <Icon size="30" />
                     </Link>
                   </NextLink>
                 </Grid>
@@ -206,7 +210,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                   checked={isDark}
                   iconOff={<IoMdMoon />}
                   iconOn={<IoMdSunny />}
-                  color='secondary'
+                  color="secondary"
                   onChange={(e) =>
                     setTheme(e.target.checked ? "dark" : "light")
                   }

@@ -18,10 +18,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorMessage } from "@hookform/error-message";
 import { registerApi } from "../axiosClient/auth.api";
 import { toast } from "react-toastify";
-import { MouseEvent, MouseEventHandler, SyntheticEvent } from "react";
+import { SyntheticEvent } from "react";
 
 const registerValidationSchema = yup.object().shape({
-  username: yup.string().required("Username cannot be empty"),
+  email: yup.string().email('Email must be valid').required("Email cannot be empty"),
   password: yup.string().required("Password cannot be empty"),
   confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Confirm password must match').required('Confirm password cannot be empty'),
   fullname: yup.string().required("Full Name cannot be empty"),
@@ -69,8 +69,7 @@ const Register: NextPage = () => {
         <meta name="description" content="Register New Account" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container sm fluid alignItems="center">
-        <Spacer y={10} />
+      <Container sm css={{paddingTop: 70}} fluid alignItems="center">
         <Grid.Container justify="center" alignItems="center">
           <Grid justify="center">
             <Container fluid as="form">
@@ -86,16 +85,16 @@ const Register: NextPage = () => {
                     <Grid>
                       <Input
                         width="400px"
-                        aria-labelledby="username"
-                        placeholder="Username"
-                        {...register("username")}
+                        aria-labelledby="Email"
+                        placeholder="Email"
+                        {...register("email")}
                         clearable
                         bordered
                       />
                     </Grid>
                     <Grid>
                       <ErrorMessage
-                        name="username"
+                        name="email"
                         errors={errors}
                         render={({ message }) => (
                           <Text color="red">{message}</Text>

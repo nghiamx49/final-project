@@ -1,7 +1,7 @@
 import {User} from 'src/schemas/user.schema'
 import {Types} from 'mongoose';
 abstract class UserBaseDto {
-    username: string;
+    email: string;
 }
 
 export class LoginDto extends UserBaseDto {
@@ -19,7 +19,7 @@ export class RegisterDto extends LoginDto {
 export class UserResponseDto extends UserBaseDto {
   constructor(userModel: User) {
     super();
-    this.username = userModel.username;
+    this.email = userModel.email;
     this.fullname = userModel.fullname;
     this.dateOfBirth = userModel.dateOfBirth;
     this.age = userModel.age;
@@ -27,6 +27,9 @@ export class UserResponseDto extends UserBaseDto {
     this.createdAt = userModel.createdAt;
     this._id = userModel._id;
     this.role = userModel.role;
+    this.avatarPhoto = userModel.avatarPhoto;
+    this.coverPhoto = userModel.coverPhoto;
+    this.username = userModel.username;
   }
   _id: { type: Types.ObjectId };
   role: string;
@@ -35,4 +38,7 @@ export class UserResponseDto extends UserBaseDto {
   age: number;
   address?: string;
   createdAt?: Date;
+  avatarPhoto: string;
+  coverPhoto: string;
+  username: string;
 }
