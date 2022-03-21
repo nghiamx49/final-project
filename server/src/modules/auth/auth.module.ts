@@ -20,6 +20,7 @@ import { AuthService } from './auth.service';
     PasswordEncoder,
     UserRepository,
     RolesGuard,
+    EnvironmentConfigService
   ],
   controllers: [AuthController],
   imports: [

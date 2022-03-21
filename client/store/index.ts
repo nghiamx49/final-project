@@ -1,6 +1,6 @@
 import { applyMiddleware, createStore, combineReducers, compose, Store } from "redux";
 import createSagaMiddleware from "redux-saga";
-import { createWrapper } from "next-redux-wrapper";
+import { Context, createWrapper } from "next-redux-wrapper";
 import {composeWithDevTools} from '@redux-devtools/extension'
 import storage from "redux-persist/lib/storage"
 import { persistStore, persistReducer, Persistor } from "redux-persist";
@@ -16,7 +16,7 @@ const rootReducer = combineReducers<IRooteState>({
 const persistsConfig = {
   key: "root",
   storage,
-  whitelist: ["authenticateReducer", "subRouterReducer"],
+  whitelist: ["authenticateReducer"],
 };
 
 export const saga = createSagaMiddleware();
@@ -27,7 +27,7 @@ export const store: Store<IRooteState> = createStore(persistedReducer, composeWi
 
 export const persistor: Persistor = persistStore(store);
 
-const makeStore = () => store;
+const makeStore = (context: Context) => createStore(rootReducer);
 
 export const wrapper = createWrapper<Store<IRooteState>>(makeStore, {debug: true})
 // export const store: Store = createStore(persistedReducer, composeEnhancers(applyMiddleware(saga)));

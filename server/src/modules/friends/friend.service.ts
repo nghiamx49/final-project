@@ -5,6 +5,7 @@ import { UserRepository } from 'src/repository/user.repository';
 import { FriendRequest } from 'src/schemas/friendRequest.schema';
 import { User } from 'src/schemas/user.schema';
 import { UserResponseDto } from '../auth/dto/user.dto';
+import { StatusChecking } from './dto/friendStatusChecking.dto';
 
 @Injectable()
 export class FriendService {
@@ -43,13 +44,19 @@ export class FriendService {
   async checkCurrentFriendStatus(
     userId: string,
     targetUserId: string,
-  ): Promise<string> {
-    const sender = await this.userRepository.findOne({ _id: userId });
-    const receiver = await this.userRepository.findOne({ _id: targetUserId });
-    const checkIfExisted: FriendRequest = await this.friendRepository.findOne({
+  ): Promise<StatusChecking> {
+    let sender = await this.userRepository.findOne({ _id: userId });
+    let receiver = await this.userRepository.findOne({ _id: targetUserId });
+    let checkIfExisted: FriendRequest = await this.friendRepository.findOne({
       sender: sender,
       receiver: receiver,
     });
+    if(!checkIfExisted) {
+      checkIfExisted = await this.friendRepository.findOne({
+        sender: receiver,
+        receiver: sender,
+      });
+    }
     const checkFriend: User = await this.userRepository.findOne({
       _id: userId,
     });
@@ -60,12 +67,12 @@ export class FriendService {
       checkFriend.allFriends.includes(targetUserId) &&
       targetUser.allFriends.includes(userId)
     ) {
-      return FriendRequest_Status.ACCEPTED;
+      return new StatusChecking(FriendRequest_Status.ACCEPTED, userId, targetUserId, "");
     }
     if (checkIfExisted) {
-      return checkIfExisted.status;
+      return new StatusChecking(checkIfExisted.status, checkIfExisted.sender._id.toString(), checkIfExisted.receiver._id.toString(), checkIfExisted._id.toString());
     } else {
-      return FriendRequest_Status.NOT_SENT;
+      return new StatusChecking(FriendRequest_Status.NOT_SENT, "", "", "");
     }
   }
 

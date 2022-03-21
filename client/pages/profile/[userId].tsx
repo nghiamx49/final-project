@@ -1,18 +1,23 @@
 import { Container, Spacer } from "@nextui-org/react";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import { useTheme } from "@nextui-org/react";
 import FeedItem from "../../components/FeedItem";
 import UserProfileHeader from "../../components/ProfileHeader/UserProfileHeader";
-import { wrapper } from "../../store";
 import { IRooteState } from "../../store/interface/roote.interface";
 import { connect } from "react-redux";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
-import { GetServerSidePropsCallback } from "next-redux-wrapper";
-import { IAction } from "../../store/interface/action.interface";
-import { Store } from "redux";
+
 import { loadProfile } from "../../axiosClient/auth.api";
 import { IUser } from "../../store/interface/user.interface";
 import { useRouter } from "next/router";
+import {
+  checkFriendStatus,
+  handleAddNewFriend,
+  handleFriendRequest,
+} from "../../axiosClient/friend.api";
+import { useEffect, useState } from "react";
+import { FriendStatus } from "../../type/friendStatus.enum";
+import { CheckingStatus } from "../../type/CheckingStatus.interface";
 const testData = [
   {
     userId: 1,
@@ -36,22 +41,78 @@ const testData = [
 ];
 
 interface PropfileProps {
-    authenticateReducer: IAuthenciateState
-    profile: IUser
-    errorCode: number
+  authenticateReducer: IAuthenciateState;
+  profile: IUser;
+  errorCode: number;
 }
 
-const Profile: NextPage<PropfileProps> = ({authenticateReducer, profile, errorCode}) => {
-    const {isDark} = useTheme();
-    const {push} = useRouter();
-    const {user} = authenticateReducer;
-    let isYou: boolean = false;
-    if(errorCode) {
-        push('/404')
+const Profile: NextPage<PropfileProps> = ({
+  authenticateReducer,
+  profile,
+  errorCode,
+}) => {
+  const [friendStatus, setFriendStatus] = useState<CheckingStatus>({
+    senderId: "",
+    status: FriendStatus.NOT_SENT,
+    receiverId: "",
+    requestId: "",
+  });
+  const { isDark } = useTheme();
+  const { push, query } = useRouter();
+  const { user, token } = authenticateReducer;
+  const [isYou, setIsYou] = useState<boolean>(false);
+  const checkUserFriendStatus = async () => {
+    if (errorCode) {
+      push("/404");
+    } else {
+      setIsYou(user?._id === profile._id);
+      if (isYou === false) {
+        const { data } = await checkFriendStatus(profile._id, token);
+        setFriendStatus(data.status);
+      }
     }
-    else {
-    isYou = user?._id === profile._id;
+  };
+
+  useEffect(() => {
+    checkUserFriendStatus();
+  }, [query?.userId]);
+
+  const handleAddFriend = async () => {
+    const { status } = await handleAddNewFriend(profile._id, token);
+    if (status === 201) {
+      const { data } = await checkFriendStatus(profile._id, token);
+      setFriendStatus(data.status);
     }
+  };
+
+  const handleAccept = async () => {
+    const { status } = await handleFriendRequest(
+      friendStatus.requestId,
+      FriendStatus.ACCEPTED,
+      token
+    );
+    if (status === 200) {
+      const { data } = await checkFriendStatus(profile._id, token);
+      setFriendStatus(data.status);
+    }
+  };
+
+  const handleDecline = async () => {
+    const { status } = await handleFriendRequest(
+      friendStatus.requestId,
+      FriendStatus.DECLIEND,
+      token
+    );
+    if (status === 200) {
+      const { data } = await checkFriendStatus(profile._id, token);
+      setFriendStatus(data.status);
+    }
+  };
+
+  const handleUnfriend = async () => {};
+
+  const handleCancelRequest = async () => {};
+
   return (
     <Container fluid css={{ padding: 0 }}>
       <Container
@@ -69,7 +130,15 @@ const Profile: NextPage<PropfileProps> = ({authenticateReducer, profile, errorCo
         }
       >
         <Container fluid lg>
-          <UserProfileHeader isYou={isYou} />
+          <UserProfileHeader
+            isYou={isYou}
+            profile={profile}
+            friendStatus={friendStatus}
+            handleAddFriend={handleAddFriend}
+            handleAccept={handleAccept}
+            handleDecline={handleDecline}
+            userId={user?._id}
+          />
         </Container>
       </Container>
       <Spacer y={3} />
@@ -82,20 +151,21 @@ const Profile: NextPage<PropfileProps> = ({authenticateReducer, profile, errorCo
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async context => {
-     const profileFilter: any = context.params?.userId;
-     const { data, status } = await loadProfile(profileFilter);
-    if(status === 200) {
-        return { props: { profile: data?.user } };
-    }
-    else {
-        return { props: { errorCode: status } };
-    }
-}
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const profileFilter: any = context.params?.userId;
+  const { data, status } = await loadProfile(profileFilter);
+  if (status === 200) {
+    return { props: { profile: data?.user } };
+  } else {
+    return { props: { errorCode: status } };
+  }
+};
 const mapStateToProps = (state: IRooteState) => {
-    return {
-        authenticateReducer: state.authenticateReducer
-    }
-}
+  return {
+    authenticateReducer: state.authenticateReducer,
+  };
+};
 
 export default connect(mapStateToProps)(Profile);

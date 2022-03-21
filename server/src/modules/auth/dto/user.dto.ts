@@ -38,7 +38,7 @@ export class UserResponseDto extends UserBaseDto {
   age: number;
   address?: string;
   createdAt?: Date;
-  avatarPhoto: string;
-  coverPhoto: string;
-  username: string;
+  avatarPhoto?: string;
+  coverPhoto?: string;
+  username?: string;
 }

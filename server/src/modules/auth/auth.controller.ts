@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpStatus,
   Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -18,19 +19,17 @@ import { Roles, Role, RolesGuard } from 'src/middleware/authorize.middleware';
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  // @UseGuards(JwtAuthenticateGuard, RolesGuard)
-  // @Roles(Role.USER)
+
   @Get('/profile/:profile')
   async getProfile(
     @Param('profile') profile: string,
-    @Request() req,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ): Promise<void> {
     try {
       const user = await this.authService.getAccountProfile(profile);
-      res.status(200).json({ user });
+      res.status(200).json({ user: user });
     } catch (error) {
-      res.status(HttpStatus.NOT_FOUND).json({message: error.message})
+      throw new BadRequestException()
     }
   }
 

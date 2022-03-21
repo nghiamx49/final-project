@@ -4,13 +4,12 @@ import {
   Text,
   Button,
   Link,
-  Row,
   Avatar,
+  Input,
+  Tooltip,
 } from "@nextui-org/react";
 import { FC, useEffect, useState } from "react";
 import NextLink from "next/link";
-import { useTheme as useNextTheme } from "next-themes";
-import { Switch, useTheme } from "@nextui-org/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { IRooteState } from "../store/interface/roote.interface";
@@ -19,13 +18,22 @@ import { connect } from "react-redux";
 import { IAction } from "../store/interface/action.interface";
 import { logoutAction } from "../store/actions/authenticate";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
-import { IoMdSunny , IoMdMoon} from "react-icons/io";
-import {FaHome, FaUserSecret} from 'react-icons/fa'
+import { IoMdSunny, IoMdMoon } from "react-icons/io";
+import {
+  FaHome,
+  FaUserFriends,
+  FaStore,
+  FaSearch,
+  FaCaretDown,
+  FaFacebookMessenger,
+  FaBell,
+} from "react-icons/fa";
 import { IconType } from "react-icons";
+import DropdownTooltip from "./DropDownToolTip";
 interface RouterLink {
   link: string;
   title: string;
-  Icon: IconType
+  Icon: IconType;
 }
 
 interface NavBarProps {
@@ -37,27 +45,17 @@ const router: Array<RouterLink> = [
   {
     link: "/",
     title: "Home",
-    Icon: FaHome
+    Icon: FaHome,
   },
   {
-    link: "/about",
+    link: "/friends",
     title: "About",
-    Icon: FaUserSecret
+    Icon: FaUserFriends,
   },
   {
-    link: "/",
+    link: "/store",
     title: "About",
-    Icon: FaHome
-  },
-  {
-    link: "/about",
-    title: "About",
-    Icon: FaUserSecret
-  },
-  {
-    link: "/",
-    title: "About",
-    Icon: FaHome
+    Icon: FaStore,
   },
 ];
 
@@ -66,26 +64,19 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
 
   const { asPath, push } = useRouter();
 
-  const {
-    isAuthenticated,
-    user,
-  } = authenticateReducer;
+  const { isAuthenticated, user } = authenticateReducer;
 
   const navigateToLoginPage = (): void => {
-    push('/login');
-  }
+    push("/login");
+  };
 
   const navigateToRegisterPage = (): void => {
-    push('/register')
-  }
-
-  const navigateToOwnProfile = (): void => {
-    push(`/profile/${user?.username || user?._id}`);
-  }
+    push("/register");
+  };
 
   const logoutHandler = () => {
     doLogout();
-  }
+  };
 
   const toggle = (): void => {
     if (window.scrollY > 100) {
@@ -101,30 +92,35 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
     };
   });
 
-  const { setTheme } = useNextTheme();
-  const { isDark } = useTheme();
   return (
     <Container
-      css={{ margin: 0, background: '$background' }}
+      css={{ margin: 0, background: "$background", padding: 0 }}
       fluid
       className={fixed ? "fixed-navbar" : ""}
     >
       <Container fluid responsive={true}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
-            <NextLink href="/">
-              <Link>
-                <Grid.Container alignItems="center">
+            <Grid.Container alignItems="center">
+              <NextLink href="/">
+                <Link>
                   <Image
                     color="white"
-                    width={50}
-                    height={50}
+                    width={40}
+                    height={40}
                     src={"/images/logo.png"}
                   />
-                  <Text h2>Final Project</Text>
-                </Grid.Container>
-              </Link>
-            </NextLink>
+                </Link>
+              </NextLink>
+              {isAuthenticated && (
+                <Input
+                  contentLeft={<FaSearch size={20} />}
+                  placeholder="Search..."
+                  aria-labelledby="search"
+                  css={{ width: 250 }}
+                />
+              )}
+            </Grid.Container>
           </Grid>
           <Grid>
             <Grid.Container gap={3} alignItems="center">
@@ -136,7 +132,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       color={asPath === link ? "primary" : "text"}
                       css={{ fontWeight: "$bold" }}
                     >
-                      <Icon size="30" />
+                      <Icon size={30} />
                     </Link>
                   </NextLink>
                 </Grid>
@@ -148,36 +144,70 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
               {isAuthenticated ? (
                 <>
                   <Grid>
-                    <Avatar
-                      src={user?.avatar_url || "/images/default_avt.jpg"}
-                      size="lg"
-                      pointer
-                      bordered
-                      color="gradient"
-                      onClick={navigateToOwnProfile}
+                    <NextLink href={`/profile/${user?.username || user?._id}`}>
+                      <Link
+                        block
+                        color={
+                          asPath === `/profile/${user?.username || user?._id}`
+                            ? "primary"
+                            : "text"
+                        }
+                        css={
+                          asPath === `/profile/${user?.username || user?._id}`
+                            ? {
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 5,
+                                backgroundColor: "rgba(24, 119, 242, .31)",
+                                color: "$primary",
+                                borderRadius: "100px",
+                                paddingRight: "10px",
+                              }
+                            : { display: "flex", alignItems: "center", gap: 10 }
+                        }
+                      >
+                        <Avatar
+                          src={user?.avatar_url || "/images/default_avt.jpg"}
+                          size="sm"
+                          pointer
+                          color="gradient"
+                        />
+                        <Text weight="bold" size={16} small color="text">
+                          {user?.fullname.split(" ").slice(0, 2).join(" ")}
+                        </Text>
+                      </Link>
+                    </NextLink>
+                  </Grid>
+                  <Grid>
+                    <FaFacebookMessenger
+                      style={{ width: 20, height: 20, cursor: "pointer" }}
                     />
                   </Grid>
                   <Grid>
-                    <Row>
-                      <Text weight="bold" size={12} small color="text">
-                        Hello,
-                      </Text>
-                    </Row>
-                    <Row>
-                      <Text weight="bold" size={12} small color="text">
-                        {user?.fullname}
-                      </Text>
-                    </Row>
+                    <FaBell
+                      style={{ width: 20, height: 20, cursor: "pointer" }}
+                    />
                   </Grid>
                   <Grid>
-                    <Button
-                      onClick={logoutHandler}
-                      auto
-                      bordered
-                      color="gradient"
+                    <Tooltip
+                      placement="bottomEnd"
+                      trigger="click"
+                      css={{ width: 300, padding: 0 }}
+                      content={
+                        <DropdownTooltip
+                          fullname={user?.fullname}
+                          avatar={user?.avatar_url || "/images/default_avt.jpg"}
+                          profileLink={`/profile/${
+                            user?.username || user?._id
+                          }`}
+                          logoutHandler={logoutHandler}
+                        />
+                      }
                     >
-                      Logout
-                    </Button>
+                      <FaCaretDown
+                        style={{ width: 20, height: 20, cursor: "pointer" }}
+                      />
+                    </Tooltip>
                   </Grid>
                 </>
               ) : (
@@ -204,18 +234,6 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                   </Grid>
                 </>
               )}
-
-              <Grid>
-                <Switch
-                  checked={isDark}
-                  iconOff={<IoMdMoon />}
-                  iconOn={<IoMdSunny />}
-                  color="secondary"
-                  onChange={(e) =>
-                    setTheme(e.target.checked ? "dark" : "light")
-                  }
-                />
-              </Grid>
             </Grid.Container>
           </Grid>
         </Grid.Container>

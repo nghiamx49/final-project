@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from './user.schema';
 
@@ -13,6 +13,12 @@ export class Comment {
     author: User
     @Prop({type: Date, default: new Date()})
     createdAt: Date
+    @Prop([raw({
+        author: {type: Types.ObjectId, ref: 'User'},
+        content: String,
+        createdAt: {type: Date, default: new Date()}
+    })])
+    reply: Record<string, any>;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment)

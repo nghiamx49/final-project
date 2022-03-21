@@ -1,0 +1,9 @@
+
+.tooltipItems {
+    cursor: pointer;
+    padding: 5px 15px;
+}
+
+.tooltipItems:hover {
+    background-color: gray;
+}

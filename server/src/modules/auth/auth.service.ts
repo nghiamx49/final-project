@@ -21,10 +21,12 @@ export class AuthService {
       });
       if (userInDb) {
         return new UserResponseDto(userInDb);
+      } else {
+        const userInDb = await this.userRepository.findOne({
+          _id: profileFilter,
+        });
+        return new UserResponseDto(userInDb);
       }
-      return new UserResponseDto(
-        await this.userRepository.findOne({ _id: profileFilter }),
-      );
    } catch (error) {
      throw new Error('Cannot Found')
    }
@@ -38,7 +40,7 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto): Promise<Response> {
+  async register(registerDto: RegisterDto): Promise<void> {
     try {
       const { email } = registerDto;
       const findUser: User = await this.userRepository.findOne({ email });

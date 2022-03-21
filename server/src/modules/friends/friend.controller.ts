@@ -1,8 +1,10 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
+import { FriendRequest_Status } from "src/interface/status.interface";
 import { JwtAuthenticateGuard } from "src/middleware/authenticate.middleware";
 import { UserResponseDto } from "../auth/dto/user.dto";
 import { FriendRequestDTO } from "./dto/friendRequest.dto";
+import { StatusChecking } from "./dto/friendStatusChecking.dto";
 import { FriendService } from "./friend.service";
 
 @Controller('api/friends')
@@ -23,7 +25,6 @@ export class FriendController {
   @Get('/friend/:userId')
   async getAllFriendOfUser(
     @Param('userId') userId: string,
-    @Request() request,
     @Res() response: Response,
   ): Promise<void> {
     const allFriends: UserResponseDto[] =
@@ -70,11 +71,11 @@ export class FriendController {
     @Res() response: Response,
   ): Promise<void> {
     const { _id } = request.user;
-    const currentStatus = await this.friendService.checkCurrentFriendStatus(
+    const currentStatus: StatusChecking = await this.friendService.checkCurrentFriendStatus(
       _id,
       userId,
     );
-    response.status(200).json({ data: currentStatus });
+    response.status(200).json({ status: currentStatus });
   }
 
   @Post('/:requestId')
@@ -89,7 +90,7 @@ export class FriendController {
       await this.friendService.handleFriendRequest(_id, requestId, status);
       response
         .status(200)
-        .json({ message: 'You had accepted this friend request' });
+        .json({ message: `You had ${status === FriendRequest_Status.ACCEPTED ? 'accepted': "declined"} this friend request` });
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).json({ message: error?.message });
     }

@@ -1,0 +1,13 @@
+
+.image {
+  border-bottom-right-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px;
+}

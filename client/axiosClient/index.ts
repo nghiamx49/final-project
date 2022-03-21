@@ -4,3 +4,10 @@ export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   validateStatus: (status) => status <= 500,
 });
+
+export const getToken = () => {
+  const root = JSON.parse(window.localStorage.getItem("persit:root") || "");
+  const authenticate = JSON.parse(root);
+  console.log(authenticate?.token);
+  return authenticate?.token;
+}
