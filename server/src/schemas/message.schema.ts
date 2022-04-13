@@ -1,18 +1,21 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { User } from './user.schema';
+import { Document, Schema, Types } from 'mongoose';
 
-export type MessageDocument = Message & Document;
 
-@Schema()
-export class Message {
-  _id: { type: Types.ObjectId };
-  @Prop({ type: String })
+export interface MessageDocument extends Document {
+  _id: Types.ObjectId;
   content: string;
-  @Prop({ type: Types.ObjectId })
-  sender: User;
-  @Prop({ required: false, type: Date, default: new Date() })
+  sender: Types.ObjectId;
+  reactions: Types.ObjectId[];
   createdAt: Date;
+  updatedAt: Date;
+  isStoryReply: boolean;
+  story: Types.ObjectId
 }
 
-export const MessageSchema = SchemaFactory.createForClass(Message);
+export const Message = new Schema({
+  content: String,
+  sender: {type: Types.ObjectId, ref: 'Users'},
+  reactions: [{type: Types.ObjectId, ref: 'Reactions'}],
+  isStoryReply: {type: Boolean, default: false},
+  story: {type: Types.ObjectId, ref: 'Stories'},
+}, {timestamps: true})

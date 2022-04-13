@@ -1,19 +1,15 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { Message } from './message.schema';
-import { User } from './user.schema';
+import { Document, Types, Schema } from 'mongoose';
 
-export type ConservationDocument = Conservation & Document;
+export interface ConservationDocument extends Document {
+  _id: Types.ObjectId;
+  users: Types.ObjectId[];
+  messages?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+};
 
-@Schema()
-export class Conservation {
-  _id: { type: Types.ObjectId };
-  @Prop([{ type: User }])
-  users: User[];
-  @Prop([{ type: Message }])
-  messages?: Message[];
-  @Prop({ required: false, type: Date, default: new Date() })
-  lastUpdated: Date;
-}
 
-export const ConservationSchema = SchemaFactory.createForClass(Conservation);
+export const Conservation = new Schema({
+  users: [{type: Types.ObjectId, ref: 'Users'}],
+  messages: [{type: Types.ObjectId, ref: 'Messages'}],
+}, {timestamps: true});
