@@ -7,8 +7,9 @@ import { EnvironmentConfigService } from 'src/config/environment-config.service'
 import { LocalStrategy, JwtStrategy } from 'src/middleware/authenticate.middleware';
 import { RolesGuard } from 'src/middleware/authorize.middleware';
 import { UserRepository } from 'src/repository/user.repository';
-import { User, UserSchema } from 'src/schemas/user.schema';
 import { PasswordEncoder } from 'src/utils/crypto.util';
+import { DatabaseModule } from '../persistance/db.module';
+import { userProvider } from '../persistance/db.providers';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -20,11 +21,11 @@ import { AuthService } from './auth.service';
     PasswordEncoder,
     UserRepository,
     RolesGuard,
-    EnvironmentConfigService
+    EnvironmentConfigService,
+    userProvider
   ],
   controllers: [AuthController],
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [EnvironmentConfigModule],
@@ -38,6 +39,7 @@ import { AuthService } from './auth.service';
       },
       inject: [EnvironmentConfigService],
     }),
+    DatabaseModule
   ],
   exports: [AuthService]
 })

@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
-import { Feed, FeedDocument } from 'src/schemas/feed.shema';
+import { StoryDocument } from 'src/schemas/story.schema';
 
 @Injectable()
-export class FeedRepository extends BaseRepository<FeedDocument> {
+export class StoryRepository extends BaseRepository<StoryDocument> {
   constructor(
-    @InjectModel('FEED_MODEL')
-    feedModel: Model<FeedDocument>,
+    @InjectModel('STORY_MODEL') storyModel: Model<StoryDocument>,
   ) {
-    super(feedModel);
+    super(storyModel);
   }
 }
