@@ -1,9 +1,11 @@
 import { Document, Types, Schema } from 'mongoose';
+import { MessageDocument } from './message.schema';
+import { UserDocument } from './user.schema';
 
 export interface ConservationDocument extends Document {
   _id: Types.ObjectId;
-  users: Types.ObjectId[];
-  messages?: Types.ObjectId[];
+  users: UserDocument[];
+  messages?: MessageDocument[];
   createdAt?: Date;
   updatedAt?: Date;
 };

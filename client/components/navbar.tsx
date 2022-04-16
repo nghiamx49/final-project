@@ -18,7 +18,6 @@ import { connect } from "react-redux";
 import { IAction } from "../store/interface/action.interface";
 import { logoutAction } from "../store/actions/authenticate";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
-import { IoMdSunny, IoMdMoon } from "react-icons/io";
 import {
   FaHome,
   FaUserFriends,
@@ -30,6 +29,7 @@ import {
 } from "react-icons/fa";
 import { IconType } from "react-icons";
 import DropdownTooltip from "./DropDownToolTip";
+import Badge from "./badge";
 interface RouterLink {
   link: string;
   title: string;
@@ -60,8 +60,6 @@ const router: Array<RouterLink> = [
 ];
 
 const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
-  const [fixed, SetFixed] = useState<boolean>(false);
-
   const { asPath, push } = useRouter();
 
   const { isAuthenticated, user } = authenticateReducer;
@@ -78,32 +76,28 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
     doLogout();
   };
 
-  const toggle = (): void => {
-    if (window.scrollY > 100) {
-      SetFixed(true);
-    } else {
-      SetFixed(false);
-    }
-  };
-  useEffect(() => {
-    window.addEventListener("scroll", toggle);
-    return () => {
-      window.removeEventListener("scroll", toggle);
-    };
-  });
-
   return (
     <Container
-      css={{ margin: 0, background: "$background", padding: 0 }}
+      css={{
+        position: "fixed",
+        top: 0,
+        right: 0,
+        left: 0,
+        zIndex: 999,
+        background: "$background",
+        backdropFilter: "blur(100px)",
+        borderBottom: "1px solid $gray700",
+        padding: 0,
+      }}
       fluid
-      className={fixed ? "fixed-navbar" : ""}
+      // className={"fixed-navbar"}
     >
-      <Container fluid responsive={true}>
+      <Container fluid responsive={true} style={{ padding: "10px 7px"}}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Grid.Container alignItems="center">
               <NextLink href="/">
-                <Link>
+                <Link style={{marginRight: 10}}>
                   <Image
                     color="white"
                     width={40}
@@ -123,7 +117,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
             </Grid.Container>
           </Grid>
           <Grid>
-            <Grid.Container gap={3} alignItems="center">
+            <Grid.Container gap={3} alignItems="center" style={{ padding: 0 }}>
               {router.map(({ link, Icon }, index) => (
                 <Grid key={index}>
                   <NextLink href={link}>
@@ -140,7 +134,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
             </Grid.Container>
           </Grid>
           <Grid>
-            <Grid.Container gap={2} alignItems="center">
+            <Grid.Container gap={1} alignItems="center">
               {isAuthenticated ? (
                 <>
                   <Grid>
@@ -179,20 +173,34 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                     </NextLink>
                   </Grid>
                   <Grid>
-                    <FaFacebookMessenger
-                      style={{ width: 20, height: 20, cursor: "pointer" }}
-                    />
+                    <Badge count={5}>
+                      <FaFacebookMessenger
+                        style={{
+                          width: 20,
+                          height: 20,
+                          cursor: "pointer",
+                          color: "#fff",
+                        }}
+                      />
+                    </Badge>
                   </Grid>
                   <Grid>
-                    <FaBell
-                      style={{ width: 20, height: 20, cursor: "pointer" }}
-                    />
+                    <Badge count={3}>
+                      <FaBell
+                        style={{
+                          width: 20,
+                          height: 20,
+                          cursor: "pointer",
+                          color: "#fff",
+                        }}
+                      />
+                    </Badge>
                   </Grid>
                   <Grid>
                     <Tooltip
                       placement="bottomEnd"
                       trigger="click"
-                      css={{ width: 300, padding: 0 }}
+                      css={{ width: 300, padding: 0, marginTop: -80 }}
                       content={
                         <DropdownTooltip
                           fullname={user?.fullname}
@@ -204,9 +212,16 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                         />
                       }
                     >
-                      <FaCaretDown
-                        style={{ width: 20, height: 20, cursor: "pointer" }}
-                      />
+                      <Badge>
+                        <FaCaretDown
+                          style={{
+                            width: 20,
+                            height: 20,
+                            cursor: "pointer",
+                            color: "#fff",
+                          }}
+                        />
+                      </Badge>
                     </Tooltip>
                   </Grid>
                 </>

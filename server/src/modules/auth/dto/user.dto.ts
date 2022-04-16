@@ -1,4 +1,4 @@
-import {User} from 'src/schemas/user.schema'
+import {User, UserDocument} from 'src/schemas/user.schema'
 import {Types} from 'mongoose';
 abstract class UserBaseDto {
     email: string;
@@ -11,13 +11,12 @@ export class LoginDto extends UserBaseDto {
 export class RegisterDto extends LoginDto {
   fullname: string;
   dateOfBirth: string;
-  age: number;
   address?: string;
   role?: string;
 }
 
 export class UserResponseDto extends UserBaseDto {
-  constructor(userModel: User) {
+  constructor(userModel: UserDocument) {
     super();
     this.email = userModel.email;
     this.fullname = userModel.fullname;
@@ -25,13 +24,13 @@ export class UserResponseDto extends UserBaseDto {
     this.age = userModel.age;
     this.address = userModel.address;
     this.createdAt = userModel.createdAt;
-    this._id = userModel._id;
+    this._id = userModel._id.toString();
     this.role = userModel.role;
     this.avatarPhoto = userModel.avatarPhoto;
     this.coverPhoto = userModel.coverPhoto;
     this.username = userModel.username;
   }
-  _id: { type: Types.ObjectId };
+  _id: string;
   role: string;
   fullname: string;
   dateOfBirth: Date;

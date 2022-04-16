@@ -6,6 +6,30 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+div::-webkit-scrollbar {
+  width: 10px;
+}
+
+ 
+/* Handle */
+div::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scroll {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+.custom-scroll:hover {
+   overflow-y: auto;
+}
+
+/* Handle on hover */
+div::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
 .fixed-navbar {
   position: fixed;
   top: 0;

@@ -1,15 +1,18 @@
 import { Document, Schema, Types } from "mongoose";
+import { ReactionDocument } from "./reaction.schema";
+import { UserDocument } from "./user.schema";
 
 
 export interface StoryDocument extends Document {
-    _id: Types.ObjectId,
-    storyType: string,
+    _id: Types.ObjectId;
+    storyType: string;
     style?: Record<string, any>;
     content?: string;
     backgoundColor?: string;
     backgoundImage?: string;
     timePlay: string;
-    reactions: Types.ObjectId[];
+    reactions: ReactionDocument[];
+    author: UserDocument;
 }
 
 export const Story = new Schema({
@@ -24,5 +27,6 @@ export const Story = new Schema({
     backgoundColor: String,
     backgoundImage: String,
     timePlay: String,
-    reactions: [{type: Types.ObjectId, ref: 'Reactions'}]
+    reactions: [{type: Types.ObjectId, ref: 'Reactions'}],
+    author: {type: Types.ObjectId, ref: 'Users'}
 })

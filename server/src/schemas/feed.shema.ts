@@ -1,11 +1,13 @@
 import { Document, Schema, Types } from 'mongoose';
+import { CommentDocument } from './comment.schema';
+import { ReactionDocument } from './reaction.schema';
 import { User } from './user.schema';
 
 export class FeedDocument extends Document {
   _id: Types.ObjectId;
   author: Types.ObjectId;
-  comments?: Types.ObjectId[];
-  userReactions?: Types.ObjectId[];
+  comments?: CommentDocument[];
+  userReactions?: ReactionDocument[];
   content: string;
   contentImage?: string[];
   createdAt: Date;

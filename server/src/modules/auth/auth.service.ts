@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { UserRepository } from 'src/repository/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { UserResponseDto, RegisterDto } from './dto/user.dto';
-import { User } from 'src/schemas/user.schema';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { PasswordEncoder } from 'src/utils/crypto.util';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
 
   async getAccountProfile(profileFilter: string): Promise<UserResponseDto> {
    try {
-      const userInDb: User = await this.userRepository.findOne({
+      const userInDb: UserDocument = await this.userRepository.findOne({
         username: profileFilter,
       });
       if (userInDb) {
@@ -32,7 +32,7 @@ export class AuthService {
    }
   }
 
-  async login(user: User) {
+  async login(user: UserDocument) {
     return {
       user: new UserResponseDto(user),
       isAuthenticated: true,
@@ -43,12 +43,14 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<void> {
     try {
       const { email } = registerDto;
-      const findUser: User = await this.userRepository.findOne({ email });
+      const findUser: UserDocument = await this.userRepository.findOne({ email });
       if (findUser) {
         throw new Error('Account already existed');
       } else {
+        const age = new Date().getTime() - new Date(registerDto.dateOfBirth).getMilliseconds();
         await this.userRepository.create({
           ...registerDto,
+          age,
           password: this.passwordEncoder.encodePassword(registerDto.password),
         });
         return;

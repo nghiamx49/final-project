@@ -1,9 +1,10 @@
 import { Document, Schema, Types } from 'mongoose';
+import { UserDocument } from './user.schema';
 
 export interface CommentDocument extends Document {
     _id: Types.ObjectId
     content: string
-    author: Types.ObjectId
+    author: UserDocument
     reply?: Record<string, any>[];
 }
 

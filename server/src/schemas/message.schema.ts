@@ -1,15 +1,18 @@
 import { Document, Schema, Types } from 'mongoose';
+import { ReactionDocument } from './reaction.schema';
+import { StoryDocument } from './story.schema';
+import { UserDocument } from './user.schema';
 
 
 export interface MessageDocument extends Document {
   _id: Types.ObjectId;
   content: string;
-  sender: Types.ObjectId;
-  reactions: Types.ObjectId[];
+  sender: UserDocument;
+  reactions: ReactionDocument[];
   createdAt: Date;
   updatedAt: Date;
   isStoryReply: boolean;
-  story: Types.ObjectId
+  story: StoryDocument;
 }
 
 export const Message = new Schema({

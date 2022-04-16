@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
 import { ConservationDocument } from 'src/schemas/conservation.schema';
@@ -7,7 +6,7 @@ import { ConservationDocument } from 'src/schemas/conservation.schema';
 @Injectable()
 export class ConservationRepository extends BaseRepository<ConservationDocument> {
   constructor(
-    @InjectModel('CONSERVATION_MODEL')
+    @Inject('CONSERVATION_MODEL')
     conservationModel: Model<ConservationDocument>,
   ) {
     super(conservationModel);

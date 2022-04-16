@@ -1,7 +1,7 @@
 import { Container, Divider, Spacer } from "@nextui-org/react";
 import { FC } from "react";
 import { FcHome } from "react-icons/fc";
-import {FaUser, FaFlag} from 'react-icons/fa'
+import { FaUser, FaFlag } from "react-icons/fa";
 import SideBarItem from "./SideBarItem";
 const sideBarRoute: Array<any> = [
   {
@@ -22,15 +22,23 @@ const sideBarRoute: Array<any> = [
 ];
 
 const SideBarNewFeed: FC = () => {
-    return (
-      <Container>
-        {sideBarRoute.map(({ icon: Icon, title, link }) => (
-          <SideBarItem Icon={Icon} title={title} link={link} />
-        ))}
-        <Spacer y={1} />
-        <Divider height={3} />
-      </Container>
-    );
-}
+  return (
+    <Container
+      className="custom-scroll"
+      style={{
+        position: "sticky",
+        maxWidth: 360,
+        top: 80,
+        overflowX: "hidden",
+      }}
+    >
+      {sideBarRoute.map(({ icon: Icon, title, link }) => (
+        <SideBarItem Icon={Icon} title={title} link={link} />
+      ))}
+      <Spacer y={1} />
+      <Divider height={3} />
+    </Container>
+  );
+};
 
 export default SideBarNewFeed;

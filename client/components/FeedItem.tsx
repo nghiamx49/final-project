@@ -2,7 +2,7 @@
 
 import { Card, Grid, Row, Spacer, Text, Image, Divider, Button, Input, Avatar, useTheme } from '@nextui-org/react'
 import { FC } from 'react';
-import { IoMdHeartEmpty, IoMdHeart, IoMdChatboxes } from "react-icons/io";
+import { IoMdHeartEmpty, IoMdHeart, IoMdChatboxes, IoMdShareAlt } from "react-icons/io";
 
 interface FeedProps {
     userId?: string | number,
@@ -43,9 +43,18 @@ const FeedItem: FC<FeedProps> = ({userId, title, body}) => {
               <Row gap={10} justify="space-around" align="center">
                 <Button light>
                   <IoMdHeartEmpty size={30} />
+                  <Spacer y={1} />
+                  <Text>Reactions</Text>
                 </Button>
                 <Button light>
                   <IoMdChatboxes size={30} />
+                  <Spacer y={1} />
+                  <Text>Comment</Text>
+                </Button>
+                <Button light>
+                  <IoMdShareAlt size={30} />
+                  <Spacer y={1} />
+                  <Text>Share</Text>
                 </Button>
               </Row>
               <Divider />

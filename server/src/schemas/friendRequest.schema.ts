@@ -1,12 +1,12 @@
 import { Document, Schema, Types } from 'mongoose';
 import { FriendRequest_Status } from 'src/interface/status.interface';
-import { User } from './user.schema';
+import { User, UserDocument } from './user.schema';
 
 
 export interface FriendRequestDocument extends Document {
   _id: Types.ObjectId;
-  sender: Types.ObjectId;
-  receiver: Types.ObjectId;
+  sender: UserDocument;
+  receiver: UserDocument;
   status: string;
   createdAt: Date;
   updatedAt: Date;
