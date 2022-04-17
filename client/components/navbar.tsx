@@ -8,11 +8,11 @@ import {
   Input,
   Tooltip,
 } from "@nextui-org/react";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { IRooteState } from "../store/interface/roote.interface";
+import { IRooteState } from "../store/interface/root.interface";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { IAction } from "../store/interface/action.interface";

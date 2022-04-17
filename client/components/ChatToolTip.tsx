@@ -1,5 +1,4 @@
 import { Container, Spacer } from "@nextui-org/react";
-import ChatItem from "./ChatItem";
 const userList = [
   {
     fullname: "Mai Xuan Nghia",
@@ -121,10 +120,9 @@ const userList = [
     avatar: "/images/default_avt.jpg",
     isOnline: true,
   },
-  
 ];
 
-const ChatPannel = () => {
+const ChatToolTip = () => {
   return (
     <Container
       className="custom-scroll"
@@ -137,11 +135,8 @@ const ChatPannel = () => {
         maxHeight: "calc(100vh - 80px)",
       }}
     >
-      {userList.map((item, index) => (
-        <ChatItem user={item} key={index} />
-      ))}
     </Container>
   );
 };
 
-export default ChatPannel;
+export default ChatToolTip;

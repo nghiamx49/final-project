@@ -1,9 +1,8 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/repository/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { UserResponseDto, RegisterDto } from './dto/user.dto';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { UserDocument } from 'src/schemas/user.schema';
 import { PasswordEncoder } from 'src/utils/crypto.util';
 
 @Injectable()
@@ -38,6 +37,18 @@ export class AuthService {
       isAuthenticated: true,
       token: this.jwtService.sign({ user: user }),
     };
+  }
+
+  async changePassword(email:string , newPassowrd: string): Promise<void> {
+    try {
+      await this.userRepository.findOneAndUpdate(
+        { email },
+        { password: this.passwordEncoder.encodePassword(newPassowrd) },
+      );
+      return;
+    } catch (error) {
+      throw new BadRequestException('Password failed to change')
+    }
   }
 
   async register(registerDto: RegisterDto): Promise<void> {

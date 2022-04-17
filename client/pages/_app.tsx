@@ -2,9 +2,8 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import ApplicationLayout from "../layout";
 import { lightTheme, darkTheme } from "../theme/index";
-import { saga, wrapper, store, persistor } from "../store";
+import { saga, store, persistor } from "../store";
 import { SSRProvider } from "@react-aria/ssr";
 import rootSaga from "../store/saga";
 import { PersistGate } from "redux-persist/integration/react";
@@ -32,9 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <SSRProvider>
           <PersistGate persistor={persistor}>
             <Provider store={store}>
-              <ApplicationLayout>
                 <Component {...pageProps} />
-              </ApplicationLayout>
             </Provider>
           </PersistGate>
           <ToastContainer

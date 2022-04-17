@@ -1,10 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import FeedItem from '../components/FeedItem'
-import { Container, Grid, Spacer } from '@nextui-org/react'
+import { Container} from '@nextui-org/react'
 import protectedRoute from '../hocs/protectedRouter'
-import SideBarNewFeed from '../components/SideBarNewFeed/Index'
 
 const testData = [
   {
@@ -29,11 +27,18 @@ const testData = [
 
 const Home: NextPage = () => {
   return (
-    <Container fluid xs css={{ margin: "auto" }}>
-      {testData.map(({ userId, title, body }) => (
-        <FeedItem userId={userId} title={title} body={body} />
-      ))}
-    </Container>
+    <>
+      <Head>
+        <title>Home</title>
+        <meta name="description" content="Traveling together" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Container fluid xs css={{ margin: "auto" }}>
+        {testData.map(({ userId, title, body }) => (
+          <FeedItem userId={userId} title={title} body={body} />
+        ))}
+      </Container>
+    </>
   );
 }
 

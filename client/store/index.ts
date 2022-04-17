@@ -6,7 +6,7 @@ import storage from "redux-persist/lib/storage"
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import { authenticateReducer } from "./reducers/authenticate.reducer";
 
-import { IRooteState } from "./interface/roote.interface";
+import { IRooteState } from "./interface/root.interface";
 
 
 const rootReducer = combineReducers<IRooteState>({
@@ -26,10 +26,3 @@ const persistedReducer = persistReducer(persistsConfig, rootReducer);
 export const store: Store<IRooteState> = createStore(persistedReducer, composeWithDevTools(applyMiddleware(saga)))
 
 export const persistor: Persistor = persistStore(store);
-
-const makeStore = (context: Context) => createStore(rootReducer);
-
-export const wrapper = createWrapper<Store<IRooteState>>(makeStore, {debug: true})
-// export const store: Store = createStore(persistedReducer, composeEnhancers(applyMiddleware(saga)));
-
-// export const persistor: Persistor = persistStore(store);

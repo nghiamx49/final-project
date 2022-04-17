@@ -29,7 +29,7 @@ export class AuthController {
       const user = await this.authService.getAccountProfile(profile);
       res.status(200).json({ user: user });
     } catch (error) {
-      throw new BadRequestException()
+      throw new BadRequestException();
     }
   }
 
@@ -41,6 +41,22 @@ export class AuthController {
   ): Promise<void> {
     const response = await this.authService.login(request.user);
     res.status(HttpStatus.OK).json(response);
+  }
+
+  @Post('change-password')
+  async resetPassword(
+    @Request() request,
+    @Res({ passthrough: true }) res: Response,
+    @Body('email') email: string,
+    @Body('password') password: string,
+  ) {
+    try {
+      await this.authService.changePassword(email, password);
+      res.status(HttpStatus.OK).json({ message: "Password changed" });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({message: error.message})
+    }
+
   }
 
   @Post('register')

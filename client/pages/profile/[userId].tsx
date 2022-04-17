@@ -3,7 +3,7 @@ import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import { useTheme } from "@nextui-org/react";
 import FeedItem from "../../components/FeedItem";
 import UserProfileHeader from "../../components/ProfileHeader/UserProfileHeader";
-import { IRooteState } from "../../store/interface/roote.interface";
+import { IRooteState } from "../../store/interface/root.interface";
 import { connect } from "react-redux";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
 
@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { FriendStatus } from "../../type/friendStatus.enum";
 import { CheckingStatus } from "../../type/CheckingStatus.interface";
+import protectedRoute from "../../hocs/protectedRouter";
 const testData = [
   {
     userId: 1,
@@ -168,4 +169,4 @@ const mapStateToProps = (state: IRooteState) => {
   };
 };
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps)(protectedRoute(Profile));

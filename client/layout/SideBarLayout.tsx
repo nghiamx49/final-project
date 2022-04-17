@@ -1,16 +1,14 @@
 import NavBar from "../components/navbar";
-import Footer from "../components/footer";
 import { FunctionComponent, ReactChild } from "react";
 import { Container, Grid } from "@nextui-org/react";
 import SideBarNewFeed from "../components/SideBarNewFeed/Index";
-import styles from "../styles/Home.module.css";
 import ChatPannel from "../components/ChatPannel";
 
-interface ApplicationLayoutProps {
+interface SideBarLayoutProps {
     children: ReactChild
 }
 
-const ApplicationLayout: FunctionComponent<ApplicationLayoutProps> = (props) => {
+const SideBarLayout: FunctionComponent<SideBarLayoutProps> = ({children}) => {
     return (
       <>
         <NavBar />
@@ -30,7 +28,7 @@ const ApplicationLayout: FunctionComponent<ApplicationLayoutProps> = (props) => 
               <SideBarNewFeed />
             </Grid>
             <Grid css={{ width: "70%" }}>
-              {props.children}
+              {children}
             </Grid>
             <Grid>
                 <ChatPannel />
@@ -41,4 +39,4 @@ const ApplicationLayout: FunctionComponent<ApplicationLayoutProps> = (props) => 
     );
 }
 
-export default ApplicationLayout;
+export default SideBarLayout;

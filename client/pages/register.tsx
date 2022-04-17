@@ -19,6 +19,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { registerApi } from "../axiosClient/auth.api";
 import { toast } from "react-toastify";
 import { SyntheticEvent } from "react";
+import guestRouter from "../hocs/guestRouter";
 
 const registerValidationSchema = yup.object().shape({
   email: yup.string().email('Email must be valid').required("Email cannot be empty"),
@@ -264,4 +265,4 @@ const Register: NextPage = () => {
   );
 };
 
-export default Register;
+export default guestRouter(Register);

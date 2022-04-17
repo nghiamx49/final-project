@@ -7,6 +7,7 @@ import { Message } from 'src/schemas/message.schema';
 import { FriendRequest } from 'src/schemas/friendRequest.schema';
 import { Story } from 'src/schemas/story.schema';
 import { User } from 'src/schemas/user.schema';
+import { OTP } from 'src/schemas/otpvalidation.schema';
 
 export const databaseProviders = [
   {
@@ -68,5 +69,12 @@ export const userProvider = {
   provide: 'USER_MODEL',
   useFactory: (connection: mongoose.Connection) =>
     connection.model('Users', User),
+  inject: ['DATABASE_CONNECTION'],
+};
+
+export const otpProvider = {
+  provide: 'OTP_MODEL',
+  useFactory: (connection: mongoose.Connection) =>
+    connection.model('OTPs', OTP),
   inject: ['DATABASE_CONNECTION'],
 };
