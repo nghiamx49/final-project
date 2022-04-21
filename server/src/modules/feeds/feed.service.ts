@@ -9,7 +9,7 @@ import { FeedDocument } from 'src/schemas/feed.shema';
 import { FriendListDocument } from 'src/schemas/friendList.schema';
 import { ReactionDocument } from 'src/schemas/reaction.schema';
 import { UserDocument } from 'src/schemas/user.schema';
-import { CommentCreateDto, CommentDto } from './dto/comments.dto';
+import { CommentDto } from './dto/comments.dto';
 import { FeedCreateDto, FeedDto } from './dto/feed.dto';
 import { ReactionCreateDto, ReactionDto } from './dto/reaction.dto';
 
@@ -31,7 +31,17 @@ export class FeedService {
       author: user,
       ...data,
     });
-    await newFeedItem.populate('author comments reactions');
+    await newFeedItem.populate([
+      { path: 'author' },
+      {
+        path: 'comments',
+        populate: [
+          { path: 'author' },
+          { path: 'replies', populate: { path: 'author' } },
+        ],
+      },
+      { path: 'reactions', populate: { path: 'reactionBy' } },
+    ]);
     return new FeedDto(newFeedItem);
   }
 
@@ -72,12 +82,21 @@ export class FeedService {
     const friendListId: string[] = userFriendsList.allFriends.map((friend) =>
       friend._id.toString(),
     );
-    console.log(friendListId);
     const newFeeds = await this.feedRepository.find(
       { author: { $in: [...friendListId, userId] } },
       null,
       {
-        populate: [{path: 'author'}, {path: 'comments', populate: { path: 'author'}}, {path: 'reactions', populate: {path: 'reactionBy'}}],
+        populate: [
+          { path: 'author' },
+          {
+            path: 'comments',
+            populate: [
+              { path: 'author' },
+              { path: 'replies', populate: { path: 'author' } },
+            ],
+          },
+          { path: 'reactions', populate: { path: 'reactionBy' } },
+        ],
         sort: { createdAt: -1 },
       },
     );
@@ -87,8 +106,8 @@ export class FeedService {
   async commentOnAPost(
     postId: string,
     userId: string,
-    commentDto: CommentCreateDto,
-  ): Promise<CommentDto> {
+    content: string,
+  ): Promise<CommentDto[]> {
     const postInDb: FeedDocument = await this.feedRepository.findOne({
       _id: postId,
     });
@@ -97,38 +116,54 @@ export class FeedService {
     });
     const newComment: CommentDocument = await this.commentRepository.create({
       author: author,
-      content: commentDto.content,
+      content: content,
     });
-    const updateComment: CommentDocument[] = [...postInDb.comments, newComment];
+    const updateComment: CommentDocument[] = [newComment, ...postInDb.comments];
     await this.feedRepository.findOneAndUpdate(
       { _id: postId },
       { comments: updateComment },
     );
-    return new CommentDto(newComment);
+    const post = await this.feedRepository.findOne({ _id: postId }, null, {
+      populate: [{ path: 'comments', populate: { path: 'author' } }],
+    });
+    return post.comments.map((comment) => new CommentDto(comment));
   }
 
   async reactionToAPost(
     postId: string,
     userId: string,
     reactionDto: ReactionCreateDto,
-  ): Promise<ReactionDto> {
+  ): Promise<ReactionDto[]> {
     const author = await this.userRepository.findOne({ _id: userId });
     const postInDb: FeedDocument = await this.feedRepository.findOne(
       { _id: postId },
       null,
       { populate: { path: 'reactions', populate: { path: 'reactionBy' } } },
     );
-    const checkExisted: ReactionDocument = await this.reactionRepository.findOne({reactionBy: author, postId: postId})
-    if(checkExisted) {
-        const updatedReaction = await this.reactionRepository.findOneAndUpdate({
+    const checkExisted: ReactionDocument =
+      await this.reactionRepository.findOne({
+        reactionBy: author,
+        postId: postId,
+      });
+    if (checkExisted) {
+      await this.reactionRepository.findOneAndUpdate(
+        {
           _id: checkExisted._id,
-        }, {reactionType: reactionDto.reactionType}, {populate: 'reactionBy'});
-        return new ReactionDto(updatedReaction);
+        },
+        { reactionType: reactionDto.reactionType },
+        { populate: 'reactionBy' },
+      );
+      const allReactions = await this.reactionRepository.find(
+        { postId: postId },
+        null,
+        { populate: 'reactionBy' },
+      );
+      return allReactions.map((reaction) => new ReactionDto(reaction));
     }
     const newReaction: ReactionDocument = await this.reactionRepository.create({
       reactionType: reactionDto.reactionType,
       reactionBy: author,
-      postId: postId
+      postId: postId,
     });
     const updatedReactions: ReactionDocument[] = [
       ...postInDb.reactions,
@@ -138,21 +173,26 @@ export class FeedService {
       { _id: postId },
       { reactions: updatedReactions },
     );
-    return new ReactionDto(newReaction);
+    const allReactions = await this.reactionRepository.find(
+      { postId: postId },
+      null,
+      { populate: 'reactionBy' },
+    );
+    return allReactions.map((reaction) => new ReactionDto(reaction));
   }
 
   async replyAComment(
     commentId: string,
     userId,
-    commentDto: CommentCreateDto,
+    content: string,
   ): Promise<CommentDto> {
     const author = await this.userRepository.findOne({ _id: userId });
     const commentInDb: CommentDocument = await this.commentRepository.findOne({
       _id: commentId,
     });
     const updatedReplies = [
+      { author, content: content },
       ...commentInDb.replies,
-      { author, content: commentDto.content },
     ];
     return new CommentDto(
       await this.commentRepository.findOneAndUpdate(

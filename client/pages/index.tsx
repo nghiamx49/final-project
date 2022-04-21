@@ -3,29 +3,32 @@ import Head from 'next/head'
 import FeedItem from '../components/FeedItem'
 import { Container} from '@nextui-org/react'
 import protectedRoute from '../hocs/protectedRouter'
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { ICreateFeed, IFeed } from '../interface/feedItem.interface'
+import { connect } from 'react-redux'
+import { IRootState } from '../store/interface/root.interface'
+import { getAllPostsInNewFeed } from '../axiosClient/feed.api'
+import { IAuthenciateState } from '../store/interface/authenticate.interface'
+import CreatePost from '../components/postFeedModal'
 
-const testData = [
-  {
-    "userId": 1,
-    "id": 1,
-    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-  },
-  {
-    "userId": 1,
-    "id": 2,
-    "title": "qui est esse",
-    "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-  },
-  {
-    "userId": 1,
-    "id": 3,
-    "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-    "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+interface HomePageProps {
+  authenticateReducer: IAuthenciateState
+}
+
+const Home: NextPage<HomePageProps> = ({authenticateReducer}) => {
+  const [allPosts, setAllPosts] = useState<IFeed[]>([]);
+  const {token,user} = authenticateReducer;
+
+const loadNewFeed = useCallback(async () => {
+  const { data, status } = await getAllPostsInNewFeed(token);
+  if (status === 200 || 304) {
+    setAllPosts(data.data);
   }
-]
+}, [token]);
 
-const Home: NextPage = () => {
+
+useEffect(() => {loadNewFeed()}, [loadNewFeed])
+
   return (
     <>
       <Head>
@@ -34,12 +37,19 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container fluid xs css={{ margin: "auto" }}>
-        {testData.map(({ userId, title, body }) => (
-          <FeedItem userId={userId} title={title} body={body} />
+        <CreatePost user={user} reload={loadNewFeed} token={token} />
+        {allPosts.map((item) => (
+          <FeedItem item={item} currentUser={user} token={token} />
         ))}
       </Container>
     </>
   );
 }
 
-export default protectedRoute(Home);
+const mapStateToProps = (state: IRootState) => {
+  return {
+    authenticateReducer: state.authenticateReducer
+  }
+}
+
+export default connect(mapStateToProps)(protectedRoute(Home));

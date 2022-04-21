@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import { getAllWaitingForAcceptRequest, handleFriendRequest, checkFriendStatus,  } from "../../axiosClient/friend.api";
 import protectedRoute from "../../hocs/protectedRouter";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
-import { IRooteState } from "../../store/interface/root.interface";
+import { IRootState } from "../../store/interface/root.interface";
 import { IUser } from "../../store/interface/user.interface";
 
 import FriendItem from "../../components/friendItem";
@@ -80,7 +80,7 @@ const FriendRequests: NextPage<PageProps> = ({ authenticateReducer }) => {
   );
 };
 
-const mapStateToProps = (state: IRooteState) => {
+const mapStateToProps = (state: IRootState) => {
   return {
     authenticateReducer: state.authenticateReducer,
   };

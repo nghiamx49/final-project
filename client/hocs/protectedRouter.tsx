@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import {useSelector} from 'react-redux'
-import { IRooteState } from "../store/interface/root.interface";
+import { IRootState } from "../store/interface/root.interface";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
 import SideBarLayout from "../layout/SideBarLayout";
 import OnlyNavBarLayout from "../layout/OnlyNavBarLayout";
@@ -10,7 +10,7 @@ import FriendSidePanel from "../layout/FriendSidePanelLayout";
 
 const protectedRoute = (Component: any): any => {
     return (props: any) => {
-        const authenticateReducer: IAuthenciateState = useSelector((state: IRooteState) => state.authenticateReducer);
+        const authenticateReducer: IAuthenciateState = useSelector((state: IRootState) => state.authenticateReducer);
         const {isAuthenticated} = authenticateReducer;
         const {push, asPath} = useRouter();
         useEffect(() => {

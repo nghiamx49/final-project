@@ -17,3 +17,8 @@ export interface IFeed {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ICreateFeed {
+  content: string;
+  contentMedia?: IMedia[];
+}

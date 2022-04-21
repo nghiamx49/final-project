@@ -1,5 +1,5 @@
 import { IAuthenciateState } from "./authenticate.interface";
 
-export interface IRooteState {
+export interface IRootState {
     authenticateReducer: IAuthenciateState
 }

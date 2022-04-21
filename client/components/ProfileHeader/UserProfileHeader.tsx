@@ -138,7 +138,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
   };
 
   return (
-    <Container fluid css={{ position: "relative" }}>
+    <Container fluid xl css={{ position: "relative" }}>
       <Modal
         closeButton
         animated={false}

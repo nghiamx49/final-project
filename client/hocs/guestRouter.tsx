@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { IRooteState } from "../store/interface/root.interface";
+import { IRootState } from "../store/interface/root.interface";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
 import OnlyNavBarLayout from "../layout/OnlyNavBarLayout";
 import { Container, Loading } from "@nextui-org/react";
@@ -9,7 +9,7 @@ import { Container, Loading } from "@nextui-org/react";
 const guestRouter = (Component: any): any => {
   return (props: any) => {
       const authenticateReducer: IAuthenciateState = useSelector(
-        (state: IRooteState) => state.authenticateReducer
+        (state: IRootState) => state.authenticateReducer
       );
       const { isAuthenticated } = authenticateReducer;
     const { replace, push } = useRouter();

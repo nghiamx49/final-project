@@ -6,10 +6,10 @@ import storage from "redux-persist/lib/storage"
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import { authenticateReducer } from "./reducers/authenticate.reducer";
 
-import { IRooteState } from "./interface/root.interface";
+import { IRootState } from "./interface/root.interface";
 
 
-const rootReducer = combineReducers<IRooteState>({
+const rootReducer = combineReducers<IRootState>({
     authenticateReducer
 });
 
@@ -23,6 +23,6 @@ export const saga = createSagaMiddleware();
 
 const persistedReducer = persistReducer(persistsConfig, rootReducer);
 
-export const store: Store<IRooteState> = createStore(persistedReducer, composeWithDevTools(applyMiddleware(saga)))
+export const store: Store<IRootState> = createStore(persistedReducer, composeWithDevTools(applyMiddleware(saga)))
 
 export const persistor: Persistor = persistStore(store);

@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
-import { CommentCreateDto } from './dto/comments.dto';
 import { FeedCreateDto, FeedDto } from './dto/feed.dto';
 import { ReactionCreateDto } from './dto/reaction.dto';
 import { FeedService } from './feed.service';
@@ -50,16 +49,16 @@ export class FeedController {
   async commentOnPost(
     @Req() req,
     @Param('postId') postId: string,
-    @Body() comment: CommentCreateDto,
+    @Body('content') content: string,
     @Res() response: Response,
   ): Promise<void> {
     try {
-      const newComment = await this.feedService.commentOnAPost(
+      const comment = await this.feedService.commentOnAPost(
         postId,
         req.user._id,
-        comment,
+        content,
       );
-      response.status(HttpStatus.CREATED).json({ data: newComment });
+      response.status(HttpStatus.CREATED).json({ data: comment });
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
     }
@@ -88,14 +87,14 @@ export class FeedController {
   async replyCommentOnPost(
     @Req() req,
     @Param('commentId') commentId: string,
-    @Body() comment: CommentCreateDto,
+    @Body('content') content: string,
     @Res() response: Response,
   ): Promise<void> {
     try {
       const newComment = await this.feedService.replyAComment(
         commentId,
         req.user._id,
-        comment,
+        content,
       );
       response.status(HttpStatus.CREATED).json({ data: newComment });
     } catch (error) {

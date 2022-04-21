@@ -4,7 +4,7 @@ import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import { useTheme } from "@nextui-org/react";
 import FeedItem from "../../components/FeedItem";
 import UserProfileHeader from "../../components/ProfileHeader/UserProfileHeader";
-import { IRooteState } from "../../store/interface/root.interface";
+import { IRootState } from "../../store/interface/root.interface";
 import { connect } from "react-redux";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
 import styles from "../../styles/UserProfile.module.css";
@@ -26,6 +26,7 @@ import { Dispatch } from "redux";
 import { updateProfileSuccess } from "../../store/actions/profile";
 import { getUserPosts } from "../../axiosClient/feed.api";
 import { IFeed } from "../../interface/feedItem.interface";
+import CreatePost from "../../components/postFeedModal";
 
 interface PropfileProps {
   authenticateReducer: IAuthenciateState;
@@ -111,20 +112,23 @@ const Profile: NextPage<PropfileProps> = ({
   const handleCancelRequest = async () => {};
 
   return (
-    <Container fluid css={{ padding: 0 }}>
+    <Container fluid xl css={{ padding: 0, margin: 0 }}>
       <Container
         fluid
+        xl
         css={
           isDark
             ? {
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 100%, rgba(0,212,255,1) 100%);",
                 borderBottom: "1px solid $gray700",
+                margin: 0
               }
             : {
                 background:
                   "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 100%, rgba(0,212,255,1) 100%);",
                 borderBottom: "1px solid $gray300",
+                margin: 0
               }
         }
       >
@@ -198,6 +202,7 @@ const Profile: NextPage<PropfileProps> = ({
           </Grid>
           <Grid xs={7}>
             <Container fluid xs>
+              <CreatePost user={user} />
               {allPosts.map((item, index) => (
                 <FeedItem item={item} currentUser={user} />
               ))}
@@ -220,7 +225,7 @@ export const getServerSideProps: GetServerSideProps = async (
     return { props: { errorCode: status } };
   }
 };
-const mapStateToProps = (state: IRooteState) => {
+const mapStateToProps = (state: IRootState) => {
   return {
     authenticateReducer: state.authenticateReducer,
   };

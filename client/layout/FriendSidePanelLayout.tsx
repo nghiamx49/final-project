@@ -21,6 +21,7 @@ const FriendSidePanel: FunctionComponent<FriendSidePanelProps> = ({
       <NavBar />
       <Container
         fluid
+        xl
         css={{
           margin: 0,
           padding: 0,

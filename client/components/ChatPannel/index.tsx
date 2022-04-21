@@ -3,7 +3,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getAllFriends } from "../../axiosClient/friend.api";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
-import { IRooteState } from "../../store/interface/root.interface";
+import { IRootState } from "../../store/interface/root.interface";
 import { IUser } from "../../store/interface/user.interface";
 import ChatItem from "./ChatItem";
 import {FaSearch} from 'react-icons/fa'
@@ -57,7 +57,7 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
   );
 };
 
-const mapStateToProps = (state: IRooteState) => ({
+const mapStateToProps = (state: IRootState) => ({
   authenticateReducer: state.authenticateReducer,
 });
 

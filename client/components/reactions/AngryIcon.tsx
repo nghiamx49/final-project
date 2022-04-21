@@ -56,8 +56,8 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             y2="10.751"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#E04300" />
-            <stop offset="1" stop-color="#FFA320" />
+            <stop stopColor="#E04300" />
+            <stop offset="1" stopColor="#FFA320" />
           </linearGradient>
           <linearGradient
             id="paint1_linear"
@@ -67,8 +67,8 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             y2="14"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#3D0D00" />
-            <stop offset="1" stop-color="#661C04" />
+            <stop stopColor="#3D0D00" />
+            <stop offset="1" stopColor="#661C04" />
           </linearGradient>
           <linearGradient
             id="paint2_linear"
@@ -78,8 +78,8 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             y2="11"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#191A33" />
-            <stop offset=".872" stop-color="#3B426A" />
+            <stop stopColor="#191A33" />
+            <stop offset=".872" stopColor="#3B426A" />
           </linearGradient>
           <linearGradient
             id="paint3_linear"
@@ -89,8 +89,8 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             y2="7"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#9A2F00" />
-            <stop offset="1" stop-color="#D44800" />
+            <stop stopColor="#9A2F00" />
+            <stop offset="1" stopColor="#D44800" />
           </linearGradient>
           <filter
             id="filter0_d"
@@ -101,7 +101,7 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             color-interpolation-filters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix
               in="SourceAlpha"
               values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
@@ -125,7 +125,7 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             color-interpolation-filters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend
               in="SourceGraphic"
               in2="BackgroundImageFix"
@@ -151,7 +151,7 @@ export const AngryIcon: FC<IconProps> = ({size}) => {
             color-interpolation-filters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix
               in="SourceAlpha"
               values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"

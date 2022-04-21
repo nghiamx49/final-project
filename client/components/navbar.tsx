@@ -12,7 +12,7 @@ import { FC } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { IRooteState } from "../store/interface/root.interface";
+import { IRootState } from "../store/interface/root.interface";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { IAction } from "../store/interface/action.interface";
@@ -88,9 +88,10 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
         backdropFilter: "blur(100px)",
         borderBottom: "1px solid $gray700",
         padding: 0,
+        margin: 0
       }}
       fluid
-      // className={"fixed-navbar"}
+      xl
     >
       <Container fluid responsive={true} style={{ padding: "10px 7px" }}>
         <Grid.Container justify="space-between" alignItems="center">
@@ -257,7 +258,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   );
 };
 
-const mapStateToProps = (state: IRooteState) => {
+const mapStateToProps = (state: IRootState) => {
   return {
     authenticateReducer: state.authenticateReducer,
   };

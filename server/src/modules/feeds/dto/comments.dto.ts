@@ -10,13 +10,9 @@ export class CommentDto {
         this.replies = comment?.replies?.map((reply) => new CommentDto(reply));
     }
     _id: string;
-    author?: UserResponseDto;
+    author: UserResponseDto;
     content: string;
     createdAt: Date;
     replies?: CommentDto[];
 }
 
-
-export class CommentCreateDto {
-    content: string;
-}
