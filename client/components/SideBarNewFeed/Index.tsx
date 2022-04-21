@@ -1,7 +1,7 @@
 import { Container, Divider, Spacer } from "@nextui-org/react";
 import { FC } from "react";
-import { FcHome } from "react-icons/fc";
-import { FaUser, FaFlag } from "react-icons/fa";
+import { FcHome, } from "react-icons/fc";
+import { FaUser, FaUserFriends } from "react-icons/fa";
 import SideBarItem from "./SideBarItem";
 const sideBarRoute: Array<any> = [
   {
@@ -10,14 +10,9 @@ const sideBarRoute: Array<any> = [
     link: "/",
   },
   {
-    icon: FcHome,
-    title: "Your Joined  Groups",
-    link: "/",
-  },
-  {
-    icon: FaFlag,
-    title: "Your Followed Pages",
-    link: "/",
+    icon: FaUserFriends,
+    title: "Friends",
+    link: "/friends",
   },
 ];
 

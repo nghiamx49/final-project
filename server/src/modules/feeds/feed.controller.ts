@@ -1,0 +1,120 @@
+import {
+  Controller,
+  Req,
+  Res,
+  UseGuards,
+  Get,
+  HttpStatus,
+  Post,
+  Body,
+  Param,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { CommentCreateDto } from './dto/comments.dto';
+import { FeedCreateDto, FeedDto } from './dto/feed.dto';
+import { ReactionCreateDto } from './dto/reaction.dto';
+import { FeedService } from './feed.service';
+
+@Controller('api/feeds')
+@UseGuards(JwtAuthenticateGuard)
+export class FeedController {
+  constructor(private readonly feedService: FeedService) {}
+
+  @Get('/')
+  async getPosts(@Req() req, @Res() response: Response): Promise<void> {
+    const { _id } = req.user;
+    const allPosts: FeedDto[] = await this.feedService.getNewFeeds(_id);
+    response.status(HttpStatus.OK).json({ data: allPosts });
+  }
+
+  @Get('/:userId')
+  async getUserPosts(
+    @Param('userId') userId: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    const allPosts: FeedDto[] = await this.feedService.getAllOwnPosts(userId);
+    response.status(HttpStatus.OK).json({ data: allPosts });
+  }
+
+  @Get('/posts/:postId')
+  async getSinglePost(
+    @Param('postId') postId: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    const postInDB = await this.feedService.getSinglePost(postId);
+    response.status(HttpStatus.OK).json({ data: postInDB });
+  }
+
+  @Post('/posts/:postId/comment')
+  async commentOnPost(
+    @Req() req,
+    @Param('postId') postId: string,
+    @Body() comment: CommentCreateDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    try {
+      const newComment = await this.feedService.commentOnAPost(
+        postId,
+        req.user._id,
+        comment,
+      );
+      response.status(HttpStatus.CREATED).json({ data: newComment });
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    }
+  }
+
+  @Post('/posts/:postId/reaction')
+  async reactionOnPost(
+    @Req() req,
+    @Param('postId') postId: string,
+    @Body() reaction: ReactionCreateDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    try {
+      const newReaction = await this.feedService.reactionToAPost(
+        postId,
+        req.user._id,
+        reaction,
+      );
+      response.status(HttpStatus.CREATED).json({ data: newReaction });
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    }
+  }
+
+  @Post('/posts/:postId/:commentId')
+  async replyCommentOnPost(
+    @Req() req,
+    @Param('commentId') commentId: string,
+    @Body() comment: CommentCreateDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    try {
+      const newComment = await this.feedService.replyAComment(
+        commentId,
+        req.user._id,
+        comment,
+      );
+      response.status(HttpStatus.CREATED).json({ data: newComment });
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    }
+  }
+
+  @Post('/')
+  async createPosts(
+    @Req() req,
+    @Body() requestBody: FeedCreateDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { _id } = req.user;
+    try {
+      const newPosts = await this.feedService.createNewPost(_id, requestBody);
+      response.status(HttpStatus.CREATED).json({ data: newPosts });
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({ data: error.message });
+    }
+  }
+}

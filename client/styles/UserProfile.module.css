@@ -4,6 +4,11 @@
   border-bottom-left-radius: 14px;
 }
 
+.friendImage {
+  border-radius: 10px;
+  object-fit: cover;
+}
+
 .infoContainer {
     display: flex;
     flex-direction: column;

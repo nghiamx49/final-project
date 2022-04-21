@@ -1,4 +1,3 @@
-import { FriendRequest } from "src/schemas/friendRequest.schema"
 
 export class StatusChecking {
     status: string

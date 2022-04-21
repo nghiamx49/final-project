@@ -1,14 +1,17 @@
 import { Document, Schema, Types } from "mongoose";
+import { Reactions } from "src/interface/reaction.interface";
 import { UserDocument } from "./user.schema";
 
 
 export interface ReactionDocument extends Document {
     _id: Types.ObjectId;
-    reactionType: String;
+    reactionType: string;
     reactionBy: UserDocument;
+    postId: string;
 }
 
 export const Reaction = new Schema({
-    reactionType: String,
-    reactionBy: {type: Types.ObjectId, ref: 'Users'}
+    reactionType: {type: String, enum: Object.values(Reactions)},
+    reactionBy: {type: Types.ObjectId, ref: 'Users'},
+    postId: String
 })

@@ -1,130 +1,29 @@
-import { Container, Spacer } from "@nextui-org/react";
+import { Button, Container, Input, Row, Text } from "@nextui-org/react";
+import { FC, useCallback, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { getAllFriends } from "../../axiosClient/friend.api";
+import { IAuthenciateState } from "../../store/interface/authenticate.interface";
+import { IRooteState } from "../../store/interface/root.interface";
+import { IUser } from "../../store/interface/user.interface";
 import ChatItem from "./ChatItem";
-const userList = [
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  {
-    fullname: "Mai Xuan Nghia",
-    avatar: "/images/default_avt.jpg",
-    isOnline: true,
-  },
-  
-];
+import {FaSearch} from 'react-icons/fa'
 
-const ChatPannel = () => {
+interface ChatPannelProps {
+  authenticateReducer: IAuthenciateState,
+}
+
+const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
+    const [allFriends, setAllFriends] = useState<IUser[]>([]);
+
+  const {token} = authenticateReducer;
+   const loadFriends = useCallback(async (): Promise<void> => {
+     const { data, status } = await getAllFriends(token);
+     if (status === 200 || 304) {
+       setAllFriends(data?.data);
+     }
+   }, [token]);
+
+   useEffect(() => {loadFriends()}, [loadFriends])
   return (
     <Container
       className="custom-scroll"
@@ -135,13 +34,31 @@ const ChatPannel = () => {
         width: "100%",
         minWidth: 360,
         maxHeight: "calc(100vh - 80px)",
+        padding: "10px 0",
       }}
     >
-      {userList.map((item, index) => (
+      <Row
+        fluid
+        justify="space-between"
+        align="center"
+        css={{ padding: "0 5px" }}
+      >
+        <Text h4>Online Friends</Text>
+        <Input
+          aria-labelledby="search"
+          placeholder="search friends..."
+          contentRight={<FaSearch size={20} color="white" style={{cursor: 'pointer'}} />}
+        />
+      </Row>
+      {allFriends.map((item, index) => (
         <ChatItem user={item} key={index} />
       ))}
     </Container>
   );
 };
 
-export default ChatPannel;
+const mapStateToProps = (state: IRooteState) => ({
+  authenticateReducer: state.authenticateReducer,
+});
+
+export default connect(mapStateToProps)(ChatPannel);

@@ -1,7 +1,6 @@
 import { IAuthenciateState } from "../interface/authenticate.interface";
 import { IAction } from "../interface/action.interface";
-import { authConstant } from "../action-constant";
-import { HYDRATE } from "next-redux-wrapper";
+import { authConstant, profileConstant } from "../action-constant";
 
 const initialState: IAuthenciateState = {
   user: {
@@ -13,14 +12,17 @@ const initialState: IAuthenciateState = {
     role: "",
     createdAt: "",
     updatedAt: "",
-    avatar_url: "",
+    avatar: "",
+    cover: "",
     _id: "",
+    allFriends: []
   },
   isAuthenticated: false,
   token: "",
 };
 
 const { LOGIN_SUCCESS, LOGOUT_SUCCESS } = authConstant;
+const {UPDATE_PROFILE_SUCCESS} = profileConstant;
 
 export const authenticateReducer = (
   state = initialState,
@@ -31,6 +33,8 @@ export const authenticateReducer = (
       return { ...state, ...action.payload };
     case LOGOUT_SUCCESS:
       return { ...state, ...initialState };
+    case UPDATE_PROFILE_SUCCESS:
+      return {...state, user: {...state.user, ...action.payload}};
     default:
       return state;
   }

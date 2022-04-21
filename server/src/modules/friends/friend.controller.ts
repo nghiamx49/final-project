@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { FriendRequest_Status } from "src/interface/status.interface";
 import { JwtAuthenticateGuard } from "src/middleware/authenticate.middleware";
@@ -20,6 +20,17 @@ export class FriendController {
     const allFriends: UserResponseDto[] =
       await this.friendService.getAllUserFriends(request.user._id);
     response.status(200).json({ data: allFriends });
+  }
+
+  @Get('/recommend')
+  async getAllSystemRecommended(
+    @Request() request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const allRecommnendFriends = await this.friendService.getRecommendFriends(
+      request.user._id,
+    );
+    response.status(200).json({ data: allRecommnendFriends });
   }
 
   @Get('/friend/:userId')
@@ -71,10 +82,8 @@ export class FriendController {
     @Res() response: Response,
   ): Promise<void> {
     const { _id } = request.user;
-    const currentStatus: StatusChecking = await this.friendService.checkCurrentFriendStatus(
-      _id,
-      userId,
-    );
+    const currentStatus: StatusChecking =
+      await this.friendService.checkCurrentFriendStatus(_id, userId);
     response.status(200).json({ status: currentStatus });
   }
 
@@ -88,9 +97,11 @@ export class FriendController {
     try {
       const { _id } = request.user;
       await this.friendService.handleFriendRequest(_id, requestId, status);
-      response
-        .status(200)
-        .json({ message: `You had ${status === FriendRequest_Status.ACCEPTED ? 'accepted': "declined"} this friend request` });
+      response.status(200).json({
+        message: `You had ${
+          status === FriendRequest_Status.ACCEPTED ? 'accepted' : 'declined'
+        } this friend request`,
+      });
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).json({ message: error?.message });
     }
@@ -105,5 +116,14 @@ export class FriendController {
     const { _id } = request.user;
     await this.friendService.handleUnfriend(_id, friendId);
     response.status(200).json({ message: 'Unfriend successfully' });
+  }
+
+  @Delete('/:requestId')
+  async handleCancelRequest(
+    @Param('requestId') requestId: string,
+    @Res() response: Response,
+  ) {
+    await this.friendService.handleCancelRequest(requestId);
+    response.status(200).json({ message: 'Cancel request successfully' });
   }
 }

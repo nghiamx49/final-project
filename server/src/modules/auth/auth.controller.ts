@@ -12,26 +12,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { RegisterDto, UserResponseDto } from './dto/user.dto';
+import { RegisterDto } from './dto/user.dto';
 import { JwtAuthenticateGuard, LocalAuthenticateGuard } from 'src/middleware/authenticate.middleware';
 import { Roles, Role, RolesGuard } from 'src/middleware/authorize.middleware';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Get('/profile/:profile')
-  async getProfile(
-    @Param('profile') profile: string,
-    @Res() res: Response,
-  ): Promise<void> {
-    try {
-      const user = await this.authService.getAccountProfile(profile);
-      res.status(200).json({ user: user });
-    } catch (error) {
-      throw new BadRequestException();
-    }
-  }
 
   @UseGuards(LocalAuthenticateGuard)
   @Post('login')
@@ -45,7 +32,6 @@ export class AuthController {
 
   @Post('change-password')
   async resetPassword(
-    @Request() request,
     @Res({ passthrough: true }) res: Response,
     @Body('email') email: string,
     @Body('password') password: string,

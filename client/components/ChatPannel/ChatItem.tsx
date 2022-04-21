@@ -1,35 +1,33 @@
-import { Avatar, Container, Spacer, Text } from "@nextui-org/react";
+import { Avatar, Container, Link, Spacer, Text } from "@nextui-org/react";
 import { FC } from "react";
+import { IUser } from "../../store/interface/user.interface";
 
 interface ChatItemProps {
-  user: {
-    fullname: string;
-    avatar: string;
-    isOnline: boolean;
-  };
+  user: IUser;
   key: number;
 }
 
 const ChatItem: FC<ChatItemProps> = ({ user, key }) => {
   return (
     <>
-      <Container
-        fluid
+      <Link
         key={key}
-        display="flex"
+        block
         css={{
-          width: "fit-content",
+          display: 'flex',
+          width: "100%",
           justifyContent: "flex-start",
           margin: 0,
-          padding: 0,
+          padding: "3px 5px",
           gap: 10,
           alignItems: "center",
           cursor: "pointer",
         }}
+        className="chat-items"
       >
-        <div style={{ position: "relative" }}>
-          <Avatar bordered color="secondary" src={user.avatar} />
-          {user.isOnline && (
+        <div style={{ position: "relative"}}>
+          <Avatar pointer bordered color="primary" src={user?.avatar || '/images/default_avt.jpg'} />
+          {/* {user.isOnline && (
             <span
               style={{
                 position: 'absolute',
@@ -42,11 +40,10 @@ const ChatItem: FC<ChatItemProps> = ({ user, key }) => {
                 bottom: 3
               }}
             ></span>
-          )}
+          )} */}
         </div>
         <Text h5>{user.fullname}</Text>
-      </Container>
-      <Spacer y={1} />
+      </Link>
     </>
   );
 };

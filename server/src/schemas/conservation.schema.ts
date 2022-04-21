@@ -4,7 +4,7 @@ import { UserDocument } from './user.schema';
 
 export interface ConservationDocument extends Document {
   _id: Types.ObjectId;
-  users: UserDocument[];
+  members: UserDocument[];
   messages?: MessageDocument[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -12,6 +12,6 @@ export interface ConservationDocument extends Document {
 
 
 export const Conservation = new Schema({
-  users: [{type: Types.ObjectId, ref: 'Users'}],
+  members: [{type: Types.ObjectId, ref: 'Users'}],
   messages: [{type: Types.ObjectId, ref: 'Messages'}],
 }, {timestamps: true});

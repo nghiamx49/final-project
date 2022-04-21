@@ -11,11 +11,10 @@ export interface UserDocument extends Document {
   age: number;
   address?: string;
   role: string;
-  allFriends: UserDocument[];
   createdAt: Date;
   updatedAt: Date;
-  avatarPhoto: string;
-  coverPhoto: string;
+  avatar: string;
+  cover: string;
   isVerify: boolean;
 }
 
@@ -28,8 +27,7 @@ export const User = new Schema({
   age: Number,
   address: String,
   role: { type: String, enum: ['Admin', 'User'], default: 'User' },
-  allFriends: [{type: Types.ObjectId, ref: 'Users'}],
-  avatarPhoto: String,
-  coverPhoto: String,
+  avatar: String,
+  cover: String,
   isVerify: {type: Boolean, default: false}
 }, {timestamps: true});

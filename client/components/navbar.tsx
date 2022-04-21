@@ -92,12 +92,12 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
       fluid
       // className={"fixed-navbar"}
     >
-      <Container fluid responsive={true} style={{ padding: "10px 7px"}}>
+      <Container fluid responsive={true} style={{ padding: "10px 7px" }}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Grid.Container alignItems="center">
               <NextLink href="/">
-                <Link style={{marginRight: 10}}>
+                <Link style={{ marginRight: 10 }}>
                   <Image
                     color="white"
                     width={40}
@@ -161,7 +161,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                         }
                       >
                         <Avatar
-                          src={user?.avatar_url || "/images/default_avt.jpg"}
+                          src={user?.avatar || "/images/default_avt.jpg"}
                           size="sm"
                           pointer
                           color="gradient"
@@ -196,7 +196,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       />
                     </Badge>
                   </Grid>
-                  <Grid>
+                  <Grid css={{ cursor: "pointer" }}>
                     <Tooltip
                       placement="bottomEnd"
                       trigger="click"
@@ -204,7 +204,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       content={
                         <DropdownTooltip
                           fullname={user?.fullname}
-                          avatar={user?.avatar_url || "/images/default_avt.jpg"}
+                          avatar={user?.avatar || "/images/default_avt.jpg"}
                           profileLink={`/profile/${
                             user?.username || user?._id
                           }`}

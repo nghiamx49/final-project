@@ -16,6 +16,7 @@ const Badge: FC<BadgeProps> = ({ children, count }) => {
         paddingLeft: 10,
         paddingRight: 10,
         borderRadius: "100%",
+        cursor: 'pointer'
       }}
     >
       {children}

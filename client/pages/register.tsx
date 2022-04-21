@@ -27,7 +27,6 @@ const registerValidationSchema = yup.object().shape({
   confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Confirm password must match').required('Confirm password cannot be empty'),
   fullname: yup.string().required("Full Name cannot be empty"),
   dateOfBirth: yup.date().required("Date of Birth must be selected"),
-  age: yup.number().required("Age cannot be empty"),
 });
 
 const Register: NextPage = () => {
@@ -185,29 +184,6 @@ const Register: NextPage = () => {
                     <Grid>
                       <ErrorMessage
                         name="dateOfBirth"
-                        errors={errors}
-                        render={({ message }) => (
-                          <Text color="red">{message}</Text>
-                        )}
-                      />
-                    </Grid>
-                  </Grid.Container>
-                  <Spacer y={1} />
-                  <Grid.Container direction="column" alignItems="center">
-                    <Grid>
-                      <Input
-                        width="400px"
-                        type="number"
-                        aria-labelledby="age"
-                        placeholder="Age"
-                        {...register("age")}
-                        clearable
-                        bordered
-                      />
-                    </Grid>
-                    <Grid>
-                      <ErrorMessage
-                        name="age"
                         errors={errors}
                         render={({ message }) => (
                           <Text color="red">{message}</Text>

@@ -8,6 +8,7 @@ import { FriendRequest } from 'src/schemas/friendRequest.schema';
 import { Story } from 'src/schemas/story.schema';
 import { User } from 'src/schemas/user.schema';
 import { OTP } from 'src/schemas/otpvalidation.schema';
+import { FriendList } from 'src/schemas/friendList.schema';
 
 export const databaseProviders = [
   {
@@ -76,5 +77,12 @@ export const otpProvider = {
   provide: 'OTP_MODEL',
   useFactory: (connection: mongoose.Connection) =>
     connection.model('OTPs', OTP),
+  inject: ['DATABASE_CONNECTION'],
+};
+
+export const friendListProvider = {
+  provide: 'FRIEND_LIST_MODEL',
+  useFactory: (connection: mongoose.Connection) =>
+    connection.model('FriendLists', FriendList),
   inject: ['DATABASE_CONNECTION'],
 };

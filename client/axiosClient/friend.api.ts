@@ -1,8 +1,5 @@
-import { IAuthFormData, IRegistertFormData } from "../type/auth.interface";
-import { apiClient, getToken } from "./index";
+import { apiClient } from "./index";
 import { IApiResponse } from "../type/apiResponse.interface";
-import { AxiosRequestConfig } from "axios";
-import { FriendStatus } from "../type/friendStatus.enum";
 
 export const checkFriendStatus = async (
   userId: string,
@@ -14,7 +11,7 @@ export const checkFriendStatus = async (
     },
   });
 export const handleFriendRequest = async (
-  requestId: string,
+  requestId: string | undefined,
   status: string,
   token: string
 ): Promise<IApiResponse> =>
@@ -41,30 +38,77 @@ export const handleAddNewFriend = async (
     }
   );
 
-export const getPendingRequests = async (token: string): Promise<IApiResponse> =>
-  apiClient.get(
-    `/friends/pending`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-export const getWaitingRequests = async (token: string): Promise<IApiResponse> =>
-  apiClient.get(
-    `/friends/waiting`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+export const getPendingRequests = async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends/pending`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+export const getWaitingRequests = async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends/waiting`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 export const unfriend = async (
   friendId: string,
   token: string
 ): Promise<IApiResponse> =>
-  apiClient.post(`/friends/unfriend`,{friendId: friendId}, {
+  apiClient.put(
+    `/friends/unfriend`,
+    { friendId: friendId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+export const cancelRequest = async (
+  requestId: string | undefined,
+  token: string
+): Promise<IApiResponse> =>
+  await apiClient.delete(`/friends/${requestId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getAllSystemRecommendedFriends = async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends/recommend`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getAllFriends= async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getAllWaitingForAcceptRequest = async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends/waiting`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getAllWaitingForResponse = async (
+  token: string
+): Promise<IApiResponse> =>
+  apiClient.get(`/friends/pending`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

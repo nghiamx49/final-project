@@ -25,7 +25,7 @@ export class EmailUtil {
          });
         let info = await this.transporter.sendMail({
           from: process.env.SMTP_USER,
-          subject: "",
+          subject: "Your Reset Password OTP",
           ...options,
         });
         console.log('Message sent: %s', info.messageId);

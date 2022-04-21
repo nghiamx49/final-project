@@ -41,6 +41,7 @@ div::-webkit-scrollbar-thumb:hover {
   animation: fade-background .2s linear alternate;
 }
 
+
 @keyframes fade-background {
   from {background-color: rgba(37, 36, 37, 0.5)}
   to {background-color: inherit}

@@ -1,7 +1,9 @@
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FriendRequest_Status } from 'src/interface/status.interface';
+import { FriendListRepository } from 'src/repository/friendList.repository';
 import { FriendRequestRepository } from 'src/repository/friendRequest.repository';
 import { UserRepository } from 'src/repository/user.repository';
+import { FriendListDocument } from 'src/schemas/friendList.schema';
 import { FriendRequestDocument } from 'src/schemas/friendRequest.schema';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserResponseDto } from '../auth/dto/user.dto';
@@ -12,23 +14,27 @@ export class FriendService {
   constructor(
     private readonly friendRepository: FriendRequestRepository,
     private readonly userRepository: UserRepository,
+    private readonly friendListRepository: FriendListRepository,
   ) {}
 
   async sendNewFriendRequest(
     senderId: string,
     receiverId: string,
   ): Promise<void> {
-    const checkExisting: FriendRequestDocument = await this.friendRepository.findOne({
-      sender: senderId,
-      receiver: receiverId,
-    });
+    const checkExisting: FriendRequestDocument =
+      await this.friendRepository.findOne({
+        sender: senderId,
+        receiver: receiverId,
+      });
     if (
       checkExisting &&
       checkExisting.status === FriendRequest_Status.PENDING
     ) {
       throw new Error('You already send one');
     } else {
-      const sender: UserDocument = await this.userRepository.findOne({ _id: senderId });
+      const sender: UserDocument = await this.userRepository.findOne({
+        _id: senderId,
+      });
       const receiver: UserDocument = await this.userRepository.findOne({
         _id: receiverId,
       });
@@ -44,30 +50,32 @@ export class FriendService {
     userId: string,
     targetUserId: string,
   ): Promise<StatusChecking> {
-    let sender = await this.userRepository.findOne({ _id: userId });
-    let receiver = await this.userRepository.findOne({ _id: targetUserId });
-    let checkIfExisted: FriendRequestDocument = await this.friendRepository.findOne({
-      sender: sender,
-      receiver: receiver,
-    });
-    if(!checkIfExisted) {
+    let senderFriendList: FriendListDocument =
+      await this.friendListRepository.findOne({ user: userId });
+    let receiverFriendList: FriendListDocument =
+      await this.friendListRepository.findOne({ user: targetUserId });
+    let checkIfExisted: FriendRequestDocument =
+      await this.friendRepository.findOne({
+        sender: userId,
+        receiver: targetUserId,
+      });
+    if (!checkIfExisted) {
       checkIfExisted = await this.friendRepository.findOne({
-        sender: receiver,
-        receiver: sender,
+        sender: targetUserId,
+        receiver: userId,
       });
     }
     const checkFriend: UserDocument = await this.userRepository.findOne({
       _id: userId,
     });
-    checkFriend.populate('allFriends')
     const targetUser: UserDocument = await this.userRepository.findOne({
       _id: targetUserId,
     });
     if (
-      checkFriend.allFriends.filter(
+      senderFriendList.allFriends.filter(
         (user) => user._id.toString() === targetUser._id.toString(),
       ).length > 0 &&
-      targetUser.allFriends.filter(
+      receiverFriendList.allFriends.filter(
         (user) => user._id.toString() === checkFriend._id.toString(),
       ).length > 0
     ) {
@@ -79,9 +87,14 @@ export class FriendService {
       );
     }
     if (checkIfExisted) {
-      return new StatusChecking(checkIfExisted.status, checkIfExisted.sender._id.toString(), checkIfExisted.receiver._id.toString(), checkIfExisted._id.toString());
+      return new StatusChecking(
+        checkIfExisted.status,
+        checkIfExisted.sender._id.toString(),
+        checkIfExisted.receiver._id.toString(),
+        checkIfExisted._id.toString(),
+      );
     } else {
-      return new StatusChecking(FriendRequest_Status.NOT_SENT, "", "", "");
+      return new StatusChecking(FriendRequest_Status.NOT_SENT, '', '', '');
     }
   }
 
@@ -91,12 +104,16 @@ export class FriendService {
       await this.friendRepository.find({
         sender: sender,
         status: FriendRequest_Status.PENDING,
-      });
-    const listWaitingForResponse: UserResponseDto[] = allSentFriendRequests.map(
-      (item: FriendRequestDocument): UserResponseDto =>
-        new UserResponseDto(item.receiver),
+      }, null, {populate: 'sender receiver', sort: {createdAt: -1}});
+    const listWaitingForResponse: Promise<UserResponseDto>[] = allSentFriendRequests.map(
+      async (item: FriendRequestDocument): Promise<UserResponseDto> =>
+        {const checkStatus = await this.checkCurrentFriendStatus(
+            userId,
+            item.receiver._id.toString(),
+          );
+        return new UserResponseDto(item.receiver, item._id.toString(), checkStatus);}
     );
-    return listWaitingForResponse;
+    return Promise.all(listWaitingForResponse);
   }
 
   async getAllReceivedFriendRequests(
@@ -107,73 +124,131 @@ export class FriendService {
       await this.friendRepository.find({
         receiver: receiver,
         status: FriendRequest_Status.PENDING,
-      });
-    const listWaitingForAccept: UserResponseDto[] = allSentFriendRequests.map(
-      (item: FriendRequestDocument): UserResponseDto =>
-        new UserResponseDto(item.sender),
-    );
-    return listWaitingForAccept;
+      }, null, {populate: 'sender receiver', sort: {createdAt: -1}});
+    const listWaitingForAccept: Promise<UserResponseDto>[] =
+      allSentFriendRequests.map(
+        async (item: FriendRequestDocument): Promise<UserResponseDto> => {
+          const checkStatus = await this.checkCurrentFriendStatus(
+            userId,
+            item.sender._id.toString(),
+          );
+          return new UserResponseDto(item.sender,item._id.toString(), checkStatus);
+        },
+      );
+    return Promise.all(listWaitingForAccept);
   }
 
   async getAllUserFriends(userId: string): Promise<UserResponseDto[]> {
     try {
-      const userInDB: UserDocument = await await this.userRepository.findOne({
-        _id: userId,
-      });
-      const allFriendsOfUser: Promise<UserResponseDto>[] =
-        userInDB.allFriends.map(
-          async (user) =>
-            new UserResponseDto(
-              await this.userRepository.findOne({ _id: user }),
-            ),
+      const userFriendList: FriendListDocument =
+        await this.friendListRepository.findOne({
+          user: userId,
+        });
+      await userFriendList.populate('allFriends');
+      const response =
+        userFriendList.allFriends.map(
+          async (user: UserDocument): Promise<UserResponseDto> => {
+            const friendStatus = await this.checkCurrentFriendStatus(
+              userId,
+              user._id.toString(),
+            );
+            return new UserResponseDto(user,null, friendStatus);
+          },
         );
-      const response: UserResponseDto[] = await Promise.all(allFriendsOfUser);
-      return response;
+      return await Promise.all(response);
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error);
     }
   }
 
-  async handleFriendRequest(userId: string, requestId:string ,status: string): Promise<void> {
-    const user = await this.userRepository.findOne({_id: userId});
-    const checkRoleInRequest = await this.friendRepository.findOne({_id: requestId});
-    if(checkRoleInRequest.sender._id.toString() === userId) {
-      throw new Error("You cannot resolve this request");
-    }
-    else {
-      if(status === FriendRequest_Status.ACCEPTED) {
-        const sender: UserDocument = await this.userRepository.findOne({_id: checkRoleInRequest?.sender?._id});
-        let listReceiverFriend: UserDocument[] = user.allFriends;
-        listReceiverFriend.push(sender);
-        let listSenderFriend: UserDocument[] = sender.allFriends;
-        listSenderFriend.push(user);
-        await this.userRepository.findOneAndUpdate(
-          { _id: sender._id },
-          { allFriends: listSenderFriend},
+  async handleFriendRequest(
+    userId: string,
+    requestId: string,
+    status: string,
+  ): Promise<void> {
+    const user = await this.userRepository.findOne({ _id: userId });
+    const checkRoleInRequest = await this.friendRepository.findOne({
+      _id: requestId,
+    });
+    if (checkRoleInRequest.sender._id.toString() === userId) {
+      throw new Error('You cannot resolve this request');
+    } else {
+      if (status === FriendRequest_Status.ACCEPTED) {
+        const sender: UserDocument = await this.userRepository.findOne({
+          _id: checkRoleInRequest?.sender?._id,
+        });
+        let listReceiverFriend: FriendListDocument =
+          await this.friendListRepository.findOne({
+            user: userId,
+          });
+        listReceiverFriend.allFriends.push(sender);
+        let listSenderFriend: FriendListDocument =
+          await this.friendListRepository.findOne({ user: sender._id });
+        listSenderFriend.allFriends.push(user);
+        await this.friendListRepository.findOneAndUpdate(
+          { _id: listSenderFriend._id },
+          { allFriends: listSenderFriend.allFriends },
         );
-        await this.userRepository.findOneAndUpdate(
-          { _id: userId },
-          { allFriends: listReceiverFriend },
+        await this.friendListRepository.findOneAndUpdate(
+          { _id: listReceiverFriend._id },
+          { allFriends: listReceiverFriend.allFriends },
         );
-        await this.friendRepository.findOneAndDelete({_id: requestId});
-      }
-      else if (status === FriendRequest_Status.DECLIEND) {
-        await this.friendRepository.findOneAndUpdate({_id: requestId}, {status});
-      }
-      else {
-        throw new Error("Status not valid")
+        await this.friendRepository.findOneAndDelete({ _id: requestId });
+      } else if (status === FriendRequest_Status.DECLIEND) {
+        await this.friendRepository.findOneAndUpdate(
+          { _id: requestId },
+          { status },
+        );
+      } else {
+        throw new Error('Status not valid');
       }
     }
   }
 
   async handleUnfriend(userId: string, friendId: string): Promise<void> {
-    const user: UserDocument = await this.userRepository.findOne({_id: userId});
-    const friend: UserDocument = await this.userRepository.findOne({_id: friendId});
-    let userListFriend: UserDocument[] = user.allFriends;
-    let friendListFriend: UserDocument[] = friend.allFriends;
-    userListFriend = userListFriend.filter((item) => item._id.toString() !== friendId);
-    friendListFriend = friendListFriend.filter(item => item._id.toString() !== userId);
-    await this.userRepository.findOneAndUpdate({_id: userId}, {allFriends: userListFriend});
-    await this.userRepository.findOneAndUpdate({_id: friendId}, {allFriends: friendListFriend});
+    let userListFriend: FriendListDocument =
+      await this.friendListRepository.findOne({ user: userId });
+    let friendListFriend: FriendListDocument =
+      await this.friendListRepository.findOne({ user: friendId });
+    let updateUserListFriend: UserDocument[] = userListFriend.allFriends.filter(
+      (item) => item._id.toString() !== friendId,
+    );
+    let updateFriendListFriend: UserDocument[] =
+      friendListFriend.allFriends.filter(
+        (item) => item._id.toString() !== userId,
+      );
+    await this.friendListRepository.findOneAndUpdate(
+      { _id: userListFriend._id },
+      { allFriends: updateUserListFriend },
+    );
+    await this.friendListRepository.findOneAndUpdate(
+      { _id: friendListFriend._id },
+      { allFriends: updateFriendListFriend },
+    );
+  }
+
+  async handleCancelRequest(requestId: string): Promise<void> {
+    await this.friendRepository.findOneAndDelete({
+      _id: requestId,
+    });
+  }
+
+  async getRecommendFriends(userId: string): Promise<UserResponseDto[]> {
+    const allUserInDb: UserDocument[] = await this.userRepository.find(
+      { _id: { $ne: userId } },
+      null,
+      { sort: { createdAt: -1 } },
+    );
+    const responseDto = await Promise.all(
+      allUserInDb.map(async (user) => {
+        const checkFriendStatus: StatusChecking =
+          await this.checkCurrentFriendStatus(userId, user._id.toString());
+        return new UserResponseDto(user, null, checkFriendStatus);
+      }),
+    );
+    return responseDto.filter(
+      (user: UserResponseDto) =>
+        user.friendStatus.status === FriendRequest_Status.NOT_SENT,
+    );
   }
 }
