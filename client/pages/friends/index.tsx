@@ -54,8 +54,8 @@ const Friends: NextPage<PageProps> = ({ authenticateReducer }) => {
       </Row>
       <Row fluid>
         <Grid.Container gap={1}>
-          {allFriends?.map((user: IUser): any => (
-            <FriendItem user={user} unfriendHandler={() => handleUnfriend(user)} />
+          {allFriends?.map((user: IUser, index): any => (
+            <FriendItem key={index} user={user} unfriendHandler={() => handleUnfriend(user)} />
           ))}
         </Grid.Container>
       </Row>

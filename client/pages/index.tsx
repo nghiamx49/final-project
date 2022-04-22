@@ -38,8 +38,8 @@ useEffect(() => {loadNewFeed()}, [loadNewFeed])
       </Head>
       <Container fluid xs css={{ margin: "auto" }}>
         <CreatePost user={user} reload={loadNewFeed} token={token} />
-        {allPosts.map((item) => (
-          <FeedItem item={item} currentUser={user} token={token} />
+        {allPosts.map((item, index) => (
+          <FeedItem key={index} item={item} currentUser={user} token={token} />
         ))}
       </Container>
     </>

@@ -27,8 +27,8 @@ const SideBarNewFeed: FC = () => {
         overflowX: "hidden",
       }}
     >
-      {sideBarRoute.map(({ icon: Icon, title, link }) => (
-        <SideBarItem Icon={Icon} title={title} link={link} />
+      {sideBarRoute.map(({ icon: Icon, title, link }, index) => (
+        <SideBarItem key={index} Icon={Icon} title={title} link={link} />
       ))}
       <Spacer y={1} />
       <Divider height={3} />

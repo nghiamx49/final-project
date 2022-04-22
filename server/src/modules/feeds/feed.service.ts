@@ -52,12 +52,18 @@ export class FeedService {
       },
       null,
       {
-        sort: { createdAt: -1 },
         populate: [
           { path: 'author' },
-          { path: 'comments', populate: { path: 'author' } },
+          {
+            path: 'comments',
+            populate: [
+              { path: 'author' },
+              { path: 'replies', populate: { path: 'author' } },
+            ],
+          },
           { path: 'reactions', populate: { path: 'reactionBy' } },
         ],
+        sort: { createdAt: -1 },
       },
     );
     return allOwnPosts.map((post: FeedDocument): FeedDto => new FeedDto(post));
@@ -173,6 +179,19 @@ export class FeedService {
       { _id: postId },
       { reactions: updatedReactions },
     );
+    const allReactions = await this.reactionRepository.find(
+      { postId: postId },
+      null,
+      { populate: 'reactionBy' },
+    );
+    return allReactions.map((reaction) => new ReactionDto(reaction));
+  }
+
+  async removeReaction(
+    postId: string,
+    reactionId: string,
+  ): Promise<ReactionDto[]> {
+    await this.reactionRepository.findOneAndDelete({ _id: reactionId });
     const allReactions = await this.reactionRepository.find(
       { postId: postId },
       null,

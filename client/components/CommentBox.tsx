@@ -69,9 +69,11 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
                 }}
               >
                 <Tooltip
-                  placement="topEnd"
+                  placement="bottomEnd"
+                  hideArrow
                   css={{
                     width: "fit-content",
+                    marginTop: -80,
                   }}
                   content={
                     <NimblePicker

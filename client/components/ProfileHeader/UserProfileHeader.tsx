@@ -377,8 +377,8 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                       .length || undefined
                   }
                 >
-                  {profile?.allFriends?.slice(0, 5).map((friend) => (
-                    <Link href={`/profile/${friend?.username || friend._id}`}>
+                  {profile?.allFriends?.slice(0, 5).map((friend, index) => (
+                    <Link key={index} href={`/profile/${friend?.username || friend._id}`}>
                       <Avatar
                         src={friend?.avatar || "/images/default_avt.jpg"}
                         pointer

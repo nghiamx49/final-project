@@ -59,8 +59,9 @@ const RecommendFriends: NextPage<PageProps> = ({ authenticateReducer }) => {
       </Row>
       <Row fluid>
         <Grid.Container gap={1}>
-          {allFriends?.map((user: IUser): any => (
+          {allFriends?.map((user: IUser, index): any => (
             <FriendItem
+            key={index}
               user={user}
               addFriendHandler={(e) => handleAddFriend(e, user)}
             />

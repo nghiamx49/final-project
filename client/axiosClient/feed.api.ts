@@ -78,3 +78,17 @@ export const reactToPost = async (
       },
     }
   );
+
+export const removeReaction = async (
+  token: string,
+  postId: string,
+  reactionId: string
+): Promise<IApiResponse> =>
+  await apiClient.delete(
+    `/feeds/posts/${postId}/reaction/${reactionId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );

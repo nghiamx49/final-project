@@ -1,12 +1,15 @@
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 
 interface IconProps {
   size: string;
+  onClick?: MouseEventHandler<SVGSVGElement>;
 }
 
-const HahaIcon: FC<IconProps> = ({size}) => {
+const HahaIcon: FC<IconProps> = ({size, onClick}) => {
     return (
       <svg
+        name="Haha"
+        onClick={onClick}
         cursor="pointer"
         xmlns="http://www.w3.org/2000/svg"
         width={size}

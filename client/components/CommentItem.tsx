@@ -6,6 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { IUser } from "../store/interface/user.interface";
 import CommentBox from "./CommentBox";
 import { FaShare } from "react-icons/fa";
+import Link from "next/link";
 interface Props {
   comment: IComment;
   currentUser: IUser;
@@ -32,11 +33,18 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
         <Row>
           <Grid.Container gap={2}>
             <Grid xs={1}>
-              <Avatar
-                bordered
-                color="primary"
-                src={comment.author.avatar || "/images/default_avt.jpg"}
-              />
+              <Link
+                href={`/profile/${
+                  comment.author?.username || comment.author?._id
+                }`}
+              >
+                <Avatar
+                  bordered
+                  color="primary"
+                  src={comment.author.avatar || "/images/default_avt.jpg"}
+                  css={{ cursor: "pointer" }}
+                />
+              </Link>
             </Grid>
             <Grid
               xs={11}
@@ -54,7 +62,15 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                   borderRadius: 10,
                 }}
               >
-                <Text b>{comment.author.fullname}</Text>
+                <Link
+                  href={`/profile/${
+                    comment.author?.username || comment.author?._id
+                  }`}
+                >
+                  <Text b css={{ cursor: "pointer" }}>
+                    {comment.author.fullname}
+                  </Text>
+                </Link>
                 <Text>{comment.content}</Text>
               </Container>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -88,21 +104,27 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
               justifyContent: "flex-start",
             }}
           >
-            <Text css={{ cursor: "pointer" }} onClick={toggle}>
+            <Text css={{ cursor: "pointer" }} onClick={toggle} b>
               <FaShare size={10} /> {showAll ? "Hidden" : "All Replies"}
             </Text>
           </Row>
         )}
         {showAll
-          ? replies.map((item) => (
-              <Row css={{ paddingLeft: 50 }}>
+          ? replies.map((item, index) => (
+              <Row key={index} css={{ paddingLeft: 50 }}>
                 <Grid.Container gap={2}>
                   <Grid xs={1}>
-                    <Avatar
-                      bordered
-                      color="primary"
-                      src={item.author.avatar || "/images/default_avt.jpg"}
-                    />
+                    <Link
+                      href={`/profile/${
+                        item.author?.username || item.author?._id
+                      }`}
+                    >
+                      <Avatar
+                        bordered
+                        color="primary"
+                        src={item.author.avatar || "/images/default_avt.jpg"}
+                      />
+                    </Link>
                   </Grid>
                   <Grid
                     xs={11}
@@ -120,7 +142,14 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                         borderRadius: 10,
                       }}
                     >
-                      <Text b>{item.author.fullname}</Text>
+                      <Link
+                        href={`/profile/${
+                          item.author?.username || item.author?._id
+                        }`}
+                      >
+                        <Text b>{item.author.fullname}</Text>
+                      </Link>
+
                       <Text>{item.content}</Text>
                     </Container>
                     <div
@@ -134,19 +163,29 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                 </Grid.Container>
               </Row>
             ))
-          : replies.slice(-1).map((item) => (
-              <Row css={{ paddingLeft: 50 }}>
+          : replies.slice(-1).map((item, index) => (
+              <Row key={index} css={{ paddingLeft: 50 }}>
                 <Grid.Container gap={2}>
                   <Grid xs={1}>
-                    <Avatar
-                      bordered
-                      color="primary"
-                      src={item.author.avatar || "/images/default_avt.jpg"}
-                    />
+                    <Link
+                      href={`/profile/${
+                        item.author?.username || item.author?._id
+                      }`}
+                    >
+                      <Avatar
+                        css={{ cursor: "pointer" }}
+                        bordered
+                        color="primary"
+                        src={item.author.avatar || "/images/default_avt.jpg"}
+                      />
+                    </Link>
                   </Grid>
                   <Grid
                     xs={11}
-                    css={{ display: "flex", flexDirection: "column" }}
+                    css={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
                   >
                     <Container
                       css={{
@@ -157,7 +196,16 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                         borderRadius: 10,
                       }}
                     >
-                      <Text b>{item.author.fullname}</Text>
+                      <Link
+                        href={`/profile/${
+                          item.author?.username || item.author?._id
+                        }`}
+                      >
+                        <Text css={{ cursor: "pointer" }} b>
+                          {item.author.fullname}
+                        </Text>
+                      </Link>
+
                       <Text>{item.content}</Text>
                     </Container>
                     <div

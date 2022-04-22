@@ -1,11 +1,14 @@
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 interface IconProps {
   size: string;
+  onClick?: MouseEventHandler<SVGSVGElement>;
 }
 
-export const AngryIcon: FC<IconProps> = ({size}) => {
+export const AngryIcon: FC<IconProps> = ({size, onClick}) => {
     return (
       <svg
+        name="Angry"
+        onClick={onClick}
         cursor="pointer"
         xmlns="http://www.w3.org/2000/svg"
         width={size}

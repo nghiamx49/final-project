@@ -10,17 +10,20 @@ import {
   Text,
   Divider,
   Button,
-  Tooltip,
+  Image,
+  Loading
 } from "@nextui-org/react";
 import { ChangeEvent, FC, SyntheticEvent, useRef, useState } from "react";
 import { IUser } from "../store/interface/user.interface";
-import {FaImage, FaSmile} from 'react-icons/fa';
+import {FaImage, FaSmile,} from 'react-icons/fa';
+import {AiFillCloseCircle} from 'react-icons/ai';
 import "emoji-mart/css/emoji-mart.css";
 import {NimblePicker, BaseEmoji} from "emoji-mart";
 import data from 'emoji-mart/data/facebook.json'
 import { ICreateFeed } from "../interface/feedItem.interface";
 import { createdPost } from "../axiosClient/feed.api";
 import { toast } from "react-toastify";
+import { uploader } from "../axiosClient/cloudinary.api";
 
 
 interface Props {
@@ -36,7 +39,12 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
       content: "",
       contentMedia: []
   });
-const [pickerShow, setPickerShow] = useState<boolean>(false);
+  const [pickerShow, setPickerShow] = useState<boolean>(false);
+  const [files, setFiles] = useState<any>([]);
+  const [previewList, setPreviewList] = useState<string[]>([]);
+
+  const [waiting, setWaiting] = useState<boolean>(false);
+
 
   const onClose = () => {setPickerShow(false);setOpen(false)};
   const onOpen = () => setOpen(true);
@@ -51,15 +59,59 @@ const [pickerShow, setPickerShow] = useState<boolean>(false);
 
   const handleSubmit = async (e: SyntheticEvent) => {
       e.preventDefault();
-      const {status} = await createdPost(token, formData);
-      if(status === 201) {
-          toast.success('Your post had been created');
+      setWaiting(true);
+      if(files.length > 0) {
+        const result = files.map(async (file: any) => {
+          const uploadFormData = new FormData();
+          uploadFormData.append("file", file);
+          uploadFormData.append("api_key", "981384291441175");
+          uploadFormData.append("upload_preset", "kck9kpuk");
+           const { data, status } = await uploader(uploadFormData);
+           if(status === 200) {
+            return { mediaType: "image", mediaUrl: data.url };
+           }
+        })
+        const contentFromCloud = await Promise.all(result);
+        const { status } = await createdPost(token, {
+          ...formData,
+          contentMedia: contentFromCloud,
+        });
+        if (status === 201) {
+          toast.success("Your post had been created");
+          setWaiting(false);
           onClose();
+          return;
+        }
       }
+      else {
+        const { status } = await createdPost(token, formData);
+        if (status === 201) {
+          toast.success("Your post had been created");
+          setWaiting(false);
+          onClose();
+          return;
+        }
+      }
+  }
+
+  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const arrayFiles =  e.target?.files && Array.from(e.target.files);
+    e.target?.files && setFiles([...files, ...Array.from(e.target.files)]);
+    const previewFileLists = arrayFiles?.map(item => URL.createObjectURL(item));
+    previewFileLists && setPreviewList([...previewList, ...previewFileLists]);
+  }
+
+  const clearFiles = () => {
+    setFiles([]);
+    setPreviewList([]);
   }
 
   return (
     <>
+      <Modal preventClose open={waiting} blur style={{backgroundColor: 'transparent'}}>
+        <Loading size="xl" />
+        <Text b h3>Uploading...</Text>
+      </Modal>
       <Modal
         closeButton
         onClose={onClose}
@@ -109,7 +161,7 @@ const [pickerShow, setPickerShow] = useState<boolean>(false);
                 position: "relative",
                 display: "flex",
                 alignItems: "flex-start",
-                justifyContent: 'center'
+                justifyContent: "center",
               }}
             >
               <FaSmile
@@ -128,6 +180,42 @@ const [pickerShow, setPickerShow] = useState<boolean>(false);
                 }}
               />
             </Grid>
+            {previewList.length > 0 && (
+              <Grid xs={12}>
+                <Card css={{ position: "relative" }} cover>
+                  <Card.Header
+                    css={{
+                      position: "absolute",
+                      zIndex: 10,
+                      top: 5,
+                      right: 0,
+                      width: "fit-content",
+                    }}
+                  >
+                    <AiFillCloseCircle
+                      onClick={clearFiles}
+                      color="#444"
+                      size={30}
+                      cursor="pointer"
+                    />
+                  </Card.Header>
+                  <Card.Body>
+                    <Grid.Container gap={1}>
+                      {previewList.map((previewImage, index) => (
+                        <Grid key={index} xs={6}>
+                          <Image
+                            width="100%"
+                            height="100%"
+                            objectFit="cover"
+                            src={previewImage}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid.Container>
+                  </Card.Body>
+                </Card>
+              </Grid>
+            )}
           </Grid.Container>
         </Modal.Body>
         <Modal.Footer>
@@ -141,16 +229,35 @@ const [pickerShow, setPickerShow] = useState<boolean>(false);
                 cursor: "pointer",
               }}
             >
-              <FaImage size={30} />
-              <Text b>Image/Video</Text>
+              <input
+                id="upload"
+                type="file"
+                accept=".jpeg,.png,.jpg"
+                style={{ display: "none" }}
+                onChange={onFileChange}
+                multiple={true}
+              />
+              <label
+                htmlFor="upload"
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  alignItems: "center",
+                  gap: 10,
+                  cursor: "pointer",
+                }}
+              >
+                <FaImage size={30} />
+                <Text b>
+                  Image
+                </Text>
+              </label>
             </Row>
             <Spacer y={0.5} />
             <Row>
               <Button
                 onClick={handleSubmit}
-                disabled={
-                  !formData.content.length && !formData.contentMedia?.length
-                }
+                disabled={!formData.content.length && !files.length}
                 css={{ width: "100%" }}
               >
                 Create

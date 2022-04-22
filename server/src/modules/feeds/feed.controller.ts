@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
@@ -83,6 +84,23 @@ export class FeedController {
     }
   }
 
+  @Delete('/posts/:postId/reaction/:reactionId')
+  async removeReaction(
+    @Req() req,
+    @Param('postId') postId: string,
+    @Param('reactionId') reactionId: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    try {
+      const reactions = await this.feedService.removeReaction(
+      postId,
+      reactionId
+      );
+      response.status(HttpStatus.OK).json({ data: reactions });
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    }
+  }
   @Post('/posts/:postId/:commentId')
   async replyCommentOnPost(
     @Req() req,

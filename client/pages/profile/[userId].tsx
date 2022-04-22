@@ -171,8 +171,8 @@ const Profile: NextPage<PropfileProps> = ({
               </Card.Header>
               <Card.Body>
                 <Grid.Container gap={2}>
-                  {profile?.allFriends?.map((user: IUser): any => (
-                    <Grid xs={4}>
+                  {profile?.allFriends?.map((user: IUser, index): any => (
+                    <Grid key={index} xs={4}>
                       <NextLink
                         href={`/profile/${user?.username || user?._id}`}
                       >
@@ -202,9 +202,9 @@ const Profile: NextPage<PropfileProps> = ({
           </Grid>
           <Grid xs={7}>
             <Container fluid xs>
-              <CreatePost user={user} />
+              <CreatePost user={user} token={token} />
               {allPosts.map((item, index) => (
-                <FeedItem item={item} currentUser={user} />
+                <FeedItem key={index} item={item} currentUser={user} token={token} />
               ))}
             </Container>
           </Grid>
