@@ -30,17 +30,6 @@ div::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
 
-.fixed-navbar {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-  background-color: transparent;
-  backdrop-filter: blur(100px);
-  z-index: 9999;
-  animation: fade-background .2s linear alternate;
-}
-
 .slider-custom {
   width: '100%';
   position: relative;

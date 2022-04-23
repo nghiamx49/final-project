@@ -16,6 +16,8 @@ export interface UserDocument extends Document {
   avatar: string;
   cover: string;
   isVerify: boolean;
+  isOnline: boolean;
+  socketId: string;
 }
 
 export const User = new Schema({
@@ -29,5 +31,7 @@ export const User = new Schema({
   role: { type: String, enum: ['Admin', 'User'], default: 'User' },
   avatar: String,
   cover: String,
-  isVerify: {type: Boolean, default: false}
+  isVerify: {type: Boolean, default: false},
+  isOnline: {type: Boolean, default: false},
+  socketId: String
 }, {timestamps: true});

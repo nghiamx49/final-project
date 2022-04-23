@@ -204,7 +204,7 @@ const Profile: NextPage<PropfileProps> = ({
             <Container fluid xs>
               <CreatePost user={user} token={token} />
               {allPosts.map((item, index) => (
-                <FeedItem key={index} item={item} currentUser={user} token={token} />
+                <FeedItem key={item._id} item={item} currentUser={user} token={token} />
               ))}
             </Container>
           </Grid>

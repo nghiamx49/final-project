@@ -9,6 +9,8 @@ async function startup() {
   const configService = app.get(ConfigService);
   const PORT = configService.get('PORT');
   app.use(morgan('dev'));
-  await app.listen(PORT);
+  await app.listen(PORT, () => {
+    console.log(`Server up : ${PORT}`)
+  });
 }
 startup();

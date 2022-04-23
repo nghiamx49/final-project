@@ -16,4 +16,6 @@ export interface IUser {
   friendStatus: CheckingStatus;
   _id: string;
   requestId?: string;
+  socketId?: string;
+  isOnline?: boolean;
 }

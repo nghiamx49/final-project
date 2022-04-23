@@ -16,6 +16,8 @@ export class UserResponseDto extends UserBaseDto {
     this.cover = userModel.cover;
     this.username = userModel.username;
     this.allFriends = friendList;
+    this.isOnline = userModel.isOnline;
+    this.socketId = userModel.socketId;
   }
   _id: string;
   role: string;
@@ -28,6 +30,8 @@ export class UserResponseDto extends UserBaseDto {
   cover?: string;
   username?: string;
   allFriends?: UserResponseDto[];
+  isOnline: boolean;
+  socketId: string;
 }
 
 

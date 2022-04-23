@@ -101,7 +101,7 @@ export const AngryIcon: FC<IconProps> = ({size, onClick}) => {
             height="3.5"
             x="4.2"
             y="12.5"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
             <feFlood floodOpacity="0" result="BackgroundImageFix" />
@@ -125,7 +125,7 @@ export const AngryIcon: FC<IconProps> = ({size, onClick}) => {
             height="2.6"
             x="3.6"
             y="8.4"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
             <feFlood floodOpacity="0" result="BackgroundImageFix" />
@@ -151,7 +151,7 @@ export const AngryIcon: FC<IconProps> = ({size, onClick}) => {
             height="2.834"
             x="2.4"
             y="7"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
             <feFlood floodOpacity="0" result="BackgroundImageFix" />

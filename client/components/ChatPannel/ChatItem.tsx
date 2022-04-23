@@ -1,20 +1,27 @@
 import { Avatar, Container, Link, Spacer, Text } from "@nextui-org/react";
-import { FC } from "react";
+import { FC, SyntheticEvent, useContext } from "react";
+import { ChatWidgetContext } from "../../hocs/ChatWidgetContext";
 import { IUser } from "../../store/interface/user.interface";
 
 interface ChatItemProps {
   user: IUser;
-  key: number;
 }
 
-const ChatItem: FC<ChatItemProps> = ({ user, key }) => {
+const ChatItem: FC<ChatItemProps> = ({ user }) => {
+  const {setOpen, setFriend} = useContext(ChatWidgetContext);
+
+  const onItemClick = () => {
+    setFriend && setFriend(user);
+    setOpen && setOpen(true);
+  }
+
   return (
     <>
       <Link
-        key={key}
+        onClick={onItemClick}
         block
         css={{
-          display: 'flex',
+          display: "flex",
           width: "100%",
           justifyContent: "flex-start",
           margin: 0,
@@ -25,22 +32,42 @@ const ChatItem: FC<ChatItemProps> = ({ user, key }) => {
         }}
         className="chat-items"
       >
-        <div style={{ position: "relative"}}>
-          <Avatar pointer bordered color="primary" src={user?.avatar || '/images/default_avt.jpg'} />
-          {/* {user.isOnline && (
+        <div style={{ position: "relative" }}>
+          <Avatar
+            pointer
+            bordered
+            color="primary"
+            src={user?.avatar || "/images/default_avt.jpg"}
+          />
+          {user.isOnline ? (
             <span
               style={{
-                position: 'absolute',
-                width: 10,
-                height: 10,
-                backgroundColor: "green",
+                position: "absolute",
+                width: 12,
+                height: 12,
+                backgroundColor: "#17c964",
                 zIndex: 100,
-                borderRadius: '100%',
+                borderRadius: "100%",
                 right: 0,
-                bottom: 3
+                bottom: 3,
+                border: "1px solid gray",
               }}
             ></span>
-          )} */}
+          ) : (
+            <span
+              style={{
+                position: "absolute",
+                width: 12,
+                height: 12,
+                backgroundColor: "gray",
+                zIndex: 100,
+                borderRadius: "100%",
+                right: 0,
+                bottom: 3,
+                border: "1px solid gray",
+              }}
+            ></span>
+          )}
         </div>
         <Text h5>{user.fullname}</Text>
       </Link>

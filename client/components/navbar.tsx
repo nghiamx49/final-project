@@ -8,7 +8,7 @@ import {
   Input,
   Tooltip,
 } from "@nextui-org/react";
-import { FC } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -30,6 +30,11 @@ import {
 import { IconType } from "react-icons";
 import DropdownTooltip from "./DropDownToolTip";
 import Badge from "./badge";
+import ConservationContainer from "./Conservation/ConservationContainer";
+import { IConservation } from "../type/conservation.interface";
+import { getAllConservations, markConservationasRead } from "../axiosClient/chat.api";
+import { IUser } from "../store/interface/user.interface";
+import { ChatWidgetContext } from "../hocs/ChatWidgetContext";
 interface RouterLink {
   link: string;
   title: string;
@@ -61,9 +66,11 @@ const router: Array<RouterLink> = [
 
 const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const { asPath, push } = useRouter();
+  const [conservations, setConservations] = useState<IConservation[]>([]);
 
-  const { isAuthenticated, user } = authenticateReducer;
-
+  const { isAuthenticated, user, token } = authenticateReducer;
+  const {setOpen, setFriend} = useContext(ChatWidgetContext);
+  
   const navigateToLoginPage = (): void => {
     push("/login");
   };
@@ -71,6 +78,33 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const navigateToRegisterPage = (): void => {
     push("/register");
   };
+
+  const loadAllConservation = useCallback(async () => {
+    if(isAuthenticated) {
+          const { data, status } = await getAllConservations(token);
+          if (status === 200) {
+            setConservations(data.data);
+          }
+    }
+  }, [token, isAuthenticated]);
+
+  const markAsRead = async (conservationId: string, isRead: boolean, friend: IUser) => {
+   if(!isRead) {
+      const { data, status } = await markConservationasRead(
+        token,
+        conservationId
+      );
+      if(status === 200) {
+        setConservations(data.data);
+      }
+   }
+   setFriend && setFriend(friend);
+   setOpen && setOpen(true);
+  }
+
+  useEffect(() => {
+    loadAllConservation();
+  }, [loadAllConservation])
 
   const logoutHandler = () => {
     doLogout();
@@ -88,7 +122,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
         backdropFilter: "blur(100px)",
         borderBottom: "1px solid $gray700",
         padding: 0,
-        margin: 0
+        margin: 0,
       }}
       fluid
       xl
@@ -174,16 +208,25 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                     </NextLink>
                   </Grid>
                   <Grid>
-                    <Badge count={5}>
-                      <FaFacebookMessenger
-                        style={{
-                          width: 20,
-                          height: 20,
-                          cursor: "pointer",
-                          color: "#fff",
-                        }}
-                      />
-                    </Badge>
+                    <Tooltip
+                      placement="bottomEnd"
+                      trigger="click"
+                      css={{ width: 300, padding: 0, marginTop: -80 }}
+                      content={
+                        <ConservationContainer onClickHandler={markAsRead} conservations={conservations} currentUser={user} />
+                      }
+                    >
+                      <Badge count={conservations.filter(conservation => conservation.readBy.filter(reader => reader._id !== user._id).length > 0).length || conservations.length}>
+                        <FaFacebookMessenger
+                          style={{
+                            width: 20,
+                            height: 20,
+                            cursor: "pointer",
+                            color: "#fff",
+                          }}
+                        />
+                      </Badge>
+                    </Tooltip>
                   </Grid>
                   <Grid>
                     <Badge count={3}>

@@ -12,13 +12,23 @@ export interface MessageDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
   isStoryReply: boolean;
-  story: StoryDocument;
+  story?: StoryDocument;
+  contentMedia?: Map<string, string>[];
 }
 
-export const Message = new Schema({
-  content: String,
-  sender: {type: Types.ObjectId, ref: 'Users'},
-  reactions: [{type: Types.ObjectId, ref: 'Reactions'}],
-  isStoryReply: {type: Boolean, default: false},
-  story: {type: Types.ObjectId, ref: 'Stories'},
-}, {timestamps: true})
+export const Message = new Schema(
+  {
+    content: String,
+    sender: { type: Types.ObjectId, ref: 'Users' },
+    reactions: [{ type: Types.ObjectId, ref: 'Reactions' }],
+    isStoryReply: { type: Boolean, default: false },
+    story: { type: Types.ObjectId, ref: 'Stories' },
+    contentMedia: [
+      {
+        mediaUrl: String,
+        mediaType: { type: String, enum: ['video', 'image'] },
+      },
+    ],
+  },
+  { timestamps: true },
+);

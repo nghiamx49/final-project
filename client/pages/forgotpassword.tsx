@@ -161,7 +161,6 @@ const ForgotPassword: NextPage = () => {
                   </Row>
                 </Card.Header>
                 <Card.Body>
-                  <Spacer y={3} />
                   {step === 1 ? (
                     <Grid.Container direction="column" alignItems="center">
                       <Grid>

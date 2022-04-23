@@ -42,8 +42,8 @@ const HahaIcon: FC<IconProps> = ({size, onClick}) => {
             y2="16"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FEEA70" />
-            <stop offset="1" stop-color="#F69B30" />
+            <stop stopColor="#FEEA70" />
+            <stop offset="1" stopColor="#F69B30" />
           </linearGradient>
           <linearGradient
             id="haha1_linear"
@@ -53,8 +53,8 @@ const HahaIcon: FC<IconProps> = ({size, onClick}) => {
             y2="14"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#472315" />
-            <stop offset="1" stop-color="#8B3A0E" />
+            <stop stopColor="#472315" />
+            <stop offset="1" stopColor="#8B3A0E" />
           </linearGradient>
           <linearGradient
             id="haha2_linear"
@@ -64,8 +64,8 @@ const HahaIcon: FC<IconProps> = ({size, onClick}) => {
             y2="13.457"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FC607C" />
-            <stop offset="1" stop-color="#D91F3A" />
+            <stop stopColor="#FC607C" />
+            <stop offset="1" stopColor="#D91F3A" />
           </linearGradient>
         </defs>
       </svg>

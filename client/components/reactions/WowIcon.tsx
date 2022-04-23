@@ -15,7 +15,7 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
       fill="none"
       viewBox="0 0 16 16"
     >
-      <g clip-path="url(#clip0)">
+      <g clipPath="url(#clip0)">
         <path
           fill="url(#wow0_linear)"
           d="M16 8C16 10.1217 15.1571 12.1566 13.6569 13.6569C12.1566 15.1571 10.1217 16 8 16C5.87827 16 3.84344 15.1571 2.34315 13.6569C0.842855 12.1566 0 10.1217 0 8C0 5.87827 0.842855 3.84344 2.34315 2.34315C3.84344 0.842855 5.87827 0 8 0C10.1217 0 12.1566 0.842855 13.6569 2.34315C15.1571 3.84344 16 5.87827 16 8"
@@ -56,8 +56,8 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           y2="16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FEEA70" />
-          <stop offset="1" stop-color="#F69B30" />
+          <stop stopColor="#FEEA70" />
+          <stop offset="1" stopColor="#F69B30" />
         </linearGradient>
         <linearGradient
           id="wow1_linear"
@@ -67,8 +67,8 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           y2="14"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#472315" />
-          <stop offset="1" stop-color="#8B3A0E" />
+          <stop stopColor="#472315" />
+          <stop offset="1" stopColor="#8B3A0E" />
         </linearGradient>
         <linearGradient
           id="wow2_linear"
@@ -78,8 +78,8 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           y2="7"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#191A33" />
-          <stop offset=".872" stop-color="#3B426A" />
+          <stop stopColor="#191A33" />
+          <stop offset=".872" stopColor="#3B426A" />
         </linearGradient>
         <linearGradient
           id="wow3_linear"
@@ -89,8 +89,8 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           y2="2.888"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E78E0D" />
-          <stop offset="1" stop-color="#CB6000" />
+          <stop stopColor="#E78E0D" />
+          <stop offset="1" stopColor="#CB6000" />
         </linearGradient>
         <filter
           id="filter0_i"
@@ -98,10 +98,10 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           height="3"
           x="3.5"
           y="4"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feColorMatrix
             in="SourceAlpha"
@@ -120,10 +120,10 @@ const WowIcon: FC<IconProps> = ({ size, onClick }) => {
           height="7.199"
           x=".289"
           y="-.312"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"

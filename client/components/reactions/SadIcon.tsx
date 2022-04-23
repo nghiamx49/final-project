@@ -58,8 +58,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="16"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FEEA70" />
-            <stop offset="1" stop-color="#F69B30" />
+            <stop stopColor="#FEEA70" />
+            <stop offset="1" stopColor="#F69B30" />
           </linearGradient>
           <linearGradient
             id="sad1_linear"
@@ -69,8 +69,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="13"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#472315" />
-            <stop offset="1" stop-color="#8B3A0E" />
+            <stop stopColor="#472315" />
+            <stop offset="1" stopColor="#8B3A0E" />
           </linearGradient>
           <linearGradient
             id="sad2_linear"
@@ -80,8 +80,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="10"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#191A33" />
-            <stop offset=".872" stop-color="#3B426A" />
+            <stop stopColor="#191A33" />
+            <stop offset=".872" stopColor="#3B426A" />
           </linearGradient>
           <linearGradient
             id="sad3_linear"
@@ -91,8 +91,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="7.199"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#E78E0D" />
-            <stop offset="1" stop-color="#CB6000" />
+            <stop stopColor="#E78E0D" />
+            <stop offset="1" stopColor="#CB6000" />
           </linearGradient>
           <linearGradient
             id="sad4_linear"
@@ -102,8 +102,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="11.692"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#35CAFC" />
-            <stop offset="1" stop-color="#007EDB" />
+            <stop stopColor="#35CAFC" />
+            <stop offset="1" stopColor="#007EDB" />
           </linearGradient>
           <linearGradient
             id="sad5_linear"
@@ -113,8 +113,8 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             y2="13.606"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#6AE1FF" stop-opacity=".287" />
-            <stop offset="1" stop-color="#A8E3FF" stop-opacity=".799" />
+            <stop stopColor="#6AE1FF" stopOpacity=".287" />
+            <stop offset="1" stopColor="#A8E3FF" stopOpacity=".799" />
           </linearGradient>
           <filter
             id="filter0_i"
@@ -122,10 +122,10 @@ const SadIcon: FC<IconProps> = ({size, onClick}) => {
             height="2.666"
             x="3.599"
             y="7.334"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend
               in="SourceGraphic"
               in2="BackgroundImageFix"

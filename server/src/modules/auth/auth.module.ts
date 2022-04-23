@@ -36,7 +36,7 @@ import { AuthService } from './auth.service';
         return <JwtModuleOptions>{
           secret: configuration.getSecretKey(),
           signOptions: {
-            expiresIn: '24h',
+            expiresIn: '30d',
           },
         };
       },

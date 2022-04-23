@@ -279,7 +279,6 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
               </Grid>
               <Grid xs={11}>
                 <Container
-                  as="button"
                   onClick={onOpen}
                   css={{
                     width: "100%",
@@ -289,6 +288,7 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
                     padding: "7px 10px",
                     borderRadius: 20,
                     boxShadow: "$md",
+                    outline: 'none'
                   }}
                 >
                   <Text css={{ color: "$gray400" }}>

@@ -3,20 +3,29 @@ import { FC } from "react";
 import { FcHome, } from "react-icons/fc";
 import { FaUser, FaUserFriends } from "react-icons/fa";
 import SideBarItem from "./SideBarItem";
-const sideBarRoute: Array<any> = [
-  {
-    icon: FaUser,
-    title: "Personal Profile",
-    link: "/",
-  },
-  {
-    icon: FaUserFriends,
-    title: "Friends",
-    link: "/friends",
-  },
-];
+import { connect } from "react-redux";
+import { IRootState } from "../../store/interface/root.interface";
+import { IAuthenciateState } from "../../store/interface/authenticate.interface";
 
-const SideBarNewFeed: FC = () => {
+interface Props {
+  authenticateReducer: IAuthenciateState
+}
+
+const SideBarNewFeed: FC<Props> = ({authenticateReducer}) => {
+
+  const sideBarRoute: Array<any> = [
+    {
+      icon: FaUser,
+      title: "Personal Profile",
+      link: `/profile/${authenticateReducer.user?.username || authenticateReducer.user._id}`,
+    },
+    {
+      icon: FaUserFriends,
+      title: "Friends",
+      link: "/friends",
+    },
+  ];
+
   return (
     <Container
       className="custom-scroll"
@@ -36,4 +45,6 @@ const SideBarNewFeed: FC = () => {
   );
 };
 
-export default SideBarNewFeed;
+export default connect((state: IRootState) => ({
+  authenticateReducer: state.authenticateReducer,
+}))(SideBarNewFeed);

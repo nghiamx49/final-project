@@ -113,10 +113,10 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
   return (
     <>
       {contentMedia.length > 0 && (
-        <Modal blur width="1080px" open={imageDetailOpen} onClose={imageClose}>
+        <Modal blur width="1280px" open={imageDetailOpen} onClose={imageClose}>
           <Modal.Body css={{ padding: 0 }}>
             <Card>
-              <Card.Body>
+              <Card.Body css={{ padding: "0 12px" }}>
                 <div style={{ position: "relative" }}>
                   {contentMedia.length > 1 && (
                     <Container
@@ -147,7 +147,7 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                   )}
                   <Card.Image
                     onClick={imageOpen}
-                    css={{ zIndex: 1, cursor: "pointer" }}
+                    css={{ zIndex: 1, cursor: "pointer", padding: "0 12px" }}
                     width="100%"
                     height={700}
                     objectFit="contain"
@@ -260,6 +260,7 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                   >
                     {reactionList.map((reaction) => (
                       <Grid
+                        key={reaction._id}
                         xs={12}
                         justify="space-between"
                         css={{ height: "fit-content" }}

@@ -34,8 +34,8 @@ const LikeIcon: FC<IconProps> = ({size, onClick}) => {
             y2="16"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#18AFFF" />
-            <stop offset="1" stop-color="#0062DF" />
+            <stop stopColor="#18AFFF" />
+            <stop offset="1" stopColor="#0062DF" />
           </linearGradient>
         </defs>
       </svg>

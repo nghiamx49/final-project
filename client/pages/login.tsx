@@ -67,7 +67,6 @@ const Login: NextPage<LoginPageProps> = ({doLogin}: LoginPageProps) => {
                   </Row>
                 </Card.Header>
                 <Card.Body>
-                  <Spacer y={3} />
                   <Grid.Container direction="column" alignItems="center">
                     <Grid>
                       <Input

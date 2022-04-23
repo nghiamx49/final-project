@@ -1,4 +1,4 @@
-import { Avatar, FormElement, Grid, Input, Tooltip } from "@nextui-org/react";
+import { Avatar, FormElement, Grid, Input, Tooltip} from "@nextui-org/react";
 import { BaseEmoji, NimblePicker } from "emoji-mart";
 import { ChangeEvent, FC, SyntheticEvent, useState } from "react";
 import { commentToPost, replyAComment } from "../axiosClient/feed.api";
@@ -74,6 +74,7 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
                   css={{
                     width: "fit-content",
                     marginTop: -80,
+                    padding: 0,
                   }}
                   content={
                     <NimblePicker
@@ -81,6 +82,10 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
                       set="facebook"
                       data={data}
                       showPreview={false}
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                      }}
                     />
                   }
                 >

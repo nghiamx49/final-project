@@ -7,6 +7,9 @@ import SideBarLayout from "../layout/SideBarLayout";
 import OnlyNavBarLayout from "../layout/OnlyNavBarLayout";
 import { Container, Loading } from "@nextui-org/react";
 import FriendSidePanel from "../layout/FriendSidePanelLayout";
+import SocketProvider from "./socketContext";
+import { ChatWidgetProvider } from "./ChatWidgetContext";
+import ChatWidget from "../components/ChatPannel/ChatWidget";
 
 const protectedRoute = (Component: any): any => {
     return (props: any) => {
@@ -17,21 +20,41 @@ const protectedRoute = (Component: any): any => {
             if(!isAuthenticated) {
                 push('/login');
             }
-            console.log(asPath)
         }, [])
         return isAuthenticated ? (
           asPath === "/" ? (
-            <SideBarLayout>
-              <Component {...props} />
-            </SideBarLayout>
-          ) : asPath.includes('/friends') ? (
-            <FriendSidePanel>
-              <Component {...props} />
-            </FriendSidePanel>
+            <SocketProvider>
+              <ChatWidgetProvider>
+                <>
+                  <ChatWidget />
+                  <SideBarLayout>
+                    <Component {...props} />
+                  </SideBarLayout>
+                </>
+              </ChatWidgetProvider>
+            </SocketProvider>
+          ) : asPath.includes("/friends") ? (
+            <SocketProvider>
+              <ChatWidgetProvider>
+                <>
+                  <ChatWidget />
+                  <FriendSidePanel>
+                    <Component {...props} />
+                  </FriendSidePanel>
+                </>
+              </ChatWidgetProvider>
+            </SocketProvider>
           ) : (
-            <OnlyNavBarLayout>
-              <Component {...props} />
-            </OnlyNavBarLayout>
+            <SocketProvider>
+              <ChatWidgetProvider>
+                <>
+                  <ChatWidget />
+                  <OnlyNavBarLayout>
+                    <Component {...props} />
+                  </OnlyNavBarLayout>
+                </>
+              </ChatWidgetProvider>
+            </SocketProvider>
           )
         ) : (
           <Container

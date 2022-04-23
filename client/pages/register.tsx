@@ -80,7 +80,6 @@ const Register: NextPage = () => {
                   </Row>
                 </Card.Header>
                 <Card.Body>
-                  <Spacer y={3} />
                   <Grid.Container direction="column" alignItems="center">
                     <Grid>
                       <Input

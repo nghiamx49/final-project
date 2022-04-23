@@ -31,8 +31,8 @@ const LoveIcon: FC<IconProps> = ({size, onClick}) => {
             y2="16"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FF6680" />
-            <stop offset="1" stop-color="#E61739" />
+            <stop stopColor="#FF6680" />
+            <stop offset="1" stopColor="#E61739" />
           </linearGradient>
         </defs>
       </svg>
