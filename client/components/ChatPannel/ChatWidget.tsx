@@ -7,15 +7,16 @@ import {
   Tooltip,
   Text,
   FormElement,
-  Button,
+  useTheme,
+  Grid,
+  Image,
 } from "@nextui-org/react";
 import { BaseEmoji, NimblePicker } from "emoji-mart";
-import { FaVideo, FaSmile } from "react-icons/fa";
+import { FaVideo, FaSmile, FaImages } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import SendIcon from "../reactions/SendIcon";
 import { SendButton } from "../SendButton";
 import data from "emoji-mart/data/facebook.json";
-import { IUser } from "../../store/interface/user.interface";
 import { connect } from "react-redux";
 import { IRootState } from "../../store/interface/root.interface";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
@@ -32,9 +33,15 @@ import {
 } from "react";
 import { ChatWidgetContext } from "../../hocs/ChatWidgetContext";
 import { IMessage, ISendMessage } from "../../type/message.interface";
-import { getSingleConservation, sendMessage } from "../../axiosClient/chat.api";
+import {
+  getSingleConservation,
+  markConservationasRead,
+  sendMessage,
+} from "../../axiosClient/chat.api";
 import { MessageItem } from "./MessageItem";
-import {SocketContext } from "../../hocs/socketContext";
+import { SocketContext } from "../../hocs/socketContext";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { uploader } from "../../axiosClient/cloudinary.api";
 
 interface Props {
   authenticateReducer: IAuthenciateState;
@@ -43,7 +50,6 @@ interface Props {
 const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
   const { open, setOpen, friend, setFriend } = useContext(ChatWidgetContext);
 
-
   const { user, token } = authenticateReducer;
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -51,12 +57,32 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
   const [content, setContent] = useState<string>("");
   const socket = useContext(SocketContext);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [files, setFiles] = useState<any>([]);
+  const [previewList, setPreviewList] = useState<string[]>([]);
 
   const [conservationId, setConservationId] = useState<string>("");
+
+  const [isRead, setIsRead] = useState<boolean>(false);
 
   const onChange = (e: ChangeEvent<FormElement>) => {
     setContent(e.target.value);
   };
+
+  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const arrayFiles = e.target?.files && Array.from(e.target.files);
+    e.target?.files && setFiles([...files, ...Array.from(e.target.files)]);
+    const previewFileLists = arrayFiles?.map((item) =>
+      URL.createObjectURL(item)
+    );
+    previewFileLists && setPreviewList([...previewList, ...previewFileLists]);
+  };
+
+  const clearFiles = () => {
+    setFiles([]);
+    setPreviewList([]);
+  };
+
+  const { isDark } = useTheme();
 
   const loadConservation = useCallback(async () => {
     if (friend) {
@@ -72,6 +98,15 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
     }
   }, [token, user, friend]);
 
+  const markAsRead = async () => {
+    console.log(conservationId);
+    console.log(isRead);
+    conservationId &&
+      !isRead &&
+      (await markConservationasRead(token, conservationId));
+      socket.emit('conservation-read')
+  };
+
   useEffect(() => {
     loadConservation();
   }, [loadConservation]);
@@ -86,28 +121,60 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
       if (checkExised < 0) {
         setFriend && setFriend(data.sender);
         setOpen && setOpen(true);
-        buttonRef.current?.click();   
+        buttonRef.current?.click();
         setMessages((prev) => [...prev, data]);
       }
     });
   }, []);
 
   const sendNewMessage = async () => {
-    const message: ISendMessage = {
-      senderId: user._id,
-      receiverId: friend?._id,
-      content: content,
-      conservationId: conservationId,
-    };
-    const { data, status } = await sendMessage(message, token);
-    if (status === 201) {
-      setMessages((prev) => [...prev, data.data]);
-      setContent("");
+    if (files.length > 0) {
+      const result = files.map(async (file: any) => {
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", file);
+        uploadFormData.append("api_key", "981384291441175");
+        uploadFormData.append("upload_preset", "kck9kpuk");
+        const { data, status } = await uploader(uploadFormData);
+        if (status === 200) {
+          return { mediaType: "image", mediaUrl: data.url };
+        }
+      });
+      const contentFromCloud = await Promise.all(result);
+      const message: ISendMessage = {
+        senderId: user._id,
+        receiverId: friend?._id,
+        content: content,
+        conservationId: conservationId,
+        contentMedia: contentFromCloud,
+      };
+      const { data, status } = await sendMessage(message, token);
+      if (status === 201) {
+        setMessages((prev) => [...prev, data.data]);
+        setContent("");
+        setFiles([]);
+        setPreviewList([]);
+        socket.emit("conservation-read");
+      }
+    } else {
+      const message: ISendMessage = {
+        senderId: user._id,
+        receiverId: friend?._id,
+        content: content,
+        conservationId: conservationId,
+      };
+      const { data, status } = await sendMessage(message, token);
+      if (status === 201) {
+        setMessages((prev) => [...prev, data.data]);
+        setContent("");
+        setFiles([]);
+        setPreviewList([]);
+        socket.emit("conservation-read");
+      }
     }
   };
 
   const onEnter = async (e: KeyboardEvent<FormElement>) => {
-    if (e.key === "Enter" && content?.length > 0) {
+    if (e.key === "Enter" && (content?.length > 0 || files.length > 0)) {
       await sendNewMessage();
     }
   };
@@ -135,14 +202,19 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
         display: open ? "block" : "none",
       }}
     >
-      <button ref={buttonRef} onClick={() => sound.play()} style={{ display: "none" }}></button>
+      <button
+        ref={buttonRef}
+        onClick={() => sound.play()}
+        style={{ display: "none" }}
+      ></button>
       <Card
         css={{
           height: "100%",
-          boxShadow: "none",
           borderBottomLeftRadius: "none",
           padding: 0,
           margin: 0,
+          boxShadow: "$sm",
+          border: isDark ? "1px solid $gray700" : "1px solid $gray100",
         }}
       >
         <Card.Header
@@ -186,14 +258,14 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
             height: "100%",
             overflow: "auto",
             padding: "10px 0",
-            justifyContent: 'flex-end'
+            justifyContent: "flex-end",
           }}
         >
           <Container
             fluid
             css={{
               margin: "0",
-              height: 'fit-content',
+              height: "fit-content",
               maxHeight: "100%",
               overflow: "auto",
               padding: 0,
@@ -212,20 +284,108 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
             ))}
           </Container>
         </Card.Body>
-        <Card.Footer css={{ padding: "10px 2px" }}>
+        <Card.Footer
+          css={{
+            padding: "5",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            height: files.length > 0 ? "100%" : "auto",
+            justifyContent: "flex-end",
+          }}
+        >
+          {files.length > 0 && (
+            <Card
+              css={{
+                position: "relative",
+                height: "max-content",
+                padding: 0,
+                margin: 0,
+              }}
+              cover
+            >
+              <Card.Header
+                css={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 0,
+                  right: 0,
+                  width: "fit-content",
+                }}
+              >
+                <AiFillCloseCircle
+                  onClick={clearFiles}
+                  color="#444"
+                  size={30}
+                  cursor="pointer"
+                />
+              </Card.Header>
+              <Card.Body
+                css={{
+                  overflow: "hidden",
+                  height: "fit-content",
+                  paddingRight: 10,
+                }}
+              >
+                <Grid.Container
+                  className="custom-scroll"
+                  gap={1}
+                  css={{
+                    height: "100%",
+                    margin: 0,
+                  }}
+                >
+                  {previewList.map((previewImage, index) => (
+                    <Grid key={index} xs={4} css={{ height: "fit-content" }}>
+                      <Image
+                        width={100}
+                        height={100}
+                        objectFit="cover"
+                        src={previewImage}
+                      />
+                    </Grid>
+                  ))}
+                </Grid.Container>
+              </Card.Body>
+            </Card>
+          )}
           <Input
             animated={false}
             width="100%"
             bordered
-            borderWeight="normal"
+            borderWeight="light"
             color="primary"
             value={content}
             onChange={onChange}
+            onFocus={markAsRead}
             onKeyPress={onEnter}
             aria-labelledby="message"
             //onFocus={() => setPickerShow(false)}
             placeholder="Message..."
             contentRightStyling={false}
+            contentLeftStyling={false}
+            contentLeft={
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: 10,
+                }}
+              >
+                <input
+                  id="messages"
+                  type="file"
+                  multiple={true}
+                  onChange={onFileChange}
+                  accept=".jpeg,.png,.jpg"
+                  style={{ display: "none" }}
+                />
+                <label htmlFor="messages" style={{ cursor: "pointer" }}>
+                  <FaImages color="#666666" size={30} />
+                </label>
+              </div>
+            }
             contentRight={
               <div
                 style={{
@@ -259,7 +419,7 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
                 </Tooltip>
                 <SendButton
                   onClick={handleSubmitMessage}
-                  disabled={!content.length}
+                  disabled={!content.length && !files.length}
                 >
                   <SendIcon />
                 </SendButton>

@@ -49,6 +49,10 @@ export class RealtimeGateWay
     }
   }
 
+  @SubscribeMessage('conservation-read')
+  triggerUpdateConservations(client: Socket) {
+    this.server.to(client.id).emit('conservation-updated');
+  }
   afterInit(server: Server) {
     this.logger.log('Socket Init');
   }

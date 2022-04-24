@@ -80,13 +80,19 @@ const ConservationContainer: FC<Props> = ({
                     </Text>
                     <Text
                       css={{
-                        color: isRead ? "$gray500" : "$primary",
-                        fontWeight: "$medium",
+                        color: isRead ? "white" : "$primary",
+                        fontWeight: "$bold",
                       }}
                       size={14}
                     >
-                      {latestMessage.sender._id === currentUser._id && "You: "}
-                      {latestMessage.content}
+                      {latestMessage.sender._id === currentUser._id
+                        ? "You: "
+                        : `${latestMessage.sender.fullname.split(" ")[
+                            latestMessage.sender.fullname.split(" ").length - 1
+                          ]}: `}
+                      {latestMessage.content.length > 0
+                        ? latestMessage.content
+                        : "Sent an image"}
                     </Text>
                   </Grid>
                 </Grid.Container>

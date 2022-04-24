@@ -20,5 +20,5 @@ export interface IMessage {
   updatedAt: Date;
   isStoryReply: boolean;
   //story?: StoryDocument;
-  contentMedia?: IMedia[];
+  contentMedia: IMedia[];
 }

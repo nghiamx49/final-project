@@ -2,7 +2,7 @@ import { FC, ReactChild } from "react";
 
 interface BadgeProps {
   children: ReactChild;
-  count?: number;
+  count: number;
 }
 
 const Badge: FC<BadgeProps> = ({ children, count }) => {
@@ -16,22 +16,24 @@ const Badge: FC<BadgeProps> = ({ children, count }) => {
         paddingLeft: 10,
         paddingRight: 10,
         borderRadius: "100%",
-        cursor: 'pointer'
+        cursor: "pointer",
       }}
     >
       {children}
-      <span
-        style={{
-          position: "absolute",
-          top: -10,
-          right: -5,
-          background: "#f21361",
-          padding: "0px 6px",
-          borderRadius: "100%",
-        }}
-      >
-        {count}
-      </span>
+      {(count > 0) && (
+        <span
+          style={{
+            position: "absolute",
+            top: -10,
+            right: -5,
+            background: "#f21361",
+            padding: "0px 6px",
+            borderRadius: "100%",
+          }}
+        >
+          {count}
+        </span>
+      )}
     </div>
   );
 };

@@ -50,6 +50,7 @@ export class ConservationService {
         populate: [
           { path: 'members' },
           { path: 'messages', populate: { path: 'sender' } },
+          {path: 'readBy'}
         ],
       },
     );
@@ -95,8 +96,10 @@ export class ConservationService {
     const conservationInDB = await this.conservationRepository.findOne({
       _id: newMessage.conservationId,
     }, null, {populate: {path: 'readBy'}});
-    const updateReader = conservationInDB.readBy.filter(user => user._id.toString() === newMessage.senderId);
     if (conservationInDB) {
+          const updateReader = conservationInDB.readBy.filter(
+            (user) => user._id.toString() === newMessage.senderId,
+          );
       const updatedMessages = [...conservationInDB.messages, createdMessage];
       await this.conservationRepository.findOneAndUpdate(
         { _id: conservationInDB._id },
@@ -109,6 +112,7 @@ export class ConservationService {
       });
     }
     if (receiver.isOnline) {
+      this.reatimeGateway.getServer().to(receiver.socketId).emit('conservation-updated')
       this.reatimeGateway
         .getServer()
         .to(receiver.socketId)

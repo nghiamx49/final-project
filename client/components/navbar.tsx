@@ -35,6 +35,7 @@ import { IConservation } from "../type/conservation.interface";
 import { getAllConservations, markConservationasRead } from "../axiosClient/chat.api";
 import { IUser } from "../store/interface/user.interface";
 import { ChatWidgetContext } from "../hocs/ChatWidgetContext";
+import { SocketContext } from "../hocs/socketContext";
 interface RouterLink {
   link: string;
   title: string;
@@ -70,6 +71,8 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
 
   const { isAuthenticated, user, token } = authenticateReducer;
   const {setOpen, setFriend} = useContext(ChatWidgetContext);
+
+  const socket = useContext(SocketContext);
   
   const navigateToLoginPage = (): void => {
     push("/login");
@@ -105,6 +108,12 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   useEffect(() => {
     loadAllConservation();
   }, [loadAllConservation])
+
+  useEffect(() => {
+    socket.on("conservation-updated", () => {
+      loadAllConservation();
+    });
+  }, [])
 
   const logoutHandler = () => {
     doLogout();
@@ -213,10 +222,23 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       trigger="click"
                       css={{ width: 300, padding: 0, marginTop: -80 }}
                       content={
-                        <ConservationContainer onClickHandler={markAsRead} conservations={conservations} currentUser={user} />
+                        <ConservationContainer
+                          onClickHandler={markAsRead}
+                          conservations={conservations}
+                          currentUser={user}
+                        />
                       }
                     >
-                      <Badge count={conservations.filter(conservation => conservation.readBy.filter(reader => reader._id !== user._id).length > 0).length || conservations.length}>
+                      <Badge
+                        count={
+                          conservations.filter(
+                            (conservation) =>
+                              conservation.readBy.findIndex(
+                                (reader) => reader?._id === user._id
+                              ) < 0
+                          ).length
+                        }
+                      >
                         <FaFacebookMessenger
                           style={{
                             width: 20,
@@ -256,7 +278,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                         />
                       }
                     >
-                      <Badge>
+                      <Badge count={0}>
                         <FaCaretDown
                           style={{
                             width: 20,
