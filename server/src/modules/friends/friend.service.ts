@@ -7,6 +7,8 @@ import { FriendListDocument } from 'src/schemas/friendList.schema';
 import { FriendRequestDocument } from 'src/schemas/friendRequest.schema';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserResponseDto } from '../auth/dto/user.dto';
+import { PushNotificationDto } from '../notifications/notification.dto';
+import { NotificationService } from '../notifications/notification.service';
 import { StatusChecking } from './dto/friendStatusChecking.dto';
 
 @Injectable()
@@ -15,6 +17,7 @@ export class FriendService {
     private readonly friendRepository: FriendRequestRepository,
     private readonly userRepository: UserRepository,
     private readonly friendListRepository: FriendListRepository,
+    private readonly notificationService: NotificationService
   ) {}
 
   async sendNewFriendRequest(
@@ -38,11 +41,16 @@ export class FriendService {
       const receiver: UserDocument = await this.userRepository.findOne({
         _id: receiverId,
       });
-      const makeNewFriendRequest: FriendRequestDocument =
         await this.friendRepository.create({
           sender,
           receiver,
         });
+        const data: PushNotificationDto = {
+          description: 'sent you a friend request',
+          link: `/profile/${sender._id}`,
+          receiverId: receiverId,
+        }
+        await this.notificationService.friendRequestNotification(data, senderId);
     }
   }
 
@@ -211,10 +219,27 @@ export class FriendService {
           { allFriends: listReceiverFriend.allFriends },
         );
         await this.friendRepository.findOneAndDelete({ _id: requestId });
+        const data: PushNotificationDto = {
+          description: 'had accepted your request',
+          link: `/profile/${checkRoleInRequest.receiver._id.toString()}`,
+          receiverId: checkRoleInRequest.sender._id.toString(),
+        };
+        await this.notificationService.friendRequestNotification(
+          data,
+          checkRoleInRequest.receiver._id.toString(),
+        );
       } else if (status === FriendRequest_Status.DECLIEND) {
-        await this.friendRepository.findOneAndUpdate(
+        await this.friendRepository.findOneAndDelete(
           { _id: requestId },
-          { status },
+        );
+        const data: PushNotificationDto = {
+          description: 'had declined your request',
+          link: `/profile/${checkRoleInRequest.receiver._id.toString()}`,
+          receiverId: checkRoleInRequest.sender._id.toString(),
+        };
+        await this.notificationService.friendRequestNotification(
+          data,
+          checkRoleInRequest.receiver._id.toString(),
         );
       } else {
         throw new Error('Status not valid');

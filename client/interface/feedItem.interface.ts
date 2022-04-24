@@ -14,8 +14,8 @@ export interface IFeed {
     author: IUser;
     comments: IComment[];
     reactions: IReaction[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface ICreateFeed {

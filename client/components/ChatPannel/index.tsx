@@ -7,7 +7,7 @@ import { IRootState } from "../../store/interface/root.interface";
 import { IUser } from "../../store/interface/user.interface";
 import ChatItem from "./ChatItem";
 import {FaSearch, FaSmile, FaVideo} from 'react-icons/fa'
-import { SocketContext } from "../../hocs/socketContext";
+import { socket, SocketContext } from "../../hocs/socketContext";
 import { IoMdClose } from "react-icons/io";
 import { NimblePicker } from "emoji-mart";
 import { SendButton } from "../SendButton";
@@ -25,15 +25,31 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
 
     const socket = useContext(SocketContext);
 
-    socket.on("friend-online", (data: IUser) => {
-      const friendFilter = allFriends.filter(user => user._id !== data._id);
-      setAllFriends([data, ...friendFilter]);
-    });
+    const handleFriendOnline = useCallback( (data: IUser) => {
+        setAllFriends((prev) => {
+          const friendFilter = prev.filter((user) => user._id !== data._id);
+          return [data, ...friendFilter];
+        });
+      }, [])
+    
+      const handleFriendOffline = useCallback((data: IUser) => {
+        setAllFriends(prev => {
+          const friendFilter = prev.filter((user) => user._id !== data._id);
+          return [...friendFilter, data];
+        });
+      }, []);
 
-    socket.on("friend-offline", (data: IUser) => {
-      const friendFilter = allFriends.filter(user => user._id !== data._id);
-      setAllFriends([...friendFilter, data]);
-    });
+      
+    useEffect(() => {
+      socket.on("friend-online", handleFriendOnline);
+
+      socket.on("friend-offline", handleFriendOffline);
+
+      return () => {
+        socket.off('friend-online')
+        socket.off('friend-offline');
+      }
+    }, [])
 
   const {token} = authenticateReducer;
    const loadFriends = useCallback(async (): Promise<void> => {
@@ -48,7 +64,8 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
     //   setCommentContent(commentContent + emojiObject.native);
     // };
 
-   useEffect(() => {loadFriends()
+   useEffect(() => {
+     loadFriends()
   }, [loadFriends])
   return (
     <Container

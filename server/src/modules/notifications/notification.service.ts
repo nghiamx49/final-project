@@ -24,7 +24,7 @@ export class NotificationService {
           { path: 'readBy' },
           { path: 'receivers' },
         ],
-        sort: { createdAt: 1 },
+        sort: { createdAt: -1 },
       },
     );
     return userNotifications.map(
@@ -58,7 +58,7 @@ export class NotificationService {
       this.realtimeGateway
         .getServer()
         .to(onlineUserSocketList)
-        .emit('new-notification', new NotificationDto(newNotification));
+        .emit('new-notification');
     }
   }
 

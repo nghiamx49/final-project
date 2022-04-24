@@ -8,7 +8,7 @@ import {
   Input,
   Tooltip,
 } from "@nextui-org/react";
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, SyntheticEvent, useCallback, useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -36,6 +36,9 @@ import { getAllConservations, markConservationasRead } from "../axiosClient/chat
 import { IUser } from "../store/interface/user.interface";
 import { ChatWidgetContext } from "../hocs/ChatWidgetContext";
 import { SocketContext } from "../hocs/socketContext";
+import { INotification } from "../type/notification.interface";
+import { getAllNotification, markNotifcationAsRead } from "../axiosClient/notification.api";
+import NotificationContainer from "./NotificationContainer";
 interface RouterLink {
   link: string;
   title: string;
@@ -58,16 +61,12 @@ const router: Array<RouterLink> = [
     title: "About",
     Icon: FaUserFriends,
   },
-  {
-    link: "/store",
-    title: "About",
-    Icon: FaStore,
-  },
 ];
 
 const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const { asPath, push } = useRouter();
   const [conservations, setConservations] = useState<IConservation[]>([]);
+  const [notifications, setNotifications] = useState<INotification[]>([]);
 
   const { isAuthenticated, user, token } = authenticateReducer;
   const {setOpen, setFriend} = useContext(ChatWidgetContext);
@@ -91,6 +90,15 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
     }
   }, [token, isAuthenticated]);
 
+  const loadNotifications = useCallback(async () => {
+ if (isAuthenticated) {
+   const { data, status } = await getAllNotification(token);
+   if (status === 200) {
+     setNotifications(data.data);
+   }
+ }
+  }, [])
+
   const markAsRead = async (conservationId: string, isRead: boolean, friend: IUser) => {
    if(!isRead) {
       const { data, status } = await markConservationasRead(
@@ -105,14 +113,32 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
    setOpen && setOpen(true);
   }
 
+  const markNotiRead = async (notificationId: string, isRead: boolean, link: string) => {
+    if (!isRead) {
+      const { data, status } = await markNotifcationAsRead(notificationId, token);
+      if (status === 200) {
+        setNotifications(data.data);
+        push(link);
+      }
+    }
+  }
+
   useEffect(() => {
     loadAllConservation();
+    loadNotifications();
   }, [loadAllConservation])
 
   useEffect(() => {
     socket.on("conservation-updated", () => {
       loadAllConservation();
     });
+    socket.on("new-notification", () => {
+      loadNotifications();
+    });
+    return () => {
+      socket.off("conservation-updated");
+      socket.off("new-notification");
+    }
   }, [])
 
   const logoutHandler = () => {
@@ -251,16 +277,38 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                     </Tooltip>
                   </Grid>
                   <Grid>
-                    <Badge count={3}>
-                      <FaBell
-                        style={{
-                          width: 20,
-                          height: 20,
-                          cursor: "pointer",
-                          color: "#fff",
-                        }}
-                      />
-                    </Badge>
+                    <Tooltip
+                      placement="bottomEnd"
+                      trigger="click"
+                      css={{ width: 300, padding: 0, marginTop: -80 }}
+                      content={
+                        <NotificationContainer
+                          handleReadNoti={markNotiRead}
+                          notifications={notifications}
+                          currentUser={user}
+                        />
+                      }
+                    >
+                      <Badge
+                        count={
+                          notifications.filter(
+                            (noti) =>
+                              noti.readBy.findIndex(
+                                (reader) => reader?._id === user._id
+                              ) < 0
+                          ).length
+                        }
+                      >
+                        <FaBell
+                          style={{
+                            width: 20,
+                            height: 20,
+                            cursor: "pointer",
+                            color: "#fff",
+                          }}
+                        />
+                      </Badge>
+                    </Tooltip>
                   </Grid>
                   <Grid css={{ cursor: "pointer" }}>
                     <Tooltip

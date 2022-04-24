@@ -73,7 +73,13 @@ export class FeedService {
     const postInDb = await this.feedRepository.findOne({ _id: postId }, null, {
       populate: [
         { path: 'author' },
-        { path: 'comments', populate: { path: 'author' } },
+        {
+          path: 'comments',
+          populate: [
+            { path: 'author' },
+            { path: 'replies', populate: { path: 'author' } },
+          ],
+        },
         { path: 'reactions', populate: { path: 'reactionBy' } },
       ],
     });

@@ -20,7 +20,7 @@ const SocketProvider: FC<Props> = ({children, authenticateReducer}) => {
       socket.connect();
       socket.emit("online", user._id);
       return () => {
-        socket.emit('offline', user._id);
+        socket.disconnect();
       };
     }, []);
 

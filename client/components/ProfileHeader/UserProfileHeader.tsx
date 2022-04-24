@@ -9,6 +9,7 @@ import {
   Row,
   Input,
   Spacer,
+  Divider,
 } from "@nextui-org/react";
 import { FC, MouseEventHandler, useState } from "react";
 import {
@@ -30,6 +31,13 @@ import { uploader } from "../../axiosClient/cloudinary.api";
 import { IApiResponse } from "../../type/apiResponse.interface";
 import { updateProfile } from "../../axiosClient/profile.api";
 import Link from "next/link";
+import { ErrorMessage } from "@hookform/error-message";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import dayjs from 'dayjs';
+import { toast } from "react-toastify";
+
 interface UserProfileProps {
   isYou: boolean;
   profile: IUser;
@@ -41,6 +49,26 @@ interface UserProfileProps {
   user: IUser;
   token: string;
   updateGlobalState: Function;
+  handleUnfriend: MouseEventHandler;
+  handleCancel: MouseEventHandler;
+  setProfile: Function
+}
+
+const validationSchema = yup.object().shape({
+  fullname: yup.string().required("Fullname cannot empty"),
+  dateOfBirth: yup
+    .date()
+    .required("Date of Birth is required")
+    .min(new Date(1950, 0, 1))
+    .max(new Date(2004, 0, 1)),
+});
+
+interface IUpdateUser {
+  username?: string;
+  fullname: string;
+  dateOfBirth: string;
+  email: string;
+  address?: string;
 }
 
 const UserProfileHeader: FC<UserProfileProps> = ({
@@ -54,12 +82,30 @@ const UserProfileHeader: FC<UserProfileProps> = ({
   user,
   token,
   updateGlobalState,
+  handleCancel,
+  handleUnfriend,
+  setProfile
 }) => {
   const [editAvatarOpen, setEditAvatarOpen] = useState<boolean>(false);
   const [editCoverOpen, setEditCoverOpen] = useState<boolean>(false);
   const [file, setFile] = useState<Blob | string>("");
   const [previewAvatar, setPreviewAvatar] = useState<string>("");
   const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
+  const [editProfileOpen, setEditProfileOpen] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IUpdateUser>({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+    defaultValues: {
+      fullname: user.fullname,
+      dateOfBirth: dayjs(user.dateOfBirth).format("YYYY-MM-DD"),
+      email: user.email,
+      username: user.username,
+    },
+  });
 
   const handleSaveChanges = async () => {
     const formData = new FormData();
@@ -79,6 +125,19 @@ const UserProfileHeader: FC<UserProfileProps> = ({
       }
     }
   };
+
+  const handleSaveProfile = async (formData: IUpdateUser) => {
+     const { status } = await updateProfile(token, {
+       ...formData     });
+     if (status === 200) {
+       updateGlobalState({
+         ...formData,
+         dateOfBirth: new Date(formData.dateOfBirth),
+       });
+       toast.success("Profile Updated")
+       setEditProfileOpen(false);
+     }
+  }
 
   const handleSaveCover = async () => {
     const formData = new FormData();
@@ -103,10 +162,15 @@ const UserProfileHeader: FC<UserProfileProps> = ({
     setConfirmModalOpen(prevState => !prevState);
   }
 
+  const handleEditProfileOpen = () => setEditProfileOpen(true);
+  const handleEditProfileClose = () => setEditProfileOpen(false);
+
+
   const onConfirm = (): void => {
     setConfirmModalOpen(false);
     setEditAvatarOpen(false);
     setEditCoverOpen(false);
+    setEditProfileOpen(false);
     setPreviewAvatar("");
     setFile("");
   }
@@ -369,7 +433,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                 )}
               </div>
               <div className={styles.infoContainer}>
-                <Text h2>{profile?.fullname}</Text>
+                <Text h2>{isYou ? user.fullname : profile?.fullname}</Text>
                 <Text b>{profile?.allFriends?.length || 0} friends</Text>
                 <Avatar.Group
                   count={
@@ -378,7 +442,10 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                   }
                 >
                   {profile?.allFriends?.slice(0, 5).map((friend, index) => (
-                    <Link key={index} href={`/profile/${friend?.username || friend._id}`}>
+                    <Link
+                      key={index}
+                      href={`/profile/${friend?.username || friend._id}`}
+                    >
                       <Avatar
                         src={friend?.avatar || "/images/default_avt.jpg"}
                         pointer
@@ -392,10 +459,150 @@ const UserProfileHeader: FC<UserProfileProps> = ({
             </Grid>
             <Grid css={{ display: "flex", alignItems: "flex-end" }}>
               {isYou ? (
-                <Button size="sm">
-                  <FaEdit size={20} />
-                  Edit Profile
-                </Button>
+                <>
+                  <Modal
+                    closeButton
+                    width="600px"
+                    blur
+                    open={editProfileOpen}
+                    onClose={handleEditProfileClose}
+                  >
+                    <Modal.Header>
+                      <Text h3>Edit Your Profile</Text>
+                    </Modal.Header>
+                    <Divider />
+                    <Modal.Body>
+                      <Grid.Container direction="column" alignItems="center">
+                        <Grid>
+                          <Input
+                            width="500px"
+                            aria-labelledby="email"
+                            placeholder="username"
+                            {...register("email")}
+                            disabled
+                            bordered
+                          />
+                        </Grid>
+                        <Grid>
+                          <ErrorMessage
+                            name="email"
+                            errors={errors}
+                            render={({ message }) => (
+                              <Text color="red">{message}</Text>
+                            )}
+                          />
+                        </Grid>
+                      </Grid.Container>
+                      <Spacer y={1} />
+                      <Grid.Container direction="column" alignItems="center">
+                        <Grid>
+                          <Input
+                            width="500px"
+                            aria-labelledby="username"
+                            placeholder="username (custom profile link)"
+                            {...register("username")}
+                            clearable
+                            bordered
+                          />
+                        </Grid>
+                        <Grid>
+                          <ErrorMessage
+                            name="username"
+                            errors={errors}
+                            render={({ message }) => (
+                              <Text color="red">{message}</Text>
+                            )}
+                          />
+                        </Grid>
+                      </Grid.Container>
+                      <Spacer y={1} />
+                      <Grid.Container direction="column" alignItems="center">
+                        <Grid>
+                          <Input
+                            width="500px"
+                            type="date"
+                            aria-labelledby="date of birth"
+                            placeholder="date of bith"
+                            {...register("dateOfBirth", { valueAsDate: true })}
+                            bordered
+                          />
+                        </Grid>
+                        <Grid>
+                          <ErrorMessage
+                            name="dateOfBirth"
+                            errors={errors}
+                            render={({ message }) => (
+                              <Text color="red">{message}</Text>
+                            )}
+                          />
+                        </Grid>
+                      </Grid.Container>
+                      <Spacer y={1} />
+                      <Grid.Container direction="column" alignItems="center">
+                        <Grid>
+                          <Input
+                            width="500px"
+                            aria-labelledby="fullname"
+                            placeholder="fullname"
+                            {...register("fullname")}
+                            clearable
+                            bordered
+                          />
+                        </Grid>
+                        <Grid>
+                          <ErrorMessage
+                            name="fullname"
+                            errors={errors}
+                            render={({ message }) => (
+                              <Text color="red">{message}</Text>
+                            )}
+                          />
+                        </Grid>
+                      </Grid.Container>
+                      <Spacer y={1} />
+                      <Grid.Container direction="column" alignItems="center">
+                        <Grid>
+                          <Input
+                            width="500px"
+                            aria-labelledby="address"
+                            placeholder="address"
+                            {...register("address")}
+                            clearable
+                            bordered
+                          />
+                        </Grid>
+                        <Grid>
+                          <ErrorMessage
+                            name="address"
+                            errors={errors}
+                            render={({ message }) => (
+                              <Text color="red">{message}</Text>
+                            )}
+                          />
+                        </Grid>
+                      </Grid.Container>
+                      <Spacer y={1} />
+                    </Modal.Body>
+                    <Divider />
+                    <Modal.Footer>
+                      <Button
+                        auto
+                        flat
+                        color="error"
+                        onClick={handleEditProfileClose}
+                      >
+                        Close
+                      </Button>
+                      <Button auto onClick={handleSubmit(handleSaveProfile)}>
+                        Save Changes
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  <Button onClick={handleEditProfileOpen} size="sm">
+                    <FaEdit size={20} />
+                    Edit Profile
+                  </Button>
+                </>
               ) : friendStatus?.status === FriendStatus.NOT_SENT ? (
                 <Button size="sm" onClick={handleAddFriend}>
                   <FaUserPlus size={20} />
@@ -406,7 +613,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                   <Button
                     size="sm"
                     css={{ backgroundColor: "$gray500" }}
-                    onClick={handleAddFriend}
+                    onClick={handleCancel}
                   >
                     <FaUserTimes size={20} />
                     Requested
@@ -430,13 +637,13 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                 )
               ) : friendStatus?.status === FriendStatus.ACCEPTED ? (
                 <div style={{ display: "flex", gap: 10 }}>
-                  <Button size="sm" css={{ backgroundColor: "$gray500" }}>
+                  <Button
+                    onClick={handleUnfriend}
+                    size="sm"
+                    css={{ backgroundColor: "$gray500" }}
+                  >
                     <FaUserCheck size={20} />
-                    Friend
-                  </Button>
-                  <Button size="sm">
-                    <FaFacebookMessenger size={20} />
-                    Message
+                    Unfriend
                   </Button>
                 </div>
               ) : (

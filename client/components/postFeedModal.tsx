@@ -24,6 +24,7 @@ import { ICreateFeed } from "../interface/feedItem.interface";
 import { createdPost } from "../axiosClient/feed.api";
 import { toast } from "react-toastify";
 import { uploader } from "../axiosClient/cloudinary.api";
+import { pushNotification } from "../axiosClient/notification.api";
 
 
 interface Props {
@@ -72,10 +73,11 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
            }
         })
         const contentFromCloud = await Promise.all(result);
-        const { status } = await createdPost(token, {
+        const {data: postData, status } = await createdPost(token, {
           ...formData,
           contentMedia: contentFromCloud,
         });
+        await pushNotification(token, {description: 'Had a new post. Check it out!', link: `/post/${postData.data._id}`})
         if (status === 201) {
           toast.success("Your post had been created");
           setWaiting(false);
@@ -84,9 +86,13 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
         }
       }
       else {
-        const { status } = await createdPost(token, formData);
+        const {data: postData, status } = await createdPost(token, formData);
         if (status === 201) {
           toast.success("Your post had been created");
+          await pushNotification(token, {
+            description: "Had a new post. Check it out!",
+            link: `/post/${postData.data._id}`,
+          });
           setWaiting(false);
           onClose();
           return;
@@ -135,6 +141,7 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
                 color="gradient"
                 src={user.avatar || "/images/default_avt.jpg"}
               />
+              <Spacer x={.5} />
               <Text b>{user.fullname}</Text>
             </Grid>
             <Spacer x={5} />

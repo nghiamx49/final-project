@@ -112,7 +112,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
         {showAll
           ? replies.map((item, index) => (
               <Row key={index} css={{ paddingLeft: 50 }}>
-                <Grid.Container gap={2}>
+                <Grid.Container gap={1}>
                   <Grid xs={1}>
                     <Link
                       href={`/profile/${
@@ -165,7 +165,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
             ))
           : replies.slice(-1).map((item, index) => (
               <Row key={index} css={{ paddingLeft: 50 }}>
-                <Grid.Container gap={2}>
+                <Grid.Container gap={1}>
                   <Grid xs={1}>
                     <Link
                       href={`/profile/${

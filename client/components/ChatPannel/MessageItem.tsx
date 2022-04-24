@@ -60,7 +60,13 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                   </Text>
                 }
               >
-                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                  }}
+                >
                   {contentMedia?.length > 0 && (
                     <div style={{ position: "relative" }}>
                       <Image
@@ -68,6 +74,7 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                         className="message-image"
                         width={150}
                         height={100}
+                        objectFit="contain"
                         src={contentMedia[currentMedia].mediaUrl}
                       />
                       {contentMedia?.length > 2 && (
@@ -101,7 +108,7 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                       color: "white",
                       width: "fit-content",
                       marginRight: 0,
-                      marginLeft: 'auto',
+                      marginLeft: "auto",
                     }}
                   >
                     {message.content}
@@ -147,6 +154,7 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                         className="message-image"
                         width={150}
                         height={100}
+                        objectFit="contain"
                         src={contentMedia[currentMedia].mediaUrl}
                       />
                       {contentMedia?.length > 2 && (

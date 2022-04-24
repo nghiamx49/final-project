@@ -44,7 +44,7 @@ const ConservationContainer: FC<Props> = ({
           fluid
           css={{ margin: 0, padding: 0, maxHeight: 400, overflow: "auto" }}
         >
-          {conservations.map((conservation) => {
+          {conservations.length > 0 ? conservations.map((conservation) => {
             const friend = conservation.members.filter(
               (user) => user._id !== currentUser._id
             )[0];
@@ -80,7 +80,7 @@ const ConservationContainer: FC<Props> = ({
                     </Text>
                     <Text
                       css={{
-                        color: isRead ? "white" : "$primary",
+                        color: isRead ? "$text" : "$primary",
                         fontWeight: "$bold",
                       }}
                       size={14}
@@ -98,7 +98,12 @@ const ConservationContainer: FC<Props> = ({
                 </Grid.Container>
               </Row>
             );
-          })}
+          }) : <Row justify="center">
+            <Text size={18} b css={{color: '$accents7'}}>
+              No Conservations Yet
+            </Text>
+          </Row>}
+          
         </Container>
       </Row>
     </Container>

@@ -99,8 +99,6 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
   }, [token, user, friend]);
 
   const markAsRead = async () => {
-    console.log(conservationId);
-    console.log(isRead);
     conservationId &&
       !isRead &&
       (await markConservationasRead(token, conservationId));

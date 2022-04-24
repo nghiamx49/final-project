@@ -7,6 +7,7 @@ import data from "emoji-mart/data/facebook.json";
 import { FaSmile } from "react-icons/fa";
 import { SendButton } from "./SendButton";
 import SendIcon from "./reactions/SendIcon";
+import {KeyboardEvent} from 'react';
 
 interface Props {
     currentUser: IUser;
@@ -23,6 +24,8 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
     const onCommentChange = (e: ChangeEvent<FormElement>) =>
       setCommentContent(e.target.value);
 
+
+
     const handleSubmitComment = async (e: SyntheticEvent) => {
       e.preventDefault();
       const { data, status } =
@@ -34,6 +37,21 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
         setCommentList(type === "comment" ? [...data.data] : [...data.data.replies]);
       }
     };
+
+        const onEnter = async (e: KeyboardEvent<FormElement>) => {
+          if (e.key === "Enter" && commentContent?.length > 0) {
+            const { data, status } =
+              type === "comment"
+                ? await commentToPost(token, postId, commentContent)
+                : await replyAComment(token, postId, commentId, commentContent);
+            if (status === 201) {
+              setCommentContent("");
+              setCommentList(
+                type === "comment" ? [...data.data] : [...data.data.replies]
+              );
+            }
+          }
+        };
 
       const onEmojiClick = (emojiObject: BaseEmoji) => {
         setCommentContent(commentContent + emojiObject.native);
@@ -48,7 +66,7 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
             src={currentUser.avatar || "/images/default_avt.jpg"}
           />
         </Grid>
-        <Grid xs={10} justify="flex-end">
+        <Grid xs={11} justify="flex-end">
           <Input
             width="100%"
             bordered
@@ -58,6 +76,7 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
             onChange={onCommentChange}
             aria-labelledby="comment"
             //onFocus={() => setPickerShow(false)}
+            onKeyDown={onEnter}
             placeholder="Comment anything"
             contentRightStyling={false}
             contentRight={
@@ -69,7 +88,7 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
                 }}
               >
                 <Tooltip
-                  placement="bottomEnd"
+                  placement="topEnd"
                   hideArrow
                   css={{
                     width: "fit-content",

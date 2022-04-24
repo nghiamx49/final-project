@@ -13,6 +13,16 @@ export const getUserPosts = async (
     },
   });
 
+export const getSinglPost = async (
+  token: string,
+  postId: string | string[] | undefined,
+): Promise<IApiResponse> =>
+  apiClient.get(`/feeds/posts/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
 export const getAllPostsInNewFeed = async (
   token: string,
 ): Promise<IApiResponse> =>

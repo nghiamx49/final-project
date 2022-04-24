@@ -59,30 +59,31 @@ export class RealtimeGateWay
 
   async handleDisconnect(client: Socket): Promise<void> {
     this.logger.log(`socket off: ${client.id}`);
-  }
-
-  async handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`socket on: ${client.id}`);
     const userInDdb = await this.userRepository.findOneAndUpdate(
       { socketId: client.id },
       { isOnline: false },
     );
     if (userInDdb) {
+      this.logger.log(`User Offline: ${userInDdb.fullname}`);
       const friendList = await this.friendListRepository.findOne(
         { user: userInDdb._id },
         null,
         { populate: [{ path: 'allFriends' }] },
       );
-      this.logger.log(`User Offline: ${userInDdb.fullname}`);
-
       const friendListSocketId = friendList.allFriends
         .filter((user) => user.isOnline)
         .map((user) => user?.socketId);
       if (friendListSocketId.length > 0) {
         const payload = new UserResponseDto(userInDdb);
+            console.log(friendListSocketId);
+
         this.server.to(friendListSocketId).emit('friend-offline', payload);
       }
     }
+  }
+
+  async handleConnection(client: Socket, ...args: any[]) {
+        this.logger.log(`socket on: ${client.id}`);
   }
 
   getServer(): Server {

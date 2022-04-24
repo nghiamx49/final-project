@@ -11,7 +11,7 @@ import {
   Tooltip,
   Container,
   Modal,
-
+  Link as LinkStyle
 } from "@nextui-org/react";
 import { FC, SyntheticEvent, useState } from "react";
 import { IoMdChatboxes, IoMdShareAlt, IoMdThumbsUp} from "react-icons/io";
@@ -30,14 +30,13 @@ import { IReaction } from "../interface/reaction.interface";
 import { reactToPost, removeReaction } from "../axiosClient/feed.api";
 
 import {FaChevronCircleLeft, FaChevronCircleRight} from 'react-icons/fa'
-import Image from "next/image";
+import Link from 'next/link'
 import { ReactionType } from "../interface/reactionType.enum";
 import LoveIcon from "./reactions/LoveIcon";
 import HahaIcon from "./reactions/HahaIcon";
 import WowIcon from "./reactions/WowIcon";
 import SadIcon from "./reactions/SadIcon";
 import AngryIcon from "./reactions/AngryIcon";
-import Link from "next/link";
 interface FeedProps {
   item: IFeed;
   currentUser: IUser;
@@ -180,13 +179,17 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                   />
                   <div>
                     <Text h5>{author.fullname}</Text>
-                    <Text
-                      weight="semibold"
-                      size={12}
-                      css={{ color: "$gray600" }}
-                    >
-                      {dayjs(createdAt).fromNow()}
-                    </Text>
+                    <Link href={`/post/${item._id}`}>
+                      <LinkStyle underline>
+                        <Text
+                          weight="semibold"
+                          size={12}
+                          css={{ color: "$gray600" }}
+                        >
+                          {dayjs(createdAt).fromNow()}
+                        </Text>
+                      </LinkStyle>
+                    </Link>
                   </div>
                 </Grid>
               </Link>
