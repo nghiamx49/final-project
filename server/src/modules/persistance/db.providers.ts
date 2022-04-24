@@ -9,6 +9,7 @@ import { Story } from 'src/schemas/story.schema';
 import { User } from 'src/schemas/user.schema';
 import { OTP } from 'src/schemas/otpvalidation.schema';
 import { FriendList } from 'src/schemas/friendList.schema';
+import { Notification } from 'src/schemas/notification.schema';
 
 export const databaseProviders = [
   {
@@ -84,5 +85,12 @@ export const friendListProvider = {
   provide: 'FRIEND_LIST_MODEL',
   useFactory: (connection: mongoose.Connection) =>
     connection.model('FriendLists', FriendList),
+  inject: ['DATABASE_CONNECTION'],
+};
+
+export const notificationProvider = {
+  provide: 'NOTIFICATION_MODEL',
+  useFactory: (connection: mongoose.Connection) =>
+    connection.model('Notifications', Notification),
   inject: ['DATABASE_CONNECTION'],
 };

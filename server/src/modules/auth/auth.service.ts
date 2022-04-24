@@ -12,7 +12,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly passwordEncoder: PasswordEncoder,
-    private readonly friendListRepository: FriendListRepository
+    private readonly friendListRepository: FriendListRepository,
   ) {}
 
   async login(user: UserDocument) {
@@ -23,7 +23,7 @@ export class AuthService {
     };
   }
 
-  async changePassword(email:string , newPassword: string): Promise<void> {
+  async changePassword(email: string, newPassword: string): Promise<void> {
     try {
       await this.userRepository.findOneAndUpdate(
         { email: email },
@@ -31,26 +31,30 @@ export class AuthService {
       );
       return;
     } catch (error) {
-      throw new BadRequestException('Password failed to change')
+      throw new BadRequestException('Password failed to change');
     }
   }
 
   async register(registerDto: RegisterDto): Promise<void> {
     try {
       const { email } = registerDto;
-      const findUser: UserDocument = await this.userRepository.findOne({ email });
+      const findUser: UserDocument = await this.userRepository.findOne({
+        email,
+      });
       if (findUser) {
         throw new Error('Account already existed');
       } else {
-        const age = new Date().getFullYear() - new Date(registerDto.dateOfBirth).getFullYear();
+        const age =
+          new Date().getFullYear() -
+          new Date(registerDto.dateOfBirth).getFullYear();
         const account: UserDocument = await this.userRepository.create({
           ...registerDto,
           age,
           password: this.passwordEncoder.encodePassword(registerDto.password),
         });
         await this.friendListRepository.create({
-          user: account
-        })
+          user: account,
+        });
         return;
       }
     } catch (error) {

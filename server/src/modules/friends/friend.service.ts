@@ -101,18 +101,28 @@ export class FriendService {
   async getAllFriendRequests(userId: string): Promise<UserResponseDto[]> {
     const sender = await this.userRepository.findOne({ _id: userId });
     const allSentFriendRequests: FriendRequestDocument[] =
-      await this.friendRepository.find({
-        sender: sender,
-        status: FriendRequest_Status.PENDING,
-      }, null, {populate: 'sender receiver', sort: {createdAt: -1}});
-    const listWaitingForResponse: Promise<UserResponseDto>[] = allSentFriendRequests.map(
-      async (item: FriendRequestDocument): Promise<UserResponseDto> =>
-        {const checkStatus = await this.checkCurrentFriendStatus(
+      await this.friendRepository.find(
+        {
+          sender: sender,
+          status: FriendRequest_Status.PENDING,
+        },
+        null,
+        { populate: 'sender receiver', sort: { createdAt: -1 } },
+      );
+    const listWaitingForResponse: Promise<UserResponseDto>[] =
+      allSentFriendRequests.map(
+        async (item: FriendRequestDocument): Promise<UserResponseDto> => {
+          const checkStatus = await this.checkCurrentFriendStatus(
             userId,
             item.receiver._id.toString(),
           );
-        return new UserResponseDto(item.receiver, item._id.toString(), checkStatus);}
-    );
+          return new UserResponseDto(
+            item.receiver,
+            item._id.toString(),
+            checkStatus,
+          );
+        },
+      );
     return Promise.all(listWaitingForResponse);
   }
 
@@ -121,10 +131,14 @@ export class FriendService {
   ): Promise<UserResponseDto[]> {
     const receiver = await this.userRepository.findOne({ _id: userId });
     const allSentFriendRequests: FriendRequestDocument[] =
-      await this.friendRepository.find({
-        receiver: receiver,
-        status: FriendRequest_Status.PENDING,
-      }, null, {populate: 'sender receiver', sort: {createdAt: -1}});
+      await this.friendRepository.find(
+        {
+          receiver: receiver,
+          status: FriendRequest_Status.PENDING,
+        },
+        null,
+        { populate: 'sender receiver', sort: { createdAt: -1 } },
+      );
     const listWaitingForAccept: Promise<UserResponseDto>[] =
       allSentFriendRequests.map(
         async (item: FriendRequestDocument): Promise<UserResponseDto> => {
@@ -132,7 +146,11 @@ export class FriendService {
             userId,
             item.sender._id.toString(),
           );
-          return new UserResponseDto(item.sender,item._id.toString(), checkStatus);
+          return new UserResponseDto(
+            item.sender,
+            item._id.toString(),
+            checkStatus,
+          );
         },
       );
     return Promise.all(listWaitingForAccept);
@@ -145,16 +163,15 @@ export class FriendService {
           user: userId,
         });
       await userFriendList.populate('allFriends');
-      const response =
-        userFriendList.allFriends.map(
-          async (user: UserDocument): Promise<UserResponseDto> => {
-            const friendStatus = await this.checkCurrentFriendStatus(
-              userId,
-              user._id.toString(),
-            );
-            return new UserResponseDto(user,null, friendStatus);
-          },
-        );
+      const response = userFriendList.allFriends.map(
+        async (user: UserDocument): Promise<UserResponseDto> => {
+          const friendStatus = await this.checkCurrentFriendStatus(
+            userId,
+            user._id.toString(),
+          );
+          return new UserResponseDto(user, null, friendStatus);
+        },
+      );
       return await Promise.all(response);
     } catch (error) {
       throw new Error(error);

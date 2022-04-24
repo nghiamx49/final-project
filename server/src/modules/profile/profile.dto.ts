@@ -34,7 +34,6 @@ export class UserResponseDto extends UserBaseDto {
   socketId: string;
 }
 
-
 export class UpdateAccountDto {
   fullname?: string;
   dateOfBirth?: Date;

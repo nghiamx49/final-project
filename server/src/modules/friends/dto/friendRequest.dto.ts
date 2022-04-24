@@ -1,4 +1,3 @@
 export class FriendRequestDTO {
-    receiverId: string
+  receiverId: string;
 }
-

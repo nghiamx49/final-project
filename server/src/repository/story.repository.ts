@@ -5,9 +5,7 @@ import { StoryDocument } from 'src/schemas/story.schema';
 
 @Injectable()
 export class StoryRepository extends BaseRepository<StoryDocument> {
-  constructor(
-    @Inject('STORY_MODEL') storyModel: Model<StoryDocument>,
-  ) {
+  constructor(@Inject('STORY_MODEL') storyModel: Model<StoryDocument>) {
     super(storyModel);
   }
 }

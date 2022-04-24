@@ -4,7 +4,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { EnvironmentConfigModule } from 'src/config/config.module';
 import { EnvironmentConfigService } from 'src/config/environment-config.service';
-import { LocalStrategy, JwtStrategy } from 'src/middleware/authenticate.middleware';
+import {
+  LocalStrategy,
+  JwtStrategy,
+} from 'src/middleware/authenticate.middleware';
 import { RolesGuard } from 'src/middleware/authorize.middleware';
 import { FriendListRepository } from 'src/repository/friendList.repository';
 import { UserRepository } from 'src/repository/user.repository';
@@ -42,8 +45,8 @@ import { AuthService } from './auth.service';
       },
       inject: [EnvironmentConfigService],
     }),
-    DatabaseModule
+    DatabaseModule,
   ],
-  exports: [AuthService]
+  exports: [AuthService],
 })
 export class AuthModule {}

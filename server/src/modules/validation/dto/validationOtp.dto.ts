@@ -1,4 +1,4 @@
 export interface ValidationDTO {
-    email: string;
-    otp: number;
+  email: string;
+  otp: number;
 }

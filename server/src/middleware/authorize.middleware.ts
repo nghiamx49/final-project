@@ -8,17 +8,13 @@ import { Reflector } from '@nestjs/core';
 import { User } from 'src/schemas/user.schema';
 import { Observable } from 'rxjs';
 
-
-
 export enum Role {
-    USER = 'User',
-    ADMIN = 'Admin'
+  USER = 'User',
+  ADMIN = 'Admin',
 }
-
 
 export const ROLES_KEY = 'roles';
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
-
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -35,7 +31,6 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user?.role  === role);
+    return requiredRoles.some((role) => user?.role === role);
   }
 }
-

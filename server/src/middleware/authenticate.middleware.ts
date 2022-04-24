@@ -47,6 +47,3 @@ export class JwtAuthenticateGuard extends AuthGuard('jwt') {}
 
 @Injectable()
 export class LocalAuthenticateGuard extends AuthGuard('local') {}
-
-
-

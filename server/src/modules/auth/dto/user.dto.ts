@@ -1,8 +1,8 @@
-import {User, UserDocument} from 'src/schemas/user.schema'
-import {Types} from 'mongoose';
+import { User, UserDocument } from 'src/schemas/user.schema';
+import { Types } from 'mongoose';
 import { StatusChecking } from 'src/modules/friends/dto/friendStatusChecking.dto';
 export abstract class UserBaseDto {
-    email: string;
+  email: string;
 }
 
 export class LoginDto extends UserBaseDto {
@@ -17,7 +17,11 @@ export class RegisterDto extends LoginDto {
 }
 
 export class UserResponseDto extends UserBaseDto {
-  constructor(userModel: UserDocument, requestId?: string, friendStatus?: StatusChecking) {
+  constructor(
+    userModel: UserDocument,
+    requestId?: string,
+    friendStatus?: StatusChecking,
+  ) {
     super();
     this.email = userModel.email;
     this.fullname = userModel.fullname;
@@ -32,8 +36,8 @@ export class UserResponseDto extends UserBaseDto {
     this.username = userModel.username;
     this.friendStatus = friendStatus;
     this.requestId = requestId;
-     this.isOnline = userModel.isOnline;
-     this.socketId = userModel.socketId;
+    this.isOnline = userModel.isOnline;
+    this.socketId = userModel.socketId;
   }
   _id: string;
   role: string;

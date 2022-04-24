@@ -93,8 +93,8 @@ export class FeedController {
   ): Promise<void> {
     try {
       const reactions = await this.feedService.removeReaction(
-      postId,
-      reactionId
+        postId,
+        reactionId,
       );
       response.status(HttpStatus.OK).json({ data: reactions });
     } catch (error) {

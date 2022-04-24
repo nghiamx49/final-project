@@ -41,36 +41,43 @@ export class ValidationService {
           text: `Your recovery OTP: ${newValidation.otp}`,
         });
       } catch (error) {
-          console.log(error);
+        console.log(error);
         throw new BadRequestException('Email cannot sent, please retry later');
       }
     }
   }
 
   async validationOTP(email: string, otp: number): Promise<void> {
-      const checkAccountExisted = await this.userRepository.findOne({email: email});
+    const checkAccountExisted = await this.userRepository.findOne({
+      email: email,
+    });
     const checkValidationExisted: OtpValidationDocument =
-      await this.optRepository.findOne({ otp: otp, user: checkAccountExisted._id });
+      await this.optRepository.findOne({
+        otp: otp,
+        user: checkAccountExisted._id,
+      });
     if (!checkAccountExisted) {
       throw new BadRequestException(
         'This email is not belong to any account, please try again later',
       );
     }
-    if(!checkValidationExisted) {
-        throw new BadRequestException(
-          'This OTP is incorrect, please try again',
-        );
+    if (!checkValidationExisted) {
+      throw new BadRequestException('This OTP is incorrect, please try again');
     }
-    if(checkValidationExisted.otp !== otp) {
-                throw new BadRequestException(
-                  'This OTP is incorrect, please try again',
-                );
+    if (checkValidationExisted.otp !== otp) {
+      throw new BadRequestException('This OTP is incorrect, please try again');
     }
-    const checkExpired: boolean = new Date().getTime() - new Date(checkValidationExisted.createdAt).getTime() < this.expireIn;
-      console.log(checkExpired);
+    const checkExpired: boolean =
+      new Date().getTime() -
+        new Date(checkValidationExisted.createdAt).getTime() <
+      this.expireIn;
+    console.log(checkExpired);
     if (!checkExpired) {
-        throw new BadRequestException('This OTP is expired, please resend')
+      throw new BadRequestException('This OTP is expired, please resend');
     }
-    await this.optRepository.findOneAndDelete({otp: otp, user: checkAccountExisted._id});
+    await this.optRepository.findOneAndDelete({
+      otp: otp,
+      user: checkAccountExisted._id,
+    });
   }
 }

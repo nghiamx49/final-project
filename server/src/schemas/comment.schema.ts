@@ -3,11 +3,11 @@ import { CpuInfo } from 'os';
 import { UserDocument } from './user.schema';
 
 export interface CommentDocument extends Document {
-    _id: Types.ObjectId
-    content: string
-    author: UserDocument
-    replies?: CommentDocument[];
-    createdAt: Date;
+  _id: Types.ObjectId;
+  content: string;
+  author: UserDocument;
+  replies?: CommentDocument[];
+  createdAt: Date;
 }
 
 export const Comment = new Schema(

@@ -3,7 +3,6 @@ import { ReactionDocument } from './reaction.schema';
 import { StoryDocument } from './story.schema';
 import { UserDocument } from './user.schema';
 
-
 export interface MessageDocument extends Document {
   _id: Types.ObjectId;
   content: string;

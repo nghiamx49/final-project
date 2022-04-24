@@ -1,11 +1,23 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
-import { Response } from "express";
-import { FriendRequest_Status } from "src/interface/status.interface";
-import { JwtAuthenticateGuard } from "src/middleware/authenticate.middleware";
-import { UserResponseDto } from "../auth/dto/user.dto";
-import { FriendRequestDTO } from "./dto/friendRequest.dto";
-import { StatusChecking } from "./dto/friendStatusChecking.dto";
-import { FriendService } from "./friend.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { FriendRequest_Status } from 'src/interface/status.interface';
+import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { UserResponseDto } from '../auth/dto/user.dto';
+import { FriendRequestDTO } from './dto/friendRequest.dto';
+import { StatusChecking } from './dto/friendStatusChecking.dto';
+import { FriendService } from './friend.service';
 
 @Controller('api/friends')
 @UseGuards(JwtAuthenticateGuard)

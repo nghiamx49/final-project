@@ -30,6 +30,6 @@ import { FeedService } from './feed.service';
     CommentRepository,
     FriendListRepository,
   ],
-  imports: [DatabaseModule]
+  imports: [DatabaseModule],
 })
 export class FeedModule {}

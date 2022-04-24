@@ -1,10 +1,20 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Param, Put, Request, Res, UseGuards } from "@nestjs/common";
-import { Response } from "express";
-import { request } from "http";
-import { JwtAuthenticateGuard } from "src/middleware/authenticate.middleware";
-import { UpdateAccountDto } from "./profile.dto";
-import { ProfileService } from "./profile.service";
-
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Put,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { request } from 'http';
+import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { UpdateAccountDto } from './profile.dto';
+import { ProfileService } from './profile.service';
 
 @Controller('api/profile')
 export class ProfileController {
@@ -30,7 +40,10 @@ export class ProfileController {
     @Request() request,
   ) {
     try {
-      await this.profileService.updateProfile(request.user._id, updateProfileDto);
+      await this.profileService.updateProfile(
+        request.user._id,
+        updateProfileDto,
+      );
       res.status(HttpStatus.OK).json({ message: 'profile updated' });
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'updated failed' });

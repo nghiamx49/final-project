@@ -19,7 +19,7 @@ import { ValidationService } from './validation.service';
     OTPRepository,
     UserRepository,
     otpProvider,
-    userProvider
+    userProvider,
   ],
   controllers: [ValidationController],
 })

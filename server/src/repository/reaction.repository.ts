@@ -5,7 +5,9 @@ import { ReactionDocument } from 'src/schemas/reaction.schema';
 
 @Injectable()
 export class ReactionRepository extends BaseRepository<ReactionDocument> {
-  constructor(@Inject('REACTION_MODEL') reactionModel: Model<ReactionDocument>) {
+  constructor(
+    @Inject('REACTION_MODEL') reactionModel: Model<ReactionDocument>,
+  ) {
     super(reactionModel);
   }
 }

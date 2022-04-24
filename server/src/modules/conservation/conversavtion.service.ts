@@ -30,11 +30,13 @@ export class ConservationService {
       },
     );
 
-    return userConservations.sort(
+    return userConservations
+      .sort(
         (a, b) =>
           new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
           new Date(a.messages[a.messages.length - 1].createdAt).getTime(),
-      ).map(conservation => new ConservationDto(conservation));
+      )
+      .map((conservation) => new ConservationDto(conservation));
   }
 
   async getSingleConservation(
@@ -50,20 +52,28 @@ export class ConservationService {
         populate: [
           { path: 'members' },
           { path: 'messages', populate: { path: 'sender' } },
-          {path: 'readBy'}
+          { path: 'readBy' },
         ],
       },
     );
     return new ConservationDto(conservationInDB);
   }
 
-  async markConservationAsRead(conservationId: string, userId: string): Promise<ConservationDto[]> {
-    const user = await this.userRepository.findOne({_id: userId});
-    const conservation = await this.conservationRepository.findOne({_id: conservationId});
+  async markConservationAsRead(
+    conservationId: string,
+    userId: string,
+  ): Promise<ConservationDto[]> {
+    const user = await this.userRepository.findOne({ _id: userId });
+    const conservation = await this.conservationRepository.findOne({
+      _id: conservationId,
+    });
     const updatedReader = [...conservation.readBy, user];
-    await this.conservationRepository.findOneAndUpdate({_id: conservationId}, {readBy: updatedReader});
+    await this.conservationRepository.findOneAndUpdate(
+      { _id: conservationId },
+      { readBy: updatedReader },
+    );
     const notReadConservations = await this.conservationRepository.find(
-      {members: userId},
+      { members: userId },
       null,
       {
         populate: [
@@ -93,26 +103,31 @@ export class ConservationService {
       content: newMessage.content,
       contentMedia: newMessage.contentMedia,
     });
-    const conservationInDB = await this.conservationRepository.findOne({
-      _id: newMessage.conservationId,
-    }, null, {populate: {path: 'readBy'}});
+    const conservationInDB = await this.conservationRepository.findOne(
+      {
+        _id: newMessage.conservationId,
+      },
+      null,
+      { populate: { path: 'readBy' } },
+    );
     if (conservationInDB) {
-          const updateReader = conservationInDB.readBy.filter(
-            (user) => user._id.toString() === newMessage.senderId,
-          );
       const updatedMessages = [...conservationInDB.messages, createdMessage];
       await this.conservationRepository.findOneAndUpdate(
         { _id: conservationInDB._id },
-        { messages: updatedMessages, readBy: updateReader },
+        { messages: updatedMessages, readBy: [sender] },
       );
     } else {
       await this.conservationRepository.create({
         members: [sender, receiver],
         messages: [createdMessage],
+        readBy: [sender],
       });
     }
     if (receiver.isOnline) {
-      this.reatimeGateway.getServer().to(receiver.socketId).emit('conservation-updated')
+      this.reatimeGateway
+        .getServer()
+        .to(receiver.socketId)
+        .emit('conservation-updated');
       this.reatimeGateway
         .getServer()
         .to(receiver.socketId)

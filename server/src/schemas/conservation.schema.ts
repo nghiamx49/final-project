@@ -9,11 +9,13 @@ export interface ConservationDocument extends Document {
   createdAt?: Date;
   updatedAt?: Date;
   readBy: UserDocument[];
-};
+}
 
-
-export const Conservation = new Schema({
-  members: [{type: Types.ObjectId, ref: 'Users'}],
-  messages: [{type: Types.ObjectId, ref: 'Messages'}],
-  readBy: [{type: Types.ObjectId, ref: 'Users'}]
-}, {timestamps: true});
+export const Conservation = new Schema(
+  {
+    members: [{ type: Types.ObjectId, ref: 'Users' }],
+    messages: [{ type: Types.ObjectId, ref: 'Messages' }],
+    readBy: [{ type: Types.ObjectId, ref: 'Users' }],
+  },
+  { timestamps: true },
+);

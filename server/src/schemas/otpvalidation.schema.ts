@@ -10,7 +10,7 @@ export interface OtpValidationDocument extends Document {
 
 export const OTP = new Schema(
   {
-    user: {type: Types.ObjectId, ref: 'Users'},
+    user: { type: Types.ObjectId, ref: 'Users' },
     otp: Number,
   },
   { timestamps: true },

@@ -13,7 +13,10 @@ import {
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { RegisterDto } from './dto/user.dto';
-import { JwtAuthenticateGuard, LocalAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import {
+  JwtAuthenticateGuard,
+  LocalAuthenticateGuard,
+} from 'src/middleware/authenticate.middleware';
 import { Roles, Role, RolesGuard } from 'src/middleware/authorize.middleware';
 
 @Controller('api/auth')
@@ -38,11 +41,10 @@ export class AuthController {
   ) {
     try {
       await this.authService.changePassword(email, password);
-      res.status(HttpStatus.OK).json({ message: "Password changed" });
+      res.status(HttpStatus.OK).json({ message: 'Password changed' });
     } catch (error) {
-      res.status(HttpStatus.BAD_REQUEST).json({message: error.message})
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
     }
-
   }
 
   @Post('register')

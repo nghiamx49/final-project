@@ -9,7 +9,7 @@ import { CombineModude } from './modules/combine.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [EnvironmentConfigModule],
       useFactory: (database: EnvironmentConfigService) => {

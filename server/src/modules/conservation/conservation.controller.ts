@@ -76,7 +76,7 @@ export class ConservationController {
         conservationId,
         req.user._id,
       );
-      response.status(HttpStatus.OK).json({data });
+      response.status(HttpStatus.OK).json({ data });
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
     }
