@@ -10,6 +10,8 @@ import FriendSidePanel from "../layout/FriendSidePanelLayout";
 import SocketProvider from "./socketContext";
 import { ChatWidgetProvider } from "./ChatWidgetContext";
 import ChatWidget from "../components/ChatPannel/ChatWidget";
+import CallNotification from "../components/Call/CallNotification";
+import VideoPlayer from "../components/Call/VideoPlayer";
 
 const protectedRoute = (Component: any): any => {
     return (props: any) => {
@@ -27,6 +29,8 @@ const protectedRoute = (Component: any): any => {
               <ChatWidgetProvider>
                 <>
                   <ChatWidget />
+                  <CallNotification />
+                  <VideoPlayer />
                   <SideBarLayout>
                     <Component {...props} />
                   </SideBarLayout>
@@ -38,6 +42,8 @@ const protectedRoute = (Component: any): any => {
               <ChatWidgetProvider>
                 <>
                   <ChatWidget />
+                  <CallNotification />
+                  <VideoPlayer />
                   <FriendSidePanel>
                     <Component {...props} />
                   </FriendSidePanel>
@@ -49,6 +55,8 @@ const protectedRoute = (Component: any): any => {
               <ChatWidgetProvider>
                 <>
                   <ChatWidget />
+                  <CallNotification />
+                  <VideoPlayer />
                   <OnlyNavBarLayout>
                     <Component {...props} />
                   </OnlyNavBarLayout>

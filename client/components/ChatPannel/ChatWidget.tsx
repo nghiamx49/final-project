@@ -39,7 +39,7 @@ import {
   sendMessage,
 } from "../../axiosClient/chat.api";
 import { MessageItem } from "./MessageItem";
-import { SocketContext } from "../../hocs/socketContext";
+import { ISocketContext, SocketContext } from "../../hocs/socketContext";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { uploader } from "../../axiosClient/cloudinary.api";
 
@@ -49,13 +49,13 @@ interface Props {
 
 const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
   const { open, setOpen, friend, setFriend } = useContext(ChatWidgetContext);
-
+  const {callFriends} = useContext(SocketContext) as ISocketContext;
   const { user, token } = authenticateReducer;
 
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   const [content, setContent] = useState<string>("");
-  const socket = useContext(SocketContext);
+  const {socket} = useContext(SocketContext) as ISocketContext;
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [files, setFiles] = useState<any>([]);
   const [previewList, setPreviewList] = useState<string[]>([]);
@@ -242,7 +242,12 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
             </Text>
           </Container>
           <Container css={{ padding: 0, margin: 0, width: "fit-content" }}>
-            <FaVideo size={25} color="#0070F3" />
+            <FaVideo
+              size={25}
+              color="#0070F3"
+              cursor="pointer"
+              onClick={() => callFriends(friend?._id)}
+            />
             <IoMdClose
               size={25}
               color="#0070F3"

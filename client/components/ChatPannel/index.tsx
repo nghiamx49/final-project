@@ -7,7 +7,7 @@ import { IRootState } from "../../store/interface/root.interface";
 import { IUser } from "../../store/interface/user.interface";
 import ChatItem from "./ChatItem";
 import {FaSearch, FaSmile, FaVideo} from 'react-icons/fa'
-import { socket, SocketContext } from "../../hocs/socketContext";
+import { ISocketContext, socket, SocketContext } from "../../hocs/socketContext";
 import { IoMdClose } from "react-icons/io";
 import { NimblePicker } from "emoji-mart";
 import { SendButton } from "../SendButton";
@@ -23,7 +23,7 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
     const {isDark} = useTheme();
     const [activeChatWithFriend, setActiveChatWithFriend] = useState<IUser | null>(null);
 
-    const socket = useContext(SocketContext);
+    const {socket} = useContext(SocketContext) as ISocketContext;
 
     const handleFriendOnline = useCallback( (data: IUser) => {
         setAllFriends((prev) => {

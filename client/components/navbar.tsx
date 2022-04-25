@@ -35,10 +35,10 @@ import { IConservation } from "../type/conservation.interface";
 import { getAllConservations, markConservationasRead } from "../axiosClient/chat.api";
 import { IUser } from "../store/interface/user.interface";
 import { ChatWidgetContext } from "../hocs/ChatWidgetContext";
-import { SocketContext } from "../hocs/socketContext";
+import { socket } from "../hocs/socketContext";
 import { INotification } from "../type/notification.interface";
 import { getAllNotification, markNotifcationAsRead } from "../axiosClient/notification.api";
-import NotificationContainer from "./NotificationContainer";
+import NotificationContainer from "./NotificationContainer"; 
 interface RouterLink {
   link: string;
   title: string;
@@ -71,8 +71,6 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const { isAuthenticated, user, token } = authenticateReducer;
   const {setOpen, setFriend} = useContext(ChatWidgetContext);
 
-  const socket = useContext(SocketContext);
-  
   const navigateToLoginPage = (): void => {
     push("/login");
   };
@@ -80,6 +78,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   const navigateToRegisterPage = (): void => {
     push("/register");
   };
+
 
   const loadAllConservation = useCallback(async () => {
     if(isAuthenticated) {
@@ -129,6 +128,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   }, [loadAllConservation])
 
   useEffect(() => {
+   
     socket.on("conservation-updated", () => {
       loadAllConservation();
     });
