@@ -1,0 +1,32 @@
+version: "3.3"
+
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    volumes:
+      - .docker/data/db:/data/db
+    ports:
+      - 27017:27017
+  client:
+    container_name: client
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+  server:
+    container_name: server
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./back-end
+    env_file:
+      - ./back-end/.env.production
+    ports:
+      - "8080:80"
+    depends_on:
+      - mongo
