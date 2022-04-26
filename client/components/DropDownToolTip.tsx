@@ -22,7 +22,7 @@ const DropDownPanel: FC<DropDownPanelProps> = ({avatar, fullname, profileLink, l
           isDark ? { backgroundColor: "#1F1F1E", padding: 0 } : { padding: 0 }
         }
       >
-        <NextLink href={profileLink}>
+        <NextLink href={profileLink} passHref>
           <Link block color="primary">
             <Card.Header>
               <Grid.Container gap={0} alignItems="center">

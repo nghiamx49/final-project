@@ -314,6 +314,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         >
           {previewAvatar.length > 0 ? (
             <Image
+            alt="avatar preview"
               src={previewAvatar}
               width={1200}
               height={500}
@@ -360,6 +361,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         <Grid css={{ positon: "relative", overflow: "auto" }}>
           <div style={{ borderRadius: 0 }}>
             <Image
+            alt="cover image"
               src={
                 (isYou ? user?.cover : profile?.cover) ||
                 "/images/default_cover.jpg"
@@ -445,6 +447,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
                     <Link
                       key={index}
                       href={`/profile/${friend?.username || friend._id}`}
+                      passHref
                     >
                       <Avatar
                         src={friend?.avatar || "/images/default_avt.jpg"}

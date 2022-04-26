@@ -13,7 +13,7 @@ export interface IUser {
   avatar?: string;
   cover?: string;
   allFriends: Array<IUser> | [];
-  friendStatus: CheckingStatus;
+  friendStatus?: CheckingStatus;
   _id: string;
   requestId?: string;
   socketId?: string;

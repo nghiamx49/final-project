@@ -13,7 +13,7 @@ interface SideBarItemProps {
 const SideBarItem: FC<SideBarItemProps> = ({title, Icon, link}) => {
     return (
       <Row fluid>
-        <NextLink href={link}>
+        <NextLink href={link} passHref>
           <Link block color="primary" css={{dislay: "flex", columnGap: 10, alignItems: 'center', width: 400, paddingTop: 20, paddingBottom: 20}}>
             <Icon size={30} />
             <Text h5>{title}</Text>

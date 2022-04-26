@@ -70,6 +70,7 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                   {contentMedia?.length > 0 && (
                     <div style={{ position: "relative" }}>
                       <Image
+                      alt="mesasage image cotent"
                         onClick={imageOpen}
                         className="message-image"
                         width={150}
@@ -150,6 +151,7 @@ export const MessageItem: FC<Props> = ({currentUser, message}) => {
                   {contentMedia?.length > 0 && (
                     <div style={{ position: "relative" }}>
                       <Image
+                      alt="message image content"
                         onClick={imageOpen}
                         className="message-image"
                         width={150}

@@ -123,7 +123,7 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
         setMessages((prev) => [...prev, data]);
       }
     });
-  }, []);
+  }, [setFriend, setOpen, socket, messages]);
 
   const sendNewMessage = async () => {
     if (files.length > 0) {
@@ -341,6 +341,7 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
                   {previewList.map((previewImage, index) => (
                     <Grid key={index} xs={4} css={{ height: "fit-content" }}>
                       <Image
+                        alt="preview media"
                         width={100}
                         height={100}
                         objectFit="cover"

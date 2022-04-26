@@ -49,7 +49,7 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
         socket.off('friend-online')
         socket.off('friend-offline');
       }
-    }, [])
+    }, [handleFriendOffline, handleFriendOnline, socket])
 
   const {token} = authenticateReducer;
    const loadFriends = useCallback(async (): Promise<void> => {

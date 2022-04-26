@@ -14,8 +14,6 @@ interface IContext {
 
 export const ChatWidgetContext = createContext<IContext>({});
 
-    
-
 export const ChatWidgetProvider: FC<Props> = ({ children }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [friend, setFriend] = useState<IUser | null>(null);

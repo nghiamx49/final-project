@@ -124,7 +124,7 @@ const Login: NextPage<LoginPageProps> = ({doLogin}: LoginPageProps) => {
                   <Row justify="center">
                     <Text>
                       Forgot Password?{" "}
-                      <NextLink href="/forgotpassword">
+                      <NextLink href="/forgotpassword" passHref>
                         <Link block>Click Here</Link>
                       </NextLink>
                     </Text>

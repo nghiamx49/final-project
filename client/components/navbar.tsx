@@ -96,7 +96,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
      setNotifications(data.data);
    }
  }
-  }, [])
+  }, [isAuthenticated, token])
 
   const markAsRead = async (conservationId: string, isRead: boolean, friend: IUser) => {
    if(!isRead) {
@@ -125,7 +125,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
   useEffect(() => {
     loadAllConservation();
     loadNotifications();
-  }, [loadAllConservation])
+  }, [loadAllConservation, loadNotifications])
 
   useEffect(() => {
    
@@ -139,7 +139,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
       socket.off("conservation-updated");
       socket.off("new-notification");
     }
-  }, [])
+  }, [loadAllConservation, loadNotifications])
 
   const logoutHandler = () => {
     doLogout();
@@ -166,10 +166,11 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Grid.Container alignItems="center">
-              <NextLink href="/">
+              <NextLink href="/" passHref>
                 <Link style={{ marginRight: 10 }}>
                   <Image
                     color="white"
+                    alt="app logo"
                     width={40}
                     height={40}
                     src={"/images/logo.png"}
@@ -188,9 +189,9 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
           </Grid>
           <Grid>
             <Grid.Container gap={3} alignItems="center" style={{ padding: 0 }}>
-              {router.map(({ link, Icon }, index) => (
+              {isAuthenticated && router.map(({ link, Icon }, index) => (
                 <Grid key={index}>
-                  <NextLink href={link}>
+                  <NextLink href={link} passHref>
                     <Link
                       block
                       color={asPath === link ? "primary" : "text"}
@@ -208,7 +209,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
               {isAuthenticated ? (
                 <>
                   <Grid>
-                    <NextLink href={`/profile/${user?.username || user?._id}`}>
+                    <NextLink href={`/profile/${user?.username || user?._id}`} passHref>
                       <Link
                         block
                         color={

@@ -65,7 +65,7 @@ const FriendItem: FC<ItemProps> = ({
         </Modal.Footer>
       </Modal>
       <Grid xs={2} css={{ cursor: "pointer" }}>
-        <NextLink href={`/profile/${user?.username || user?._id}`}>
+        <NextLink href={`/profile/${user?.username || user?._id}`} passHref>
           <Card css={isDark ? { backgroundColor: "#1F1F1E" } : {}}>
             <Card.Body css={{ padding: 0 }}>
               <Card.Image

@@ -7,7 +7,7 @@ import { EmailUtil } from 'src/utils/email.util';
 
 @Injectable()
 export class ValidationService {
-  private readonly expireIn: number = 60 * 1000;
+  private readonly expireIn: number = 60 * 1000 * 5;
   constructor(
     private readonly optRepository: OTPRepository,
     private readonly userRepository: UserRepository,
@@ -62,9 +62,6 @@ export class ValidationService {
       );
     }
     if (!checkValidationExisted) {
-      throw new BadRequestException('This OTP is incorrect, please try again');
-    }
-    if (checkValidationExisted.otp !== otp) {
       throw new BadRequestException('This OTP is incorrect, please try again');
     }
     const checkExpired: boolean =

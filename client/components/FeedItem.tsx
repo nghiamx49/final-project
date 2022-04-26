@@ -162,7 +162,10 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
         <Card css={{ backgroundColor: isDark ? "#1F1F1E" : "" }} cover>
           <Card.Header css={{ position: "relative", zIndex: 0 }}>
             <Grid.Container>
-              <Link href={`/profile/${author?.username || author?._id}`}>
+              <Link
+                href={`/profile/${author?.username || author?._id}`}
+                passHref
+              >
                 <Grid
                   css={{
                     display: "flex",
@@ -179,7 +182,7 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                   />
                   <div>
                     <Text h5>{author.fullname}</Text>
-                    <Link href={`/post/${item._id}`}>
+                    <Link href={`/post/${item._id}`} passHref>
                       <LinkStyle underline>
                         <Text
                           weight="semibold"
@@ -250,7 +253,7 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                 open={reactionOpen}
               >
                 <Modal.Header justify="flex-start">
-                  <Text h4>User's Reactions</Text>
+                  <Text h4>User&apos;s Reactions</Text>
                 </Modal.Header>
                 <Divider />
                 <Modal.Body>

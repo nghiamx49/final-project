@@ -57,7 +57,7 @@ const Profile: NextPage<PropfileProps> = ({
   const [isYou, setIsYou] = useState<boolean>(false);
   const [allPosts, setAllPosts] = useState<IFeed[]>([]);
 
-  const checkUserFriendStatus = async () => {
+  const checkUserFriendStatus = useCallback(async () => {
     if (errorCode) {
       push("/404");
     } else {
@@ -65,7 +65,7 @@ const Profile: NextPage<PropfileProps> = ({
       const { data } = await checkFriendStatus(profile._id, token);
       setFriendStatus(data.status);
     }
-  };
+  }, [profile, token, push, errorCode, user._id]);
 
   const loadUserPost = useCallback(async () => {
     const { data, status } = await getUserPosts(token, profile._id);
@@ -77,7 +77,7 @@ const Profile: NextPage<PropfileProps> = ({
   useEffect(() => {
     checkUserFriendStatus();
     loadUserPost();
-  }, [query, loadUserPost]);
+  }, [query, loadUserPost, checkUserFriendStatus]);
 
   const handleAddFriend = async () => {
     const { status } = await handleAddNewFriend(profile._id, token);
@@ -207,6 +207,7 @@ const Profile: NextPage<PropfileProps> = ({
                     <Grid key={index} xs={4}>
                       <NextLink
                         href={`/profile/${user?.username || user?._id}`}
+                        passHref
                       >
                         <Link
                           css={{
@@ -218,6 +219,7 @@ const Profile: NextPage<PropfileProps> = ({
                             width={150}
                             className={styles.friendImage}
                             height={150}
+                            alt="image avatar"
                             src={user?.avatar || "/images/default_avt.jpg"}
                           />
                           <Spacer y={0.5} />

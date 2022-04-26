@@ -37,6 +37,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                 href={`/profile/${
                   comment.author?.username || comment.author?._id
                 }`}
+                passHref
               >
                 <Avatar
                   bordered
@@ -66,6 +67,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                   href={`/profile/${
                     comment.author?.username || comment.author?._id
                   }`}
+                  passHref
                 >
                   <Text b css={{ cursor: "pointer" }}>
                     {comment.author.fullname}
@@ -118,6 +120,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                       href={`/profile/${
                         item.author?.username || item.author?._id
                       }`}
+                      passHref
                     >
                       <Avatar
                         bordered
@@ -146,6 +149,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                         href={`/profile/${
                           item.author?.username || item.author?._id
                         }`}
+                        passHref
                       >
                         <Text b>{item.author.fullname}</Text>
                       </Link>
@@ -171,6 +175,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                       href={`/profile/${
                         item.author?.username || item.author?._id
                       }`}
+                      passHref
                     >
                       <Avatar
                         css={{ cursor: "pointer" }}
@@ -200,6 +205,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                         href={`/profile/${
                           item.author?.username || item.author?._id
                         }`}
+                        passHref
                       >
                         <Text css={{ cursor: "pointer" }} b>
                           {item.author.fullname}

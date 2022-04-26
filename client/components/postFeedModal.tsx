@@ -211,6 +211,7 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
                       {previewList.map((previewImage, index) => (
                         <Grid key={index} xs={6}>
                           <Image
+                          alt="preview media"
                             width="100%"
                             height="100%"
                             objectFit="cover"
