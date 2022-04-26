@@ -23,9 +23,9 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile
-      context: ./back-end
+      context: ./server
     env_file:
-      - ./back-end/.env.production
+      - ./server/.env.production
     ports:
       - "8080:80"
     depends_on:
