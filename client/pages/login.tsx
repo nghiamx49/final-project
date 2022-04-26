@@ -50,12 +50,12 @@ const Login: NextPage<LoginPageProps> = ({doLogin}: LoginPageProps) => {
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Row>
-              <Text color="primary" h1>
-                Travelling
+              <Text css={{color: '$pink600'}} h1>
+                PetLove
               </Text>
             </Row>
             <Row>
-              <Text h2>Travel together with your friend</Text>
+              <Text h2 css={{maxWidth: 400}}>Let people love your pets, connect with annimal lovers</Text>
             </Row>
           </Grid>
           <Grid justify="center">
