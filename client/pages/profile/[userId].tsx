@@ -33,18 +33,17 @@ import Head from "next/head";
 
 interface PropfileProps {
   authenticateReducer: IAuthenciateState;
-  userProfile: IUser;
+  profile: IUser;
   errorCode: number;
   updateProfileInStore: Function;
 }
 
 const Profile: NextPage<PropfileProps> = ({
   authenticateReducer,
-  userProfile,
+  profile,
   errorCode,
   updateProfileInStore,
 }) => {
-  const [profile, setProfile] = useState<IUser>(userProfile);
   const [friendStatus, setFriendStatus] = useState<CheckingStatus>({
     senderId: "",
     status: FriendStatus.NOT_SENT,
@@ -61,11 +60,10 @@ const Profile: NextPage<PropfileProps> = ({
     if (errorCode) {
       push("/404");
     } else {
-      setIsYou(user?._id === profile._id);
       const { data } = await checkFriendStatus(profile._id, token);
       setFriendStatus(data.status);
     }
-  }, [profile, token, push, errorCode, user._id]);
+  }, []);
 
   const loadUserPost = useCallback(async () => {
     const { data, status } = await getUserPosts(token, profile._id);
@@ -77,7 +75,11 @@ const Profile: NextPage<PropfileProps> = ({
   useEffect(() => {
     checkUserFriendStatus();
     loadUserPost();
-  }, [query, loadUserPost, checkUserFriendStatus]);
+     setIsYou(user._id === profile._id);
+    return () => {
+      setIsYou(false);
+    }
+  }, [query]);
 
   const handleAddFriend = async () => {
     const { status } = await handleAddNewFriend(profile._id, token);
@@ -174,7 +176,6 @@ const Profile: NextPage<PropfileProps> = ({
             userId={user?._id}
             user={user}
             token={token}
-            setProfile={setProfile}
             updateGlobalState={updateProfileInStore}
           />
         </Container>
@@ -259,7 +260,7 @@ export const getServerSideProps: GetServerSideProps = async (
   const profileFilter: any = context.params?.userId;
   const { data, status } = await loadProfile(profileFilter);
   if (status === 200) {
-    return { props: { userProfile: data?.user } };
+    return { props: { profile: data?.user } };
   } else {
     return { props: { errorCode: status } };
   }

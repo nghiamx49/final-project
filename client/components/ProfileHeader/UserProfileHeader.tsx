@@ -51,7 +51,6 @@ interface UserProfileProps {
   updateGlobalState: Function;
   handleUnfriend: MouseEventHandler;
   handleCancel: MouseEventHandler;
-  setProfile: Function
 }
 
 const validationSchema = yup.object().shape({
@@ -84,7 +83,6 @@ const UserProfileHeader: FC<UserProfileProps> = ({
   updateGlobalState,
   handleCancel,
   handleUnfriend,
-  setProfile
 }) => {
   const [editAvatarOpen, setEditAvatarOpen] = useState<boolean>(false);
   const [editCoverOpen, setEditCoverOpen] = useState<boolean>(false);
