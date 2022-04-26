@@ -5,11 +5,12 @@ import { Reaction } from 'src/schemas/reaction.schema';
 import { Conservation } from 'src/schemas/conservation.schema';
 import { Message } from 'src/schemas/message.schema';
 import { FriendRequest } from 'src/schemas/friendRequest.schema';
-import { Story } from 'src/schemas/story.schema';
+// import { Story } from 'src/schemas/story.schema';
 import { User } from 'src/schemas/user.schema';
 import { OTP } from 'src/schemas/otpvalidation.schema';
 import { FriendList } from 'src/schemas/friendList.schema';
 import { Notification } from 'src/schemas/notification.schema';
+import { Room } from 'src/schemas/room.shcema';
 
 export const databaseProviders = [
   {
@@ -61,12 +62,7 @@ export const friendRequestProvider = {
   inject: ['DATABASE_CONNECTION'],
 };
 
-export const storyProvider = {
-  provide: 'STORY_MODEL',
-  useFactory: (connection: mongoose.Connection) =>
-    connection.model('Stories', Story),
-  inject: ['DATABASE_CONNECTION'],
-};
+
 export const userProvider = {
   provide: 'USER_MODEL',
   useFactory: (connection: mongoose.Connection) =>
@@ -94,3 +90,18 @@ export const notificationProvider = {
     connection.model('Notifications', Notification),
   inject: ['DATABASE_CONNECTION'],
 };
+
+export const roomProvider = {
+  provide: 'ROOM_MODEL',
+  useFactory: (connection: mongoose.Connection) =>
+    connection.model('Rooms', Room),
+  inject: ['DATABASE_CONNECTION'],
+};
+
+
+// export const storyProvider = {
+//   provide: 'STORY_MODEL',
+//   useFactory: (connection: mongoose.Connection) =>
+//     connection.model('Stories', Story),
+//   inject: ['DATABASE_CONNECTION'],
+// };

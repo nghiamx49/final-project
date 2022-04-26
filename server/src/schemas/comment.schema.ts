@@ -1,5 +1,4 @@
 import { Document, Schema, Types } from 'mongoose';
-import { CpuInfo } from 'os';
 import { UserDocument } from './user.schema';
 
 export interface CommentDocument extends Document {

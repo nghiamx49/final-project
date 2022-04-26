@@ -1,6 +1,5 @@
 import { Document, Schema, Types } from 'mongoose';
 import { ReactionDocument } from './reaction.schema';
-import { StoryDocument } from './story.schema';
 import { UserDocument } from './user.schema';
 
 export interface MessageDocument extends Document {
@@ -11,7 +10,6 @@ export interface MessageDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
   isStoryReply: boolean;
-  story?: StoryDocument;
   contentMedia?: Map<string, string>[];
 }
 
@@ -21,7 +19,7 @@ export const Message = new Schema(
     sender: { type: Types.ObjectId, ref: 'Users' },
     reactions: [{ type: Types.ObjectId, ref: 'Reactions' }],
     isStoryReply: { type: Boolean, default: false },
-    story: { type: Types.ObjectId, ref: 'Stories' },
+    //story: { type: Types.ObjectId, ref: 'Stories' },
     contentMedia: [
       {
         mediaUrl: String,
