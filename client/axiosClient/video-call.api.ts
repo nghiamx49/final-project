@@ -2,7 +2,7 @@ import axios from "axios";
 import { apiClient } from ".";
 import { IApiResponse } from "../type/apiResponse.interface";
 
-export const genToken = async (role: string, roomId: string, token: string): Promise<IApiResponse> => await apiClient.post('/call', {role, roomId}, {
+export const genToken = async (role: string, roomId: string | string [], token: string): Promise<IApiResponse> => await apiClient.post('/call', {role, roomId}, {
     headers: {
         Authorization: `Bearer ${token}`
     }

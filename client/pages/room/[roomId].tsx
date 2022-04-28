@@ -7,11 +7,14 @@ import { IAuthenciateState } from "../../store/interface/authenticate.interface"
 import { Container } from "@nextui-org/react";
 import Conference from "../../components/videoRoom/conference";
 import Join from "../../components/videoRoom/join";
+import { useRouter } from "next/router";
+import protectedRoute from "../../hocs/protectedRouter";
 
 
 const JoinForm: NextPage = () => {
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
+  const {query} = useRouter();
 
   useEffect(() => {
     window.onunload = () => {
@@ -23,10 +26,10 @@ const JoinForm: NextPage = () => {
 
   return (
     <Container fluid>
-        {isConnected ? <Conference /> : <Join />}
+      {isConnected ? <Conference /> : <Join roomId={query?.roomId || ''} />}
     </Container>
   );
 }
 
 
-export default JoinForm;
+export default protectedRoute(JoinForm);

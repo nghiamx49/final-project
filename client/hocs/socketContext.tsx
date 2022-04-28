@@ -2,22 +2,16 @@ import {
   createContext,
   FC,
   MouseEventHandler,
-  MutableRefObject,
   ReactChild,
   ReactChildren,
-  RefObject,
   SyntheticEvent,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { connect } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import { IAuthenciateState } from "../store/interface/authenticate.interface";
 import { IRootState } from "../store/interface/root.interface";
-import Peer from "simple-peer";
-import { boolean } from "yup";
-import { ICallRequest, ICallResponse } from "../type/call.interface";
 import { IUser } from "../store/interface/user.interface";
 import { createRoom, genToken, getManageToken } from "../axiosClient/video-call.api";
 import { useHMSActions } from "@100mslive/react-sdk";
@@ -93,7 +87,6 @@ const SocketProvider: FC<Props> = ({ children, authenticateReducer }) => {
         name: `video-call-with-${friendId}`,
         region: "in",
         description: "video call 1-1",
-        template: "626a995587316dc7dd104b84",
       };
       const roomResponse = await createRoom(body, data.token);
       roomId = roomResponse.data.id;
@@ -110,7 +103,7 @@ const SocketProvider: FC<Props> = ({ children, authenticateReducer }) => {
   const leaveCall = (e: SyntheticEvent) => {
     setOpenFirst(false);
     setCallEnded(true);
-    hmsActions.leave();
+    hmsActions.endRoom(false, 'video call ended');
   };
 
   return (

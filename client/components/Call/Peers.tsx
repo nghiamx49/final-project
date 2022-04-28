@@ -16,9 +16,9 @@ const Peer: FC<Props> = ({ peer }) => {
         dispaly: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: 'center',
+        justifyContent: "center",
         gap: 20,
-        width: 'fit-content'
+        width: "fit-content",
       }}
     >
       <Text h3>
@@ -26,10 +26,11 @@ const Peer: FC<Props> = ({ peer }) => {
       </Text>
       <video
         playsInline
+        poster="/images/default_avt.jpg"
         muted
         ref={videoRef}
         autoPlay
-        style={{ width: 500, height: 500, borderRadius: '10px', backgroundColor: '#A258DF' }}
+        style={{ width: 500, height: 500, borderRadius: "10px" }}
       />
     </Grid>
   );
