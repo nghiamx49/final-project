@@ -5,7 +5,6 @@ import {
   ExecutionContext,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from 'src/schemas/user.schema';
 import { Observable } from 'rxjs';
 
 export enum Role {

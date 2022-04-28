@@ -1,16 +1,16 @@
 import * as mongoose from 'mongoose';
-import { Feed } from 'src/schemas/feed.shema';
-import { Comment } from 'src/schemas/comment.schema';
-import { Reaction } from 'src/schemas/reaction.schema';
-import { Conservation } from 'src/schemas/conservation.schema';
-import { Message } from 'src/schemas/message.schema';
-import { FriendRequest } from 'src/schemas/friendRequest.schema';
-// import { Story } from 'src/schemas/story.schema';
-import { User } from 'src/schemas/user.schema';
-import { OTP } from 'src/schemas/otpvalidation.schema';
-import { FriendList } from 'src/schemas/friendList.schema';
-import { Notification } from 'src/schemas/notification.schema';
-import { Room } from 'src/schemas/room.shcema';
+import { Conservation } from '../../schemas/conservation.schema';
+import { Feed } from '../../schemas/feed.shema';
+import { FriendList } from '../../schemas/friendList.schema';
+import { FriendRequest } from '../../schemas/friendRequest.schema';
+import { Message } from '../../schemas/message.schema';
+import { OTP } from '../../schemas/otpvalidation.schema';
+import { Reaction } from '../../schemas/reaction.schema';
+import { Room } from '../../schemas/room.shcema';
+import { User } from '../../schemas/user.schema';
+import { Notification } from '../../schemas/notification.schema';
+import { Comment } from '../../schemas/comment.schema';
+
 
 export const databaseProviders = [
   {
@@ -63,7 +63,6 @@ export const friendRequestProvider = {
   inject: ['DATABASE_CONNECTION'],
 };
 
-
 export const userProvider = {
   provide: 'USER_MODEL',
   useFactory: (connection: mongoose.Connection) =>
@@ -98,7 +97,6 @@ export const roomProvider = {
     connection.model('Rooms', Room),
   inject: ['DATABASE_CONNECTION'],
 };
-
 
 // export const storyProvider = {
 //   provide: 'STORY_MODEL',

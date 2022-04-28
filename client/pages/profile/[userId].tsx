@@ -63,7 +63,7 @@ const Profile: NextPage<PropfileProps> = ({
       const { data } = await checkFriendStatus(profile._id, token);
       setFriendStatus(data.status);
     }
-  }, []);
+  }, [profile, token]);
 
   const loadUserPost = useCallback(async () => {
     const { data, status } = await getUserPosts(token, profile._id);
@@ -73,13 +73,13 @@ const Profile: NextPage<PropfileProps> = ({
   }, [token, profile._id]);
 
   useEffect(() => {
+    setIsYou(user._id === profile._id);
     checkUserFriendStatus();
     loadUserPost();
-     setIsYou(user._id === profile._id);
     return () => {
       setIsYou(false);
-    }
-  }, [query]);
+    };
+  }, [query, checkUserFriendStatus, loadUserPost]);
 
   const handleAddFriend = async () => {
     const { status } = await handleAddNewFriend(profile._id, token);

@@ -10,11 +10,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { JwtAuthenticateGuard } from '../../middleware/authenticate.middleware';
 import { PushNotificationDto } from './notification.dto';
 import { NotificationService } from './notification.service';
 
+@ApiTags('Notifications')
 @Controller('api/notifications')
 @UseGuards(JwtAuthenticateGuard)
 export class NotificationController {

@@ -4,7 +4,7 @@ import { ISocketContext, SocketContext } from "../../hocs/socketContext";
 
 
 const CallNotification = () => {
-    const {  isReceivingCall,answerCall, call } = useContext(
+    const {  isReceivingCall,answerCall, from } = useContext(
       SocketContext
     ) as ISocketContext;
     
@@ -18,11 +18,11 @@ const CallNotification = () => {
             <Grid xs={2}>
               <Avatar
                 size="lg"
-                src={call?.from?.avatar || "/images/default_avt.jpg"}
+                src={from?.avatar || "/images/default_avt.jpg"}
               />
             </Grid>
             <Grid xs={10}>
-              <Text b>{call?.from?.fullname}</Text>
+              <Text b>{from?.fullname}</Text>
             </Grid>
           </Grid.Container>
         </Modal.Body>

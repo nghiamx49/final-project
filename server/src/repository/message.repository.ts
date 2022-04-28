@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
-import { MessageDocument } from 'src/schemas/message.schema';
+import { MessageDocument } from '../schemas/message.schema';
 
 @Injectable()
 export class MessageRepository extends BaseRepository<MessageDocument> {

@@ -1,5 +1,6 @@
-import { UserResponseDto } from 'src/modules/profile/profile.dto';
-import { ReactionDocument } from 'src/schemas/reaction.schema';
+import { ReactionDocument } from "../../../schemas/reaction.schema";
+import { UserResponseDto } from "../../profile/profile.dto";
+
 
 export class ReactionDto {
   constructor(reaction: ReactionDocument) {

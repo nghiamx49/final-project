@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
-import { RoomDocument } from 'src/schemas/room.shcema';
+import { RoomDocument } from '../schemas/room.shcema';
 
 @Injectable()
 export class RoomRepository extends BaseRepository<RoomDocument> {

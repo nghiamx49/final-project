@@ -4,7 +4,6 @@ import {
   createTransport,
   getTestMessageUrl,
 } from 'nodemailer';
-import { EnvironmentConfigService } from 'src/config/environment-config.service';
 
 @Injectable()
 export class EmailUtil {
@@ -12,9 +11,6 @@ export class EmailUtil {
   constructor() {}
 
   async sendMail(options: SendMailOptions): Promise<string | false> {
-    console.log(options);
-    console.log(process.env.SMTP_USER);
-    console.log(process.env.SMTP_PASS);
     this.transporter = createTransport({
       service: 'Gmail',
       port: 465,

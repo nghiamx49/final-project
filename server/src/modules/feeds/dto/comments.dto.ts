@@ -1,5 +1,6 @@
-import { UserResponseDto } from 'src/modules/profile/profile.dto';
-import { CommentDocument } from 'src/schemas/comment.schema';
+import { CommentDocument } from "../../../schemas/comment.schema";
+import { UserResponseDto } from "../../profile/profile.dto";
+
 
 export class CommentDto {
   constructor(comment: CommentDocument) {

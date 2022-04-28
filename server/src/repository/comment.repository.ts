@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
-import { CommentDocument } from 'src/schemas/comment.schema';
+import { CommentDocument } from '../schemas/comment.schema';
 
 @Injectable()
 export class CommentRepository extends BaseRepository<CommentDocument> {

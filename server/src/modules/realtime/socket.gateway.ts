@@ -8,10 +8,10 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { UserRepository } from 'src/repository/user.repository';
 import { UserResponseDto } from '../auth/dto/user.dto';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { CallAnswer, CallFriend, CallResponse } from './socket.dto';
+import { CallFriend, CallResponse } from './socket.dto';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { UserRepository } from '../../repository/user.repository';
 
 @WebSocketGateway({
   cors: {
@@ -35,9 +35,6 @@ export class RealtimeGateWay
       { _id: userId },
       { socketId: client.id, isOnline: true },
     );
-     this.server
-       .to(userInDdb.socketId)
-       .emit('me', new UserResponseDto(userInDdb));
     this.logger.log(`User Online: ${userInDdb.fullname}`);
     const friendList = await this.friendListRepository.findOne(
       { user: userInDdb._id },
@@ -69,29 +66,12 @@ export class RealtimeGateWay
       _id: data.receiverId,
     });
     const responseDto: CallResponse = {
-      from: new UserResponseDto(sender),
-      signal: data.signal,
+      roomId: data.roomId,
+      from: new UserResponseDto(sender)
     };
     this.server.to(receiver.socketId).emit('call-request', responseDto);
   }
 
-  @SubscribeMessage('answer-call')
-  async anserCall(client: Socket, data: CallAnswer) {
-    data.to
-    const sender = await this.userRepository.findOne({ _id: data.userId });
-    this.server.to(data.to).emit('call-accepted', {signal: data.signal, receiver: sender});
-  }
-
-  @SubscribeMessage('call-declined')
-  declientCall(client: Socket, data: CallResponse) {
-    this.server.to(data.from.socketId).emit('friend-decline');
-  }
-
-  @SubscribeMessage('leave-call')
-  async callEnd(client: Socket, receiverId: string) {
-    const user = await this.userRepository.findOne({ _id: receiverId });
-    this.server.to(user.socketId).emit('call-end');
-  }
 
   async handleDisconnect(client: Socket): Promise<void> {
     this.logger.log(`socket off: ${client.id}`);

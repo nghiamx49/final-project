@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { FriendRequest_Status } from 'src/interface/status.interface';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { FriendRequestRepository } from 'src/repository/friendRequest.repository';
-import { UserRepository } from 'src/repository/user.repository';
-import { FriendListDocument } from 'src/schemas/friendList.schema';
-import { FriendRequestDocument } from 'src/schemas/friendRequest.schema';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { FriendRequest_Status } from '../../interface/status.interface';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { FriendRequestRepository } from '../../repository/friendRequest.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { FriendListDocument } from '../../schemas/friendList.schema';
+import { FriendRequestDocument } from '../../schemas/friendRequest.schema';
+import { UserDocument } from '../../schemas/user.schema';
+
 import { UserResponseDto } from '../auth/dto/user.dto';
 import { PushNotificationDto } from '../notifications/notification.dto';
 import { NotificationService } from '../notifications/notification.service';
@@ -17,7 +18,7 @@ export class FriendService {
     private readonly friendRepository: FriendRequestRepository,
     private readonly userRepository: UserRepository,
     private readonly friendListRepository: FriendListRepository,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   async sendNewFriendRequest(
@@ -41,16 +42,16 @@ export class FriendService {
       const receiver: UserDocument = await this.userRepository.findOne({
         _id: receiverId,
       });
-        await this.friendRepository.create({
-          sender,
-          receiver,
-        });
-        const data: PushNotificationDto = {
-          description: 'sent you a friend request',
-          link: `/profile/${sender._id}`,
-          receiverId: receiverId,
-        }
-        await this.notificationService.friendRequestNotification(data, senderId);
+      await this.friendRepository.create({
+        sender,
+        receiver,
+      });
+      const data: PushNotificationDto = {
+        description: 'sent you a friend request',
+        link: `/profile/${sender._id}`,
+        receiverId: receiverId,
+      };
+      await this.notificationService.friendRequestNotification(data, senderId);
     }
   }
 
@@ -229,9 +230,7 @@ export class FriendService {
           checkRoleInRequest.receiver._id.toString(),
         );
       } else if (status === FriendRequest_Status.DECLIEND) {
-        await this.friendRepository.findOneAndDelete(
-          { _id: requestId },
-        );
+        await this.friendRepository.findOneAndDelete({ _id: requestId });
         const data: PushNotificationDto = {
           description: 'had declined your request',
           link: `/profile/${checkRoleInRequest.receiver._id.toString()}`,

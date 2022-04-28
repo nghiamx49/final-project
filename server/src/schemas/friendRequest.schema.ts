@@ -1,5 +1,5 @@
 import { Document, Schema, Types } from 'mongoose';
-import { FriendRequest_Status } from 'src/interface/status.interface';
+import { FriendRequest_Status } from '../interface/status.interface';
 import { User, UserDocument } from './user.schema';
 
 export interface FriendRequestDocument extends Document {

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConservationRepository } from 'src/repository/conservation.repository';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { MessageRepository } from 'src/repository/message.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { ConservationRepository } from '../../repository/conservation.repository';
+import { MessageRepository } from '../../repository/message.repository';
+import { UserRepository } from '../../repository/user.repository';
 import { DatabaseModule } from '../persistance/db.module';
+
 import {
   conservationProvider,
   messageProvider,

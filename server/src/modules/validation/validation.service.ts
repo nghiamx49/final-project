@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { OTPRepository } from 'src/repository/optvalidation.repository';
-import { UserRepository } from 'src/repository/user.repository';
-import { OtpValidationDocument } from 'src/schemas/otpvalidation.schema';
-import { UserDocument } from 'src/schemas/user.schema';
-import { EmailUtil } from 'src/utils/email.util';
+import { OTPRepository } from '../../repository/optvalidation.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { OtpValidationDocument } from '../../schemas/otpvalidation.schema';
+import { UserDocument } from '../../schemas/user.schema';
+import { EmailUtil } from '../../utils/email.util';
+
 
 @Injectable()
 export class ValidationService {

@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { NotificationRepository } from 'src/repository/notification.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { NotificationRepository } from '../../repository/notification.repository';
+import { UserRepository } from '../../repository/user.repository';
 import { DatabaseModule } from '../persistance/db.module';
-import {
-  friendListProvider,
-  notificationProvider,
-  userProvider,
-} from '../persistance/db.providers';
+import { notificationProvider, userProvider, friendListProvider } from '../persistance/db.providers';
 import { RealtimeGateWay } from '../realtime/socket.gateway';
 import { RealtimeModule } from '../realtime/socket.module';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
+
 
 @Module({
   providers: [
@@ -26,6 +23,6 @@ import { NotificationService } from './notification.service';
   ],
   controllers: [NotificationController],
   imports: [DatabaseModule, RealtimeModule],
-  exports: [NotificationService]
+  exports: [NotificationService],
 })
 export class NotifcationModule {}

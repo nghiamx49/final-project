@@ -87,7 +87,8 @@ const ForgotPassword: NextPage = () => {
       setLoading(true);
       const {data, status} = await sendOtp(email);
       if(status !== 201) {
-        setError('email', data?.message);
+        setLoading(false);
+        toast.error(data.message)
         return;
       }
       setEmail(email);

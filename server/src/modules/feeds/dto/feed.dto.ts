@@ -1,4 +1,4 @@
-import { FeedDocument } from 'src/schemas/feed.shema';
+import { FeedDocument } from '../../../schemas/feed.shema';
 import { UserResponseDto } from '../../auth/dto/user.dto';
 import { CommentDto } from './comments.dto';
 import { ReactionDto } from './reaction.dto';

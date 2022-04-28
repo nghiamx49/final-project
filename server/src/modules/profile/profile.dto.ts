@@ -1,4 +1,4 @@
-import { UserDocument } from 'src/schemas/user.schema';
+import { UserDocument } from '../../schemas/user.schema';
 import { UserBaseDto } from '../auth/dto/user.dto';
 
 export class UserResponseDto extends UserBaseDto {

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CommentRepository } from 'src/repository/comment.repository';
-import { FeedRepository } from 'src/repository/feed.repository';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { ReactionRepository } from 'src/repository/reaction.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { CommentRepository } from '../../repository/comment.repository';
+import { FeedRepository } from '../../repository/feed.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { ReactionRepository } from '../../repository/reaction.repository';
+import { UserRepository } from '../../repository/user.repository';
+
 import { DatabaseModule } from '../persistance/db.module';
 import {
   commentProvider,

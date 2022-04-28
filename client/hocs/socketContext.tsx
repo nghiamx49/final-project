@@ -6,6 +6,7 @@ import {
   ReactChild,
   ReactChildren,
   RefObject,
+  SyntheticEvent,
   useEffect,
   useRef,
   useState,
@@ -18,6 +19,8 @@ import Peer from "simple-peer";
 import { boolean } from "yup";
 import { ICallRequest, ICallResponse } from "../type/call.interface";
 import { IUser } from "../store/interface/user.interface";
+import { createRoom, genToken, getManageToken } from "../axiosClient/video-call.api";
+import { useHMSActions } from "@100mslive/react-sdk";
 
 export const socket = io("http://localhost:5000", { autoConnect: false });
 
@@ -26,17 +29,19 @@ export type ISocketContext = {
   callFriends: Function;
   answerCall: MouseEventHandler;
   callAccepted: boolean;
-  leaveCall: Function;
-  call: ICallResponse | undefined;
+  leaveCall: MouseEventHandler;
   isReceivingCall: boolean;
   openFirst: boolean;
-  stream: MediaStream | undefined;
   callEnded: boolean;
   user: IUser;
-  myVideo: RefObject<HTMLVideoElement>;
-  userVideo: RefObject<HTMLVideoElement>;
-  friend: IUser | undefined;
+  roomId: string;
+  from?: IUser;
 };
+
+interface IResponseCall {
+  roomId: string;
+  from: IUser;
+}
 
 export const SocketContext = createContext<ISocketContext | null>(null);
 
@@ -46,118 +51,82 @@ interface Props {
 }
 
 const SocketProvider: FC<Props> = ({ children, authenticateReducer }) => {
-  const { user, isAuthenticated } = authenticateReducer;
+  const { user, token } = authenticateReducer;
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const [stream, setStream] = useState<MediaStream>();
-  const [call, setCall] = useState<ICallResponse>();
   const [isReceivingCall, setIsReceivingCall] = useState<boolean>(false);
   const [openFirst, setOpenFirst] = useState<boolean>(false);
-  const [friend, setFriend] = useState<IUser>();
-
-  const myVideo = useRef<HTMLVideoElement | null>(null);
-  const userVideo = useRef<HTMLVideoElement | null>(null);
-  const connectionRef = useRef<Peer.Instance>();
+  const [roomId, setRoomId] = useState<string>('');
+  const hmsActions = useHMSActions();
+  const [from, setFrom] = useState<IUser>();
 
   useEffect(() => {
     socket.connect();
-    socket.emit("online", user._id);
-    socket.on("call-request", ({ from, signal }) => {
-      console.log(signal);
-      setCall({ from, signal });
+    socket.emit('online', user._id);
+    socket.on("call-request", (data: IResponseCall) => {
+      setRoomId(prev => data.roomId);
+      setFrom(prev=> data.from)
       setIsReceivingCall(true);
     });
     return () => {
-      socket.off("me");
       socket.off("call-request");
       socket.disconnect();
     };
   }, []);
 
-  const answerCall = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        setStream(currentStream);
-        myVideo.current && (myVideo.current.srcObject = currentStream);
-        userVideo.current &&
-                (userVideo.current.srcObject = currentStream);
-      });
+  const answerCall = async () => {
+    const { data } = await genToken("guest", roomId, token);
+    hmsActions.join({
+      userName: user.fullname,
+      authToken: data.token,
+    });
     setOpenFirst(true);
-
     setIsReceivingCall(false);
     setCallAccepted(true);
-    const peer = new Peer({ initiator: false, trickle: false, stream });
-    peer.on("signal", (data) => {
-      console.log(call?.from.socketId);
-      socket.emit("answer-call", { signal: data, to: call?.from.socketId, userId: user._id });
-    });
-
-    peer.on("stream", (currentStream) => {
-      console.log(currentStream);
-      userVideo.current && (userVideo.current.srcObject = currentStream);
-    });
-
-    peer.signal(call?.signal);
-
-    connectionRef && (connectionRef.current = peer);
   };
 
-  const callFriends = (friendId: string) => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        setStream(currentStream);
-        myVideo.current && (myVideo.current.srcObject = currentStream);
-         userVideo.current && (userVideo.current.srcObject = currentStream);
-      });
+  const callFriends = async (friendId: string) => {
+    let roomId:string = '';
+    const {data, status} = await getManageToken(token);
+    if(status === 200) {
+      const body = {
+        name: `video-call-with-${friendId}`,
+        region: "in",
+        description: "video call 1-1",
+        template: "626a995587316dc7dd104b84",
+      };
+      const roomResponse = await createRoom(body, data.token);
+      roomId = roomResponse.data.id;
+    }
+    socket.emit('call-request', {senderId: user._id, receiverId: friendId, roomId})
+    const { data: tokenGen } = await genToken("host",roomId, token);
     setOpenFirst(true);
-
-    const peer = new Peer({ initiator: true, trickle: false, stream });
-
-    peer.on("signal", (data) => {
-      socket.emit("call-request", {
-        receiverId: friendId,
-        signal: data,
-        senderId: user._id,
-      });
+    hmsActions.join({
+      userName: user.fullname,
+      authToken: tokenGen.token,
     });
-
-    peer.on("stream", (currentStream) => {
-          userVideo.current && (userVideo.current.srcObject = currentStream); 
-    });
-
-    socket.on("call-accepted", ({ signal, receiver }) => {
-      console.log(receiver);
-      setCallAccepted(true);
-      setFriend(receiver);
-      peer.signal(signal);
-    });
-
-    connectionRef.current = peer;
   };
 
-  const leaveCall = () => {
+  const leaveCall = (e: SyntheticEvent) => {
+    setOpenFirst(false);
     setCallEnded(true);
+    hmsActions.leave();
   };
 
   return (
     <SocketContext.Provider
       value={{
         isReceivingCall,
-        call,
         socket,
         callFriends,
         answerCall,
         callAccepted,
         leaveCall,
         openFirst,
-        stream,
         callEnded,
         user,
-        myVideo,
-        userVideo,
-        friend,
+        roomId,
+        from
       }}
     >
       {children}

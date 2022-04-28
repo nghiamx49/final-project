@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { NotificationRepository } from 'src/repository/notification.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { NotificationRepository } from '../../repository/notification.repository';
+import { UserRepository } from '../../repository/user.repository';
+
 import { RealtimeGateWay } from '../realtime/socket.gateway';
 import { NotificationDto, PushNotificationDto } from './notification.dto';
 

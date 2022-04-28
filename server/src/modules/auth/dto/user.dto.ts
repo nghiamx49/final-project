@@ -1,6 +1,6 @@
-import { User, UserDocument } from 'src/schemas/user.schema';
 import { Types } from 'mongoose';
-import { StatusChecking } from 'src/modules/friends/dto/friendStatusChecking.dto';
+import { UserDocument } from '../../../schemas/user.schema';
+import { StatusChecking } from '../../friends/dto/friendStatusChecking.dto';
 export abstract class UserBaseDto {
   email: string;
 }

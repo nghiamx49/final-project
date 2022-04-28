@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 import { Model } from 'mongoose';
-import { NotificationDocument } from 'src/schemas/notification.schema';
+import { NotificationDocument } from '../schemas/notification.schema';
 
 @Injectable()
 export class NotificationRepository extends BaseRepository<NotificationDocument> {

@@ -10,6 +10,10 @@ export class EnvironmentConfigService {
   private readonly USER: string;
   private readonly email: string;
   private readonly password: string;
+  private readonly videoEndpoint: string;
+  private readonly appId: string;
+  private readonly appAcessKey: string;
+  private readonly appSecretKey: string;
 
   constructor(private readonly configService: ConfigService) {
     this.connectionString = configService.get<string>('DATABASE_URL');
@@ -19,6 +23,10 @@ export class EnvironmentConfigService {
     this.USER = configService.get<string>('USER');
     this.email = configService.get<string>('SMTP_USER');
     this.password = configService.get<string>('SMTP_PASS');
+    this.appSecretKey = configService.get<string>('CALL_SECRET_KEY');
+    this.videoEndpoint = configService.get<string>('CALL_ENDPOINT');
+    this.appId = configService.get<string>('CALL_APP_ID');
+    this.appAcessKey = configService.get<string>('CALL_ACCESS_KEY');
   }
 
   getConnectionString = (): string => this.connectionString;
@@ -28,4 +36,8 @@ export class EnvironmentConfigService {
   getUserRole = (): string => this.USER;
   getEmail = (): string => this.email;
   getPass = (): string => this.password;
+  getCallAccessKey = (): string => this.appAcessKey;
+  getCallTokenEndpoint = (): string => this.videoEndpoint;
+  getCallAppId = ():string => this.appId;
+  getCallSecret = (): string => this.appSecretKey;
 }

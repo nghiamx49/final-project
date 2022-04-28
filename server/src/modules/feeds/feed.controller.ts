@@ -10,12 +10,14 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { JwtAuthenticateGuard } from '../../middleware/authenticate.middleware';
 import { FeedCreateDto, FeedDto } from './dto/feed.dto';
 import { ReactionCreateDto } from './dto/reaction.dto';
 import { FeedService } from './feed.service';
 
+@ApiTags('New Feeds')
 @Controller('api/feeds')
 @UseGuards(JwtAuthenticateGuard)
 export class FeedController {

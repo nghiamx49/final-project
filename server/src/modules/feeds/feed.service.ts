@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CommentRepository } from 'src/repository/comment.repository';
-import { FeedRepository } from 'src/repository/feed.repository';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { ReactionRepository } from 'src/repository/reaction.repository';
-import { UserRepository } from 'src/repository/user.repository';
-import { CommentDocument } from 'src/schemas/comment.schema';
-import { FeedDocument } from 'src/schemas/feed.shema';
-import { FriendListDocument } from 'src/schemas/friendList.schema';
-import { ReactionDocument } from 'src/schemas/reaction.schema';
-import { UserDocument } from 'src/schemas/user.schema';
+import { CommentRepository } from '../../repository/comment.repository';
+import { FeedRepository } from '../../repository/feed.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { ReactionRepository } from '../../repository/reaction.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { CommentDocument } from '../../schemas/comment.schema';
+import { FeedDocument } from '../../schemas/feed.shema';
+import { FriendListDocument } from '../../schemas/friendList.schema';
+import { ReactionDocument } from '../../schemas/reaction.schema';
+import { UserDocument } from '../../schemas/user.schema';
+
 import { CommentDto } from './dto/comments.dto';
 import { FeedCreateDto, FeedDto } from './dto/feed.dto';
 import { ReactionCreateDto, ReactionDto } from './dto/reaction.dto';

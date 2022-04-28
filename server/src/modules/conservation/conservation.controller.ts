@@ -12,11 +12,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { JwtAuthenticateGuard } from '../../middleware/authenticate.middleware';
 import { SendMessageDto } from './conservation.dto';
 import { ConservationService } from './conversavtion.service';
 
+@ApiTags('Conservations')
 @Controller('api/conservation')
 @UseGuards(JwtAuthenticateGuard)
 export class ConservationController {
@@ -38,7 +40,6 @@ export class ConservationController {
     @Query('friendId') friendId: string,
     @Res() response: Response,
   ): Promise<void> {
-    console.log(userId + ' ' + friendId);
     try {
       const conservation = await this.conservationService.getSingleConservation(
         userId,

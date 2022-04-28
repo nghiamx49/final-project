@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { UserRepository } from 'src/repository/user.repository';
-import { FriendListDocument } from 'src/schemas/friendList.schema';
-import { UserDocument } from 'src/schemas/user.schema';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { FriendListDocument } from '../../schemas/friendList.schema';
+import { UserDocument } from '../../schemas/user.schema';
 import { UpdateAccountDto, UserResponseDto } from './profile.dto';
 
 @Injectable()

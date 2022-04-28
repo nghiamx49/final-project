@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from 'src/repository/user.repository';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterDto, UserResponseDto } from './dto/user.dto';
-import { UserDocument } from 'src/schemas/user.schema';
-import { PasswordEncoder } from 'src/utils/crypto.util';
-import { FriendListRepository } from 'src/repository/friendList.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { UserDocument } from '../../schemas/user.schema';
+import { PasswordEncoder } from '../../utils/crypto.util';
+import { UserResponseDto, RegisterDto } from './dto/user.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,7 @@ export class AuthService {
     }
   }
 
-  async register(registerDto: RegisterDto): Promise<void> {
+  async register(registerDto: RegisterDto): Promise<UserResponseDto> {
     try {
       const { email } = registerDto;
       const findUser: UserDocument = await this.userRepository.findOne({
@@ -55,7 +56,7 @@ export class AuthService {
         await this.friendListRepository.create({
           user: account,
         });
-        return;
+        return new UserResponseDto(account);
       }
     } catch (error) {
       throw new Error(error);

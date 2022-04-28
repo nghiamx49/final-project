@@ -1,5 +1,5 @@
 import { Document, Schema, Types } from 'mongoose';
-import { Reactions } from 'src/interface/reaction.interface';
+import { Reactions } from '../interface/reaction.interface';
 import { UserDocument } from './user.schema';
 
 export interface ReactionDocument extends Document {

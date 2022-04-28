@@ -1,10 +1,11 @@
 import { Strategy } from 'passport-local';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PasswordEncoder } from 'src/utils/crypto.util';
 import { ExtractJwt, Strategy as PassportJwtStrategy } from 'passport-jwt';
-import { UserRepository } from 'src/repository/user.repository';
-import { EnvironmentConfigService } from 'src/config/environment-config.service';
+import { EnvironmentConfigService } from '../config/environment-config.service';
+import { UserRepository } from '../repository/user.repository';
+import { PasswordEncoder } from '../utils/crypto.util';
+
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

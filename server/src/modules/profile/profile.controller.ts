@@ -10,12 +10,14 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { request } from 'http';
-import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { JwtAuthenticateGuard } from '../../middleware/authenticate.middleware';
 import { UpdateAccountDto } from './profile.dto';
 import { ProfileService } from './profile.service';
 
+@ApiTags('Profile')
 @Controller('api/profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}

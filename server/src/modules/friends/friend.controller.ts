@@ -11,14 +11,17 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { FriendRequest_Status } from 'src/interface/status.interface';
-import { JwtAuthenticateGuard } from 'src/middleware/authenticate.middleware';
+import { FriendRequest_Status } from '../../interface/status.interface';
+import { JwtAuthenticateGuard } from '../../middleware/authenticate.middleware';
+
 import { UserResponseDto } from '../auth/dto/user.dto';
 import { FriendRequestDTO } from './dto/friendRequest.dto';
 import { StatusChecking } from './dto/friendStatusChecking.dto';
 import { FriendService } from './friend.service';
 
+@ApiTags('Friends')
 @Controller('api/friends')
 @UseGuards(JwtAuthenticateGuard)
 export class FriendController {

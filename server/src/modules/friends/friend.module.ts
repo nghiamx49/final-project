@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FriendListRepository } from 'src/repository/friendList.repository';
-import { FriendRequestRepository } from 'src/repository/friendRequest.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { FriendListRepository } from '../../repository/friendList.repository';
+import { FriendRequestRepository } from '../../repository/friendRequest.repository';
+import { UserRepository } from '../../repository/user.repository';
+
 import { NotifcationModule } from '../notifications/notification.module';
 import { DatabaseModule } from '../persistance/db.module';
 import {

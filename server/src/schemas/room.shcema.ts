@@ -1,14 +1,15 @@
-import { Document, Schema, Types } from "mongoose";
-import { UserDocument } from "./user.schema";
-
+import { Document, Schema, Types } from 'mongoose';
+import { UserDocument } from './user.schema';
 
 export interface RoomDocument extends Document {
   _id: Types.ObjectId;
-  members: UserDocument[];
+  roomId: string;
   createdAt: Date;
 }
 
-export const Room = new Schema({
-    members: {type:  Types.ObjectId, ref: 'Users'},
-    signal: String
-}, {timestamps: true})
+export const Room = new Schema(
+  {
+    roomId: String,
+  },
+  { timestamps: true },
+);

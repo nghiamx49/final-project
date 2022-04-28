@@ -9,7 +9,9 @@ import {
 import { ValidationService } from './validation.service';
 import { Response } from 'express';
 import { ValidationDTO } from './dto/validationOtp.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('SEND OTP')
 @Controller('api/validation')
 export class ValidationController {
   constructor(private readonly validationService: ValidationService) {}

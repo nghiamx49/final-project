@@ -1,5 +1,6 @@
-import { ConservationDocument } from 'src/schemas/conservation.schema';
-import { MessageDocument } from 'src/schemas/message.schema';
+
+import { ConservationDocument } from '../../schemas/conservation.schema';
+import { MessageDocument } from '../../schemas/message.schema';
 import { UserResponseDto } from '../auth/dto/user.dto';
 import { ReactionDto } from '../feeds/dto/reaction.dto';
 

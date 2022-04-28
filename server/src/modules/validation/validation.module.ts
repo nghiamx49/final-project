@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { EnvironmentConfigModule } from 'src/config/config.module';
-import { EnvironmentConfigService } from 'src/config/environment-config.service';
-import { OTPRepository } from 'src/repository/optvalidation.repository';
-import { UserRepository } from 'src/repository/user.repository';
-import { EmailUtil } from 'src/utils/email.util';
-import { UtilModule } from 'src/utils/utils.module';
+import { EnvironmentConfigService } from '../../config/environment-config.service';
+import { OTPRepository } from '../../repository/optvalidation.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { EmailUtil } from '../../utils/email.util';
 import { DatabaseModule } from '../persistance/db.module';
 import { otpProvider, userProvider } from '../persistance/db.providers';
 import { ValidationController } from './validation.controller';

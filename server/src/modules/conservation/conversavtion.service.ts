@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConservationRepository } from 'src/repository/conservation.repository';
-import { MessageRepository } from 'src/repository/message.repository';
-import { UserRepository } from 'src/repository/user.repository';
+import { ConservationRepository } from '../../repository/conservation.repository';
+import { MessageRepository } from '../../repository/message.repository';
+import { UserRepository } from '../../repository/user.repository';
+
 import { RealtimeGateWay } from '../realtime/socket.gateway';
 import {
   ConservationDto,

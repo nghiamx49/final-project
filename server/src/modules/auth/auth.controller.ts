@@ -1,24 +1,11 @@
-import {
-  Controller,
-  Post,
-  Res,
-  Request,
-  Get,
-  Body,
-  UseGuards,
-  HttpStatus,
-  Param,
-  BadRequestException,
-} from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Response } from 'express';
-import { RegisterDto } from './dto/user.dto';
-import {
-  JwtAuthenticateGuard,
-  LocalAuthenticateGuard,
-} from 'src/middleware/authenticate.middleware';
-import { Roles, Role, RolesGuard } from 'src/middleware/authorize.middleware';
+import { Controller, UseGuards, Post, Res, HttpStatus, Body, Request } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { Response } from "express";
+import { LocalAuthenticateGuard } from "../../middleware/authenticate.middleware";
+import { AuthService } from "./auth.service";
+import { RegisterDto } from "./dto/user.dto";
 
+@ApiTags('Authentication')
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

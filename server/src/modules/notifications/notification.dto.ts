@@ -1,4 +1,4 @@
-import { NotificationDocument } from 'src/schemas/notification.schema';
+import { NotificationDocument } from '../../schemas/notification.schema';
 import { UserResponseDto } from '../auth/dto/user.dto';
 
 export class NotificationDto {
