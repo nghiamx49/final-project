@@ -205,6 +205,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         closeButton
         animated={false}
         open={confirmModalOpen}
+        preventClose
         onClose={() => setConfirmModalOpen(false)}
       >
         <Modal.Body
@@ -237,6 +238,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         closeButton
         animated={false}
         open={editAvatarOpen}
+        preventClose
         onClose={handleAvatarEditClose}
       >
         <Modal.Header>
@@ -295,10 +297,11 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         animated={false}
         open={editCoverOpen}
         width="1268px"
+        preventClose
         onClose={handleCoverEditClose}
       >
         <Modal.Header>
-          <Text id="modal-title" size={18}>
+          <Text id="modal-title" h3 size={18}>
             Upload Cover
           </Text>
         </Modal.Header>
@@ -312,7 +315,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         >
           {previewAvatar.length > 0 ? (
             <Image
-            alt="avatar preview"
+              alt="avatar preview"
               src={previewAvatar}
               width={1200}
               height={500}
@@ -359,7 +362,7 @@ const UserProfileHeader: FC<UserProfileProps> = ({
         <Grid css={{ positon: "relative", overflow: "auto" }}>
           <div style={{ borderRadius: 0 }}>
             <Image
-            alt="cover image"
+              alt="cover image"
               src={
                 (isYou ? user?.cover : profile?.cover) ||
                 "/images/default_cover.jpg"

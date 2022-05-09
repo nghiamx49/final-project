@@ -24,7 +24,7 @@ export class CallService {
     };
     return this.jwtService.sign(payload, {
       algorithm: 'HS256',
-      expiresIn: '24h',
+      expiresIn: '7d',
       jwtid: uuid4(),
     });
   }

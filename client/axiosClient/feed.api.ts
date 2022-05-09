@@ -25,8 +25,9 @@ export const getSinglPost = async (
 
 export const getAllPostsInNewFeed = async (
   token: string,
+  page: number
 ): Promise<IApiResponse> =>
-  apiClient.get(`/feeds/`, {
+  apiClient.get(`/feeds/?page=${page}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

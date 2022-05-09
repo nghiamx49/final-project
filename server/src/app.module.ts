@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Inject, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
+import { InjectConnection, MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { EnvironmentConfigService } from './config/environment-config.service';
 import { EnvironmentConfigModule } from './config/config.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './filter/http.exception';
 import { CombineModude } from './modules/combine.module';
+import { Connection } from 'mongoose';
+import { User } from './schemas/user.schema';
 
 @Module({
   imports: [
@@ -28,4 +30,6 @@ import { CombineModude } from './modules/combine.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+
+}

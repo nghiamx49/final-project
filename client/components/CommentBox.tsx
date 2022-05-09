@@ -62,7 +62,7 @@ const CommentBox: FC<Props> = ({currentUser, setCommentList, postId, token, comm
         <Grid xs={1}>
           <Avatar
             bordered
-            color="primary"
+            color="gradient"
             src={currentUser.avatar || "/images/default_avt.jpg"}
           />
         </Grid>

@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { HMSRoomProvider } from "@100mslive/react-sdk";
 
+
 const appLightTheme = createTheme(lightTheme);
 
 const appDarkTheme = createTheme(darkTheme);
@@ -19,6 +20,7 @@ const appDarkTheme = createTheme(darkTheme);
 saga.run(rootSaga);
 
 function MyApp({ Component, pageProps }: AppProps) {
+
   return (
     <NextThemesProvider
       defaultTheme="system"

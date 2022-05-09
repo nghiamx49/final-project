@@ -3,6 +3,7 @@ import * as morgan from 'morgan';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
+import { User } from './schemas/user.schema';
 
 async function startup() {
   const app = await NestFactory.create(AppModule);

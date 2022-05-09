@@ -18,6 +18,8 @@ const CallNotification = () => {
             <Grid xs={2}>
               <Avatar
                 size="lg"
+                color="gradient"
+                bordered
                 src={from?.avatar || "/images/default_avt.jpg"}
               />
             </Grid>

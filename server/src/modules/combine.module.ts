@@ -9,6 +9,7 @@ import { FriendModule } from './friends/friend.module';
 import { NotifcationModule } from './notifications/notification.module';
 import { ProfileModule } from './profile/profile.module';
 import { RealtimeModule } from './realtime/socket.module';
+import { UserModule } from './user/user.module';
 import { ValidationModule } from './validation/validation.module';
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ValidationModule } from './validation/validation.module';
     RealtimeModule,
     ConservationModule,
     NotifcationModule,
-    CallModule
+    CallModule,
+    UserModule
   ],
 })
 export class CombineModude {}

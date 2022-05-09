@@ -87,7 +87,9 @@ export class FeedService {
     return new FeedDto(postInDb);
   }
 
-  async getNewFeeds(userId: string): Promise<FeedDto[]> {
+  async getNewFeeds(userId: string, page: number = 1): Promise<{data: FeedCreateDto[], totalPage: number}> {
+    const LIMIT = process.env.PAGE_LIMIT;
+    const totalPage = Math.ceil(await this.feedRepository.countDocuments() / parseInt(LIMIT));
     const userFriendsList: FriendListDocument =
       await this.friendListRepository.findOne({ user: userId }, null, {
         populate: 'allFriends',
@@ -111,9 +113,11 @@ export class FeedService {
           { path: 'reactions', populate: { path: 'reactionBy' } },
         ],
         sort: { createdAt: -1 },
+        skip: (page - 1) * parseInt(LIMIT),
+        limit: parseInt(LIMIT),
       },
     );
-    return newFeeds.map((post: FeedDocument): FeedDto => new FeedDto(post));
+    return {data: newFeeds.map((post: FeedDocument): FeedDto => new FeedDto(post)), totalPage};
   }
 
   async commentOnAPost(

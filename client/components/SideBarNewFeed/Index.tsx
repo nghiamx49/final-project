@@ -39,6 +39,7 @@ const SideBarNewFeed: FC<Props> = ({authenticateReducer}) => {
         description: "conference online meeting",
       };
       const {data: roomData} = await createRoom(body, data.token);
+      console.log(roomData);
       push(`/room/${roomData.id}`);
     }
   }

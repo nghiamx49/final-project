@@ -2,8 +2,10 @@ import {
   Document,
   FilterQuery,
   Model,
+  PipelineStage,
   QueryOptions,
   UpdateQuery,
+  Aggregate,
 } from 'mongoose';
 
 export abstract class BaseRepository<T extends Document> {
@@ -62,5 +64,13 @@ export abstract class BaseRepository<T extends Document> {
   async deleteMany(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
     const deleteResult = await this.entityModel.deleteMany(entityFilterQuery);
     return deleteResult.deletedCount >= 1;
+  }
+
+  async countDocuments(options?: FilterQuery<T>) {
+    return this.entityModel.count(options);
+  }
+
+  async aggregate(pipeline?: PipelineStage[], option?: unknown): Promise<Aggregate<T[]>> {
+    return this.entityModel.aggregate(pipeline, option);
   }
 }

@@ -165,14 +165,15 @@ export class FriendService {
     return Promise.all(listWaitingForAccept);
   }
 
-  async getAllUserFriends(userId: string): Promise<UserResponseDto[]> {
+  async getAllUserFriends(userId: string, name: string = ''): Promise<UserResponseDto[]> {
     try {
       const userFriendList: FriendListDocument =
         await this.friendListRepository.findOne({
           user: userId,
+        }, null, {
+          populate: {path: 'allFriends'}
         });
-      await userFriendList.populate('allFriends');
-      const response = userFriendList.allFriends.map(
+      const response = userFriendList.allFriends.filter(user => user.fullname.match(new RegExp(name, 'i'))).sort((user, nextUser) => user.createdAt.getTime() - nextUser.createdAt.getTime()).map(
         async (user: UserDocument): Promise<UserResponseDto> => {
           const friendStatus = await this.checkCurrentFriendStatus(
             userId,

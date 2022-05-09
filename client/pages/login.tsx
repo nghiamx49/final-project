@@ -1,4 +1,4 @@
-import { Button, Card, Container, Grid, Input, Row, Spacer, Text, Link } from "@nextui-org/react";
+import { Button, Card, Container, Grid, Input, Row, Spacer, Text, Link, Image } from "@nextui-org/react";
 import { NextPage } from "next";
 import Head from "next/head";
 import NextLink from "next/link";
@@ -46,19 +46,27 @@ const Login: NextPage<LoginPageProps> = ({doLogin}: LoginPageProps) => {
         <meta name="description" content="Login Page" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container css={{ paddingTop: 100, paddingBottom: 170 }} md fluid alignItems="center">
+      <Container
+        css={{ paddingTop: 150, paddingBottom: 120, margin: '0 auto' }}
+        md
+        fluid
+        alignItems="center"
+      >
         <Grid.Container justify="space-between" alignItems="center">
-          <Grid>
+          <Grid css={{ display: "flex" }} xs={7}>
             <Row>
-              <Text css={{color: '$pink600'}} h1>
-                PetLove
+              <Image width="100%" height="100%" src="/images/backdrop.png" />
+            </Row>
+            <Row css={{display: 'flex', flexDirection: 'column'}}>
+              <Text css={{ color: "$pink600" }} h1>
+                PetsLove
+              </Text>
+              <Text h2 css={{ maxWidth: 400 }}>
+                Let people love your pets, connect with annimal lovers
               </Text>
             </Row>
-            <Row>
-              <Text h2 css={{maxWidth: 400}}>Let people love your pets, connect with annimal lovers</Text>
-            </Row>
           </Grid>
-          <Grid justify="center">
+          <Grid justify="center" xs={5}>
             <Container fluid as="form">
               <Card color="default">
                 <Card.Header>

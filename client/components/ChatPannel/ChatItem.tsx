@@ -36,7 +36,7 @@ const ChatItem: FC<ChatItemProps> = ({ user }) => {
           <Avatar
             pointer
             bordered
-            color="primary"
+            color="gradient"
             src={user?.avatar || "/images/default_avt.jpg"}
           />
           {user.isOnline ? (

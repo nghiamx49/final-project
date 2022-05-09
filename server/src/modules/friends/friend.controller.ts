@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
   Res,
   UseGuards,
@@ -31,9 +32,10 @@ export class FriendController {
   async getAllFriend(
     @Request() request,
     @Res() response: Response,
+    @Query('name') name: string
   ): Promise<void> {
     const allFriends: UserResponseDto[] =
-      await this.friendService.getAllUserFriends(request.user._id);
+      await this.friendService.getAllUserFriends(request.user._id, name);
     response.status(200).json({ data: allFriends });
   }
 
@@ -52,9 +54,10 @@ export class FriendController {
   async getAllFriendOfUser(
     @Param('userId') userId: string,
     @Res() response: Response,
+    @Query('name') name: string
   ): Promise<void> {
     const allFriends: UserResponseDto[] =
-      await this.friendService.getAllUserFriends(userId);
+      await this.friendService.getAllUserFriends(userId, name);
     response.status(200).json({ data: allFriends });
   }
 

@@ -41,7 +41,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
               >
                 <Avatar
                   bordered
-                  color="primary"
+                  color="gradient"
                   src={comment.author.avatar || "/images/default_avt.jpg"}
                   css={{ cursor: "pointer" }}
                 />
@@ -124,7 +124,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                     >
                       <Avatar
                         bordered
-                        color="primary"
+                        color="gradient"
                         src={item.author.avatar || "/images/default_avt.jpg"}
                       />
                     </Link>
@@ -180,7 +180,7 @@ const CommentItem: FC<Props> = ({ comment, currentUser, postId, token }) => {
                       <Avatar
                         css={{ cursor: "pointer" }}
                         bordered
-                        color="primary"
+                        color="gradient"
                         src={item.author.avatar || "/images/default_avt.jpg"}
                       />
                     </Link>

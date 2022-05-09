@@ -162,7 +162,7 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
       fluid
       xl
     >
-      <Container fluid responsive={true} style={{ padding: "10px 7px" }}>
+      <Container fluid responsive={true} style={{ padding: "3px 7px" }}>
         <Grid.Container justify="space-between" alignItems="center">
           <Grid>
             <Grid.Container alignItems="center">
@@ -189,19 +189,20 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
           </Grid>
           <Grid>
             <Grid.Container gap={3} alignItems="center" style={{ padding: 0 }}>
-              {isAuthenticated && router.map(({ link, Icon }, index) => (
-                <Grid key={index}>
-                  <NextLink href={link} passHref>
-                    <Link
-                      block
-                      color={asPath === link ? "primary" : "text"}
-                      css={{ fontWeight: "$bold" }}
-                    >
-                      <Icon size={30} />
-                    </Link>
-                  </NextLink>
-                </Grid>
-              ))}
+              {isAuthenticated &&
+                router.map(({ link, Icon }, index) => (
+                  <Grid key={index}>
+                    <NextLink href={link} passHref>
+                      <Link
+                        block
+                        color={asPath === link ? "primary" : "text"}
+                        css={{ fontWeight: "$bold" }}
+                      >
+                        <Icon size={30} />
+                      </Link>
+                    </NextLink>
+                  </Grid>
+                ))}
             </Grid.Container>
           </Grid>
           <Grid>
@@ -209,7 +210,10 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
               {isAuthenticated ? (
                 <>
                   <Grid>
-                    <NextLink href={`/profile/${user?.username || user?._id}`} passHref>
+                    <NextLink
+                      href={`/profile/${user?.username || user?._id}`}
+                      passHref
+                    >
                       <Link
                         block
                         color={
@@ -233,8 +237,9 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
                       >
                         <Avatar
                           src={user?.avatar || "/images/default_avt.jpg"}
-                          size="sm"
+                          size="md"
                           pointer
+                          bordered
                           color="gradient"
                         />
                         <Text weight="bold" size={16} small color="text">

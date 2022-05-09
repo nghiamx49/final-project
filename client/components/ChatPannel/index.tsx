@@ -1,5 +1,5 @@
-import { Avatar, Button, Card, Container, Divider, Input, Row, Text, Tooltip, useTheme } from "@nextui-org/react";
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { Avatar, Button, Card, Container, Divider, FormElement, Input, Row, Text, Tooltip, useTheme } from "@nextui-org/react";
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getAllFriends } from "../../axiosClient/friend.api";
 import { IAuthenciateState } from "../../store/interface/authenticate.interface";
@@ -8,10 +8,7 @@ import { IUser } from "../../store/interface/user.interface";
 import ChatItem from "./ChatItem";
 import {FaSearch, FaSmile, FaVideo} from 'react-icons/fa'
 import { ISocketContext, socket, SocketContext } from "../../hocs/socketContext";
-import { IoMdClose } from "react-icons/io";
-import { NimblePicker } from "emoji-mart";
-import { SendButton } from "../SendButton";
-import SendIcon from "../reactions/SendIcon";
+import {debounce} from '../../helpers/debouce'
 
 
 interface ChatPannelProps {
@@ -60,6 +57,16 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
      }
    }, [token]);
 
+   const handleSearch = async (e: ChangeEvent<FormElement>) => {
+       const { data, status } = await getAllFriends(token, e.target.value);
+       if (status === 200 || 304) {
+         setAllFriends(data?.data);
+         setActiveChatWithFriend(data.data[0]);
+       }
+   }
+
+   const searchWithTimeout = debounce(handleSearch, 500)
+
     // const onEmojiClick = (emojiObject: BaseEmoji) => {
     //   setCommentContent(commentContent + emojiObject.native);
     // };
@@ -93,6 +100,7 @@ const ChatPannel: FC<ChatPannelProps> = ({authenticateReducer}) => {
           contentRight={
             <FaSearch size={20} color="white" style={{ cursor: "pointer" }} />
           }
+          onChange={(e) => searchWithTimeout(e)}
         />
       </Row>
       {allFriends.map((item) => (

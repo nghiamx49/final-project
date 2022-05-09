@@ -234,7 +234,9 @@ const ChatWidget: FC<Props> = ({ authenticateReducer }) => {
             }}
           >
             <Avatar
-              size="sm"
+              size="md"
+              bordered
+              color="gradient"
               src={friend?.avatar || "/images/default_avt.jpg"}
             />
             <Text size={16} b>

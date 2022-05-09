@@ -88,9 +88,10 @@ export const getAllSystemRecommendedFriends = async (
   });
 
 export const getAllFriends= async (
-  token: string
+  token: string,
+  search: string = ''
 ): Promise<IApiResponse> =>
-  apiClient.get(`/friends`, {
+  apiClient.get(`/friends?name=${search}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

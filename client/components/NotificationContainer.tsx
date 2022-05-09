@@ -51,12 +51,16 @@ const NotificationContainer: FC<Props> = ({ notifications, currentUser, handleRe
                 <Row
                   key={notification._id}
                   css={{ padding: "5 10", marginBottom: 10, cursor: "pointer" }}
-                  onClick={() => handleReadNoti(notification._id, isRead, notification.link)}
+                  onClick={() =>
+                    handleReadNoti(notification._id, isRead, notification.link)
+                  }
                 >
                   <Grid.Container alignItems="center">
                     <Grid xs={3}>
                       <Avatar
                         size="xl"
+                        bordered
+                        color="gradient"
                         src={
                           notification.creator.avatar ||
                           "/images/default_avt.jpg"

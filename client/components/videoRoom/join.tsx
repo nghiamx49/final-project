@@ -20,8 +20,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
     });
 
     const defaultToken =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjI2YTkwMTliZDRmM2I1NmIwNzY5OGZhIiwicm9vbV9pZCI6IjYyNmFiNDc4YmQ0ZjNiNTZiMDc2OWM0NiIsInVzZXJfaWQiOiJjdnVxaW9jYyIsInJvbGUiOiJndWVzdCIsImp0aSI6ImUyZmFkMDZiLWQxMWYtNGI1Yi1iNjkyLTQ0M2IxMjY0NjUwMSIsInR5cGUiOiJhcHAiLCJ2ZXJzaW9uIjoyLCJleHAiOjE2NTEyNTMzMjR9.x54tPUI0LRsXwPO9bX3yE_befRXsXnQzZoSLlj7u0zE";
-
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjI2YTkwMTliZDRmM2I1NmIwNzY5OGZhIiwicm9vbV9pZCI6IjYyNmE5OTU2ZmY2ODhjMDM3YTM4MDc0YyIsInVzZXJfaWQiOiJla2pyY2VxaiIsInJvbGUiOiJndWVzdCIsImp0aSI6Ijk5OGVkY2ZhLTgxNjEtNDQ5NS1iMWY3LTZmOGZkMWJiMzNmZiIsInR5cGUiOiJhcHAiLCJ2ZXJzaW9uIjoyLCJleHAiOjE2NTIxNzU1MTF9.PSg2Hh9W48dGivpzjj3zwLOFovV4PxXyaVoa_QWE5KQ"
     const [config, setConfig] = useState<HMSConfig>({
       userName: user.fullname,
       authToken: defaultToken,
@@ -33,6 +32,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
       captureNetworkQualityInPreview: false, // whether to measure network score in preview
     });
     const [authToken, setAuthToken] = useState<string>("");
+    const [waiting, setWaiting] = useState<boolean>(true);
 
     const {
       isLocalAudioEnabled,
@@ -47,6 +47,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
           setAuthToken(data.token);
           setConfig(prev => ({...prev, authToken: data.token}));
           await hmsActions.preview(config);
+          setWaiting(false)
         }
     }, [roomId])
 
@@ -147,7 +148,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
             onClick={toggleVideo}
           />
         )}
-        <Button onClick={handleSubmit}>Join</Button>
+        <Button disabled={waiting} onClick={handleSubmit}>Join</Button>
       </Container>
     </Container>
   );

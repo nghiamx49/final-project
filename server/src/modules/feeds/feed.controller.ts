@@ -9,6 +9,7 @@ import {
   Body,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -24,10 +25,10 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Get('/')
-  async getPosts(@Req() req, @Res() response: Response): Promise<void> {
+  async getPosts(@Req() req, @Res() response: Response, @Query('page') page: number): Promise<void> {
     const { _id } = req.user;
-    const allPosts: FeedDto[] = await this.feedService.getNewFeeds(_id);
-    response.status(HttpStatus.OK).json({ data: allPosts });
+    const {data, totalPage} = await this.feedService.getNewFeeds(_id, page);
+    response.status(HttpStatus.OK).json({ data, totalPage });
   }
 
   @Get('/:userId')

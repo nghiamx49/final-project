@@ -14,7 +14,7 @@ interface DropDownPanelProps {
 }
 
 const DropDownPanel: FC<DropDownPanelProps> = ({avatar, fullname, profileLink, logoutHandler}) => {
-    const {isDark} = useTheme();
+  const {isDark} = useTheme();
   const { setTheme } = useNextTheme();
     return (
       <Card

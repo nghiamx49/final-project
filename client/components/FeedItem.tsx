@@ -279,6 +279,8 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
                           }}
                         >
                           <Avatar
+                            color="gradient"
+                            bordered
                             src={
                               reaction.reactionBy.avatar ||
                               "/images/default_avt.jpg"

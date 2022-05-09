@@ -64,6 +64,8 @@ const ConservationContainer: FC<Props> = ({
                   <Grid xs={3}>
                     <Avatar
                       size="xl"
+                      color="gradient"
+                      bordered
                       src={friend.avatar || "/images/default_avt.jpg"}
                     />
                   </Grid>
@@ -87,9 +89,12 @@ const ConservationContainer: FC<Props> = ({
                     >
                       {latestMessage.sender._id === currentUser._id
                         ? "You: "
-                        : `${latestMessage.sender.fullname.split(" ")[
-                            latestMessage.sender.fullname.split(" ").length - 1
-                          ]}: `}
+                        : `${
+                            latestMessage.sender.fullname.split(" ")[
+                              latestMessage.sender.fullname.split(" ").length -
+                                1
+                            ]
+                          }: `}
                       {latestMessage.content.length > 0
                         ? latestMessage.content
                         : "Sent an image"}

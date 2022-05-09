@@ -38,6 +38,7 @@ export class UserResponseDto extends UserBaseDto {
     this.requestId = requestId;
     this.isOnline = userModel.isOnline;
     this.socketId = userModel.socketId;
+    this.isActive = userModel.isActive
   }
   _id: string;
   role: string;
@@ -53,4 +54,5 @@ export class UserResponseDto extends UserBaseDto {
   requestId?: string;
   isOnline: boolean;
   socketId: string;
+  isActive?: boolean;
 }
