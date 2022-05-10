@@ -31,7 +31,7 @@ const VideoPlayer  = () => {
             <Modal.Body>
               <Grid.Container>
                 {peers.map((peer) => (
-                  <Peer peer={peer} />
+                  <Peer key={peer.id} peer={peer} />
                 ))}
               </Grid.Container>
             </Modal.Body>

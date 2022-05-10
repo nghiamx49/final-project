@@ -82,7 +82,7 @@ const ConservationContainer: FC<Props> = ({
                     </Text>
                     <Text
                       css={{
-                        color: isRead ? "$text" : "$primary",
+                        color: isRead ? "$gray500" : "$primary",
                         fontWeight: "$bold",
                       }}
                       size={14}

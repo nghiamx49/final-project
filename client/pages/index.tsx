@@ -37,6 +37,13 @@ const loadNewFeed = useCallback(async () => {
   }
 }, [token, currentPage]);
 
+const removeFeedById = (_id: string) => {
+  const index = allPosts.findIndex(item => item._id === _id);
+  let updateData = [...allPosts];
+  updateData.splice(index, 1);
+  setAllPosts(updateData)
+}
+
 const loadMore = () => {
   if (
     window.innerHeight + document.documentElement.scrollTop ===
@@ -65,13 +72,18 @@ useEffect(() => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container fluid xs css={{ margin: "auto", w: "100%" }}>
-        <CreatePost user={user} reload={loadNewFeed} token={token} />
+        <CreatePost
+          user={user}
+          setAllPosts={setAllPosts}
+          token={token}
+        />
         {allPosts.map((item, index) => (
           <FeedItem
             key={item._id}
             item={item}
             currentUser={user}
             token={token}
+            removeFeedById={removeFeedById}
           />
         ))}
         {loading && (

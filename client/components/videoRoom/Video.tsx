@@ -15,12 +15,13 @@ const Video: FC<Props> = ({ peer }) => {
     <Grid
       xs={3}
       css={{
-        backgroundColor: peer.isLocal ? "$blue500" : "$blue300",
         borderRadius: "$lg",
         marginRight: 20,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        width: "100%",
+        height: "fit-content",
       }}
     >
       <video
@@ -30,9 +31,10 @@ const Video: FC<Props> = ({ peer }) => {
         ref={videoRef}
         autoPlay
         style={{
-          width: "auto",
-          height: "auto",
           borderRadius: "20px",
+          height: 300,
+          width: 300,
+          padding: 0, margin: 0
         }}
       />
       <Text h3>

@@ -89,7 +89,7 @@ export class FeedService {
 
   async getNewFeeds(userId: string, page: number = 1): Promise<{data: FeedCreateDto[], totalPage: number}> {
     const LIMIT = process.env.PAGE_LIMIT;
-    const totalPage = Math.ceil(await this.feedRepository.countDocuments() / parseInt(LIMIT));
+    const totalPage = Math.ceil(await this.feedRepository.countDocuments({}) / parseInt(LIMIT));
     const userFriendsList: FriendListDocument =
       await this.friendListRepository.findOne({ user: userId }, null, {
         populate: 'allFriends',
@@ -231,5 +231,28 @@ export class FeedService {
         { populate: { path: 'author replies.author' } },
       ),
     );
+  }
+
+  async editPostContent(postId: string, content: string): Promise<void> {
+    await this.feedRepository.findOneAndUpdate({_id: postId}, {content})
+  }
+
+  async removePost(postId: string): Promise<void> {
+    try {
+      const post = await this.feedRepository.findOne({ _id: postId });
+      await Promise.all(
+        post.comments.map(async (item) => {
+          await this.commentRepository.findOneAndDelete({ _id: item });
+        }),
+      );
+      await Promise.all(
+        post.reactions.map(async (item) => {
+          await this.reactionRepository.findOneAndDelete({ _id: item });
+        }),
+      );
+      await this.feedRepository.findOneAndDelete({ _id: postId });
+    } catch (error) {
+      throw new Error('Operation failed')
+    }
   }
 }

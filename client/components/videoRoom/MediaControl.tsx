@@ -18,18 +18,14 @@ const Controller = () => {
   return (
     <Container
       css={{
-        width: "fit-content",
+        width: "100%",
         padding: 20,
         margin: 0,
         display: "flex",
         alignItems: "center",
+        justifyContent: 'center',
         gap: 20,
-        position: "fixed",
-        zIndex: 999,
-        top: 80,
-        right: 100,
         backgroundColor: '$accents1',
-        borderRadius: '20px'
       }}
     >
       {isLocalAudioEnabled ? (

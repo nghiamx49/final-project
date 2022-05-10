@@ -44,6 +44,34 @@ export const createdPost = async (token: string, data: ICreateFeed): Promise<IAp
     }
   );
 
+export const editPost = async (
+  token: string,
+  postId: string,
+  content: string
+): Promise<IApiResponse> =>
+  await apiClient.put(
+    `/feeds/posts/${postId}`,
+    { content },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+export const removePost = async (
+  token: string,
+  postId: string,
+): Promise<IApiResponse> =>
+  await apiClient.delete(
+    `/feeds/posts/${postId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
 export const commentToPost = async (
   token: string,
   postId: string,

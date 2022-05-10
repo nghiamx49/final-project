@@ -10,6 +10,8 @@ import {
   Param,
   Delete,
   Query,
+  Patch,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -25,9 +27,13 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Get('/')
-  async getPosts(@Req() req, @Res() response: Response, @Query('page') page: number): Promise<void> {
+  async getPosts(
+    @Req() req,
+    @Res() response: Response,
+    @Query('page') page: number,
+  ): Promise<void> {
     const { _id } = req.user;
-    const {data, totalPage} = await this.feedService.getNewFeeds(_id, page);
+    const { data, totalPage } = await this.feedService.getNewFeeds(_id, page);
     response.status(HttpStatus.OK).json({ data, totalPage });
   }
 
@@ -47,6 +53,25 @@ export class FeedController {
   ): Promise<void> {
     const postInDB = await this.feedService.getSinglePost(postId);
     response.status(HttpStatus.OK).json({ data: postInDB });
+  }
+
+  @Put('/posts/:postId')
+  async updatePost(
+    @Param('postId') postId: string,
+    @Res() response: Response,
+    @Body('content') content: string,
+  ) {
+    await this.feedService.editPostContent(postId, content);
+    response.sendStatus(HttpStatus.OK);
+  }
+
+  @Delete('/posts/:postId')
+  async deletePost(
+    @Param('postId') postId: string,
+    @Res() response: Response,
+  ) {
+     await this.feedService.removePost(postId);
+     response.sendStatus(HttpStatus.OK);
   }
 
   @Post('/posts/:postId/comment')

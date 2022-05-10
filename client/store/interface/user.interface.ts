@@ -18,4 +18,5 @@ export interface IUser {
   requestId?: string;
   socketId?: string;
   isOnline?: boolean;
+  isActive?: boolean;
 }

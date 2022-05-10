@@ -1,9 +1,6 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import { selectIsConnectedToRoom, useHMSActions, useHMSStore } from "@100mslive/react-sdk";
-import { IRootState } from "../../store/interface/root.interface";
-import { connect } from "react-redux";
 import { NextPage } from "next";
-import { IAuthenciateState } from "../../store/interface/authenticate.interface";
 import { Container } from "@nextui-org/react";
 import Conference from "../../components/videoRoom/conference";
 import Join from "../../components/videoRoom/join";
@@ -17,15 +14,15 @@ const JoinForm: NextPage = () => {
   const {query} = useRouter();
 
   useEffect(() => {
-    window.onunload = () => {
+    return () => {
       if (isConnected) {
         hmsActions.leave();
       }
-    };
+    }
   }, [hmsActions, isConnected]);
 
   return (
-    <Container fluid>
+    <Container fluid css={{padding: 0, margin: 0}}>
       {isConnected ? <Conference /> : <Join roomId={query?.roomId || ''} />}
     </Container>
   );

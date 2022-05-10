@@ -77,7 +77,7 @@ const NotificationContainer: FC<Props> = ({ notifications, currentUser, handleRe
                     >
                       <Text
                         css={{
-                          color: isRead ? "$text" : "$primary",
+                          color: isRead ? "$gray500" : "$primary",
                         }}
                         b
                         size={16}

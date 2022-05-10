@@ -21,15 +21,17 @@ import LikeIcon from "./reactions/LikeIcon";
 import ReactionPicker from "./reactions/ReactionPicker";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
+import "emoji-mart/css/emoji-mart.css";
+import { NimblePicker, BaseEmoji } from "emoji-mart";
+import data from "emoji-mart/data/facebook.json";
 import { IComment } from "../interface/comment.interface";
 import CommentItem from "./CommentItem";
 import CommentBox from "./CommentBox";
 import UserReaction from "./reactions/UserReaction";
 import { IReaction } from "../interface/reaction.interface";
-import { reactToPost, removeReaction } from "../axiosClient/feed.api";
+import { editPost, reactToPost, removePost, removeReaction } from "../axiosClient/feed.api";
 
-import {FaChevronCircleLeft, FaChevronCircleRight} from 'react-icons/fa'
+import {FaChevronCircleLeft, FaChevronCircleRight, FaEdit, FaSmile, FaTrash} from 'react-icons/fa'
 import Link from 'next/link'
 import { ReactionType } from "../interface/reactionType.enum";
 import LoveIcon from "./reactions/LoveIcon";
@@ -37,63 +39,87 @@ import HahaIcon from "./reactions/HahaIcon";
 import WowIcon from "./reactions/WowIcon";
 import SadIcon from "./reactions/SadIcon";
 import AngryIcon from "./reactions/AngryIcon";
+import { DeleteIcon } from "./table/DeleteIcon";
 interface FeedProps {
   item: IFeed;
   currentUser: IUser;
   token: string;
+  removeFeedById: Function
 }
 
-const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
+const FeedItem: FC<FeedProps> = ({
+  item,
+  currentUser,
+  token,
+  removeFeedById,
+}) => {
   const { isDark } = useTheme();
   dayjs.extend(relativeTime);
 
-  const { _id, author, content, contentMedia, comments, reactions, createdAt } =
-    item;
+  const {
+    _id,
+    author,
+    content: feedContent,
+    contentMedia,
+    comments,
+    reactions,
+    createdAt,
+  } = item;
   const [commentList, setCommentList] = useState<IComment[]>(comments);
   const [showAllComment, setShowAllComment] = useState<boolean>(false);
   const [reactionList, setReactionList] = useState<IReaction[]>(reactions);
   const [showComment, setShowComment] = useState<boolean>(false);
+  const [content, setContent] = useState<string>(feedContent);
+  const [editPostOpen, setEditPostOpen] = useState<boolean>(false);
 
   const [currentMedia, setCurrentMedia] = useState<number>(0);
+  const [pickerShow, setPickerShow] = useState<boolean>(false);
 
- 
-  const toggleShowAllComments = () => setShowAllComment(prevState => !prevState);
+  const toggleShowAllComments = () =>
+    setShowAllComment((prevState) => !prevState);
 
-  const toggleCommentPanel = () => setShowComment(prev => !prev);
+  const toggleCommentPanel = () => setShowComment((prev) => !prev);
 
   const likePost = async (e: SyntheticEvent) => {
-      const {data, status} = await reactToPost(token, item._id, "Like");
-      if(status === 201) {
-        setReactionList(data.data);
-      }
+    const { data, status } = await reactToPost(token, item._id, "Like");
+    if (status === 201) {
+      setReactionList(data.data);
+    }
   };
-  
+
   const [imageDetailOpen, setImageDetailOpen] = useState<boolean>(false);
 
   const imageOpen = () => setImageDetailOpen(true);
   const imageClose = () => setImageDetailOpen(false);
 
+  const editOpen = () => setEditPostOpen(true);
+  const editClose = () => {
+    setContent(feedContent);
+    setEditPostOpen(false);
+  };
+
+  const onEmojiClick = (emojiObject: BaseEmoji) => {
+    setContent((prev) => prev + emojiObject.native);
+  };
+
   const onNext = () => {
     setCurrentMedia(
       currentMedia === contentMedia.length - 1 ? 0 : currentMedia + 1
     );
-  }
+  };
 
   const onPrev = () => {
-      setCurrentMedia(
-        currentMedia === 0 ? contentMedia.length - 1 : currentMedia - 1
-      );
-  }
-    const [reactionOpen, setReactionOpen] = useState<boolean>(false);
-
+    setCurrentMedia(
+      currentMedia === 0 ? contentMedia.length - 1 : currentMedia - 1
+    );
+  };
+  const [reactionOpen, setReactionOpen] = useState<boolean>(false);
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
   const openReactionPanel = () => setReactionOpen(true);
   const closeReactionPanel = () => setReactionOpen(false);
-  
-  const unreaction = async (
-    e: SyntheticEvent,
-    reactionId: string
-  ) => {
+
+  const unreaction = async (e: SyntheticEvent, reactionId: string) => {
     const { data, status } = await removeReaction(token, item._id, reactionId);
     if (status === 200) {
       setReactionList(data.data);
@@ -104,9 +130,25 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
     (item) => item.reactionBy._id === currentUser._id
   );
 
-
   const reactionTypeList = (type: string) => {
-    return reactionList.filter(reaction => reaction.reactionType === type)
+    return reactionList.filter((reaction) => reaction.reactionType === type);
+  };
+
+  const handleUpdatePost = async () => {
+    const { status } = await editPost(token, _id, content);
+    if (status === 200) {
+      setEditPostOpen(false);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    const {status} = await removePost(token, _id);
+    if(status === 200) {
+    setDeleteOpen(false);
+    setInterval(() => {
+      removeFeedById(_id);
+    }, 500)
+    }
   }
 
   return (
@@ -158,44 +200,173 @@ const FeedItem: FC<FeedProps> = ({ item, currentUser, token }) => {
           </Modal.Body>
         </Modal>
       )}
+      <Modal
+        //closeButton
+        //onClose={editClose}
+        preventClose
+        open={editPostOpen}
+        style={
+          isDark
+            ? { backgroundColor: "#1F1F1E", position: "relative" }
+            : { position: "relative" }
+        }
+        width="600px"
+      >
+        <Modal.Header>
+          <Text h4>Create Post</Text>
+        </Modal.Header>
+        <Divider />
+        <Modal.Body>
+          <Grid.Container>
+            <Grid xs={12} css={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                bordered
+                color="gradient"
+                src={currentUser.avatar || "/images/default_avt.jpg"}
+              />
+              <Spacer x={0.5} />
+              <Text b>{currentUser.fullname}</Text>
+            </Grid>
+            <Spacer x={5} />
+            <Grid xs={11}>
+              <textarea
+                rows={10}
+                value={content}
+                onFocus={() => setPickerShow(false)}
+                onChange={(e) => setContent(e.target.value)}
+                style={{
+                  width: "100%",
+                  outline: "none",
+                  padding: "0 20px 0 0",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  fontSize: "18px",
+                }}
+                placeholder="What are you thinking?"
+              ></textarea>
+            </Grid>
+            <Grid
+              xs={1}
+              css={{
+                position: "relative",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+              }}
+            >
+              <FaSmile
+                size={20}
+                cursor={"pointer"}
+                onClick={() => setPickerShow(true)}
+              />
+              <NimblePicker
+                onSelect={onEmojiClick}
+                set="facebook"
+                data={data}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  display: pickerShow ? "block" : "none",
+                }}
+              />
+            </Grid>
+          </Grid.Container>
+        </Modal.Body>
+        <Modal.Footer>
+          <Container fluid>
+            <Row css={{ display: "flex", justifyContent: "space-between" }}>
+              <Button
+                color="error"
+                onClick={editClose}
+                css={{ width: "fit-content" }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleUpdatePost} css={{ width: "fit-content" }}>
+                Save
+              </Button>
+            </Row>
+          </Container>
+        </Modal.Footer>
+      </Modal>
       <Row key={_id} css={{ position: "relative" }}>
         <Card css={{ backgroundColor: isDark ? "#1F1F1E" : "" }} cover>
           <Card.Header css={{ position: "relative", zIndex: 0 }}>
-            <Grid.Container>
-              <Link
-                href={`/profile/${author?.username || author?._id}`}
-                passHref
+            <Grid.Container justify="space-between">
+              <Grid
+                css={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  cursor: "pointer",
+                }}
               >
-                <Grid
-                  css={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    cursor: "pointer",
-                  }}
+                <Link
+                  href={`/profile/${author?.username || author?._id}`}
+                  passHref
                 >
-                  <Avatar
-                    css={{ cursor: "pointer" }}
-                    bordered
-                    color="gradient"
-                    src={author.avatar || "/images/default_avt.jpg"}
-                  />
+                  <>
+                    <Avatar
+                      css={{ cursor: "pointer" }}
+                      bordered
+                      color="gradient"
+                      src={author.avatar || "/images/default_avt.jpg"}
+                    />
+                    <div>
+                      <Text h5>{author.fullname}</Text>
+                      <Link href={`/post/${item._id}`} passHref>
+                        <LinkStyle underline>
+                          <Text
+                            weight="semibold"
+                            size={12}
+                            css={{ color: "$gray600" }}
+                          >
+                            {dayjs(createdAt).fromNow()}
+                          </Text>
+                        </LinkStyle>
+                      </Link>
+                    </div>
+                  </>
+                </Link>
+              </Grid>
+              <Grid>
+                {currentUser._id === author._id && (
                   <div>
-                    <Text h5>{author.fullname}</Text>
-                    <Link href={`/post/${item._id}`} passHref>
-                      <LinkStyle underline>
-                        <Text
-                          weight="semibold"
-                          size={12}
-                          css={{ color: "$gray600" }}
-                        >
-                          {dayjs(createdAt).fromNow()}
-                        </Text>
-                      </LinkStyle>
-                    </Link>
+                    <FaEdit onClick={editOpen} cursor="pointer" />
+                    <Modal width="600px" closeButton onClose={() => setDeleteOpen(false)} open={deleteOpen}>
+                      <Modal.Header>Delete Feed</Modal.Header>
+                      <Modal.Body>
+                        Are you sure to delete this posts?
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Container fluid>
+                          <Row
+                            css={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Button
+                              color="error"
+                              onClick={() => setDeleteOpen(false)}
+                              css={{ width: "fit-content" }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleDeletePost}
+                              css={{ width: "fit-content" }}
+                            >
+                              Delete
+                            </Button>
+                          </Row>
+                        </Container>
+                      </Modal.Footer>
+                    </Modal>
+                    <FaTrash onClick={() => setDeleteOpen(true)} cursor="pointer" />
                   </div>
-                </Grid>
-              </Link>
+                )}
+              </Grid>
             </Grid.Container>
           </Card.Header>
           <Card.Body

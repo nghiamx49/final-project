@@ -10,6 +10,10 @@ div::-webkit-scrollbar {
   width: 10px;
 }
 
+.none-shadow {
+  box-shadow: none;
+}
+
  
 /* Handle */
 div::-webkit-scrollbar-thumb {
@@ -54,5 +58,6 @@ a {
 
 * {
   box-sizing: border-box;
+  box-shadow: none;
 }
 

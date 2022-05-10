@@ -56,6 +56,11 @@ const Profile: NextPage<PropfileProps> = ({
   const [isYou, setIsYou] = useState<boolean>(false);
   const [allPosts, setAllPosts] = useState<IFeed[]>([]);
 
+  const removeFeedById = (_id: string) => {
+    const updateData = allPosts.filter((item) => item._id !== _id);
+    setAllPosts([...updateData]);
+  };
+
   const checkUserFriendStatus = useCallback(async () => {
     if (errorCode) {
       push("/404");
@@ -237,13 +242,14 @@ const Profile: NextPage<PropfileProps> = ({
           </Grid>
           <Grid xs={7}>
             <Container fluid xs>
-              <CreatePost user={user} token={token} />
+              <CreatePost user={user} token={token} setAllPosts={setAllPosts} />
               {allPosts.map((item, index) => (
                 <FeedItem
                   key={item._id}
                   item={item}
                   currentUser={user}
                   token={token}
+                  removeFeedById={removeFeedById}
                 />
               ))}
             </Container>

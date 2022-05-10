@@ -20,7 +20,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
     });
 
     const defaultToken =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjI2YTkwMTliZDRmM2I1NmIwNzY5OGZhIiwicm9vbV9pZCI6IjYyNmE5OTU2ZmY2ODhjMDM3YTM4MDc0YyIsInVzZXJfaWQiOiJla2pyY2VxaiIsInJvbGUiOiJndWVzdCIsImp0aSI6Ijk5OGVkY2ZhLTgxNjEtNDQ5NS1iMWY3LTZmOGZkMWJiMzNmZiIsInR5cGUiOiJhcHAiLCJ2ZXJzaW9uIjoyLCJleHAiOjE2NTIxNzU1MTF9.PSg2Hh9W48dGivpzjj3zwLOFovV4PxXyaVoa_QWE5KQ"
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjI2YTkwMTliZDRmM2I1NmIwNzY5OGZhIiwicm9vbV9pZCI6IjYyNmFiNDc4YmQ0ZjNiNTZiMDc2OWM0NiIsInVzZXJfaWQiOiJremVpaXRvcyIsInJvbGUiOiJndWVzdCIsImp0aSI6IjBmNjY4NTA0LTRiOTEtNGNiNS05YTQxLWM4MmJkNWFhZGE0NSIsInR5cGUiOiJhcHAiLCJ2ZXJzaW9uIjoyLCJleHAiOjE2NTIyNjI2NzB9.XPczTbrhmwxuP_aE8cwdwUysL2xK52cBCSu90cIQo6c";
     const [config, setConfig] = useState<HMSConfig>({
       userName: user.fullname,
       authToken: defaultToken,
@@ -49,7 +49,7 @@ const JoineRoom: FC<Props> = ({authenticateReducer, roomId}) => {
           await hmsActions.preview(config);
           setWaiting(false)
         }
-    }, [roomId])
+    }, [roomId, token, hmsActions])
 
     useEffect(() => {
       getAuthToken();

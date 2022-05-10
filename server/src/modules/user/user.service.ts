@@ -10,15 +10,33 @@ import { TopUserDto } from './TopUserDto';
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private feedRepository: FeedRepository,
-    private commentRepository: CommentRepository,
+    private readonly feedRepository: FeedRepository,
+    private readonly commentRepository: CommentRepository,
   ) {}
 
-  async getAllUsers(name: string = ''): Promise<UserResponseDto[]> {
-    const allUsersInDb = await this.userRepository.find({
-      fullname: new RegExp(name, 'i'),
-    });
-    return allUsersInDb.map((user) => new UserResponseDto(user));
+  async getAllUsers(
+    name: string = '',
+    page: number = 1,
+    sort: string = 'asc',
+  ): Promise<{ data: UserResponseDto[] , totalPage: number}> {
+    const LIMIT = process.env.PAGE_LIMIT;
+    console.log(LIMIT);
+    const totalPage = Math.ceil(
+      (await this.userRepository.countDocuments({fullname: new RegExp(name, 'i'), role: 'User'})) / parseInt(LIMIT),
+    );
+    const allUsersInDb = await this.userRepository.find(
+      {
+        fullname: new RegExp(name, 'i'),
+        role: 'User',
+      },
+      null,
+      {
+        sort: { createdAt: sort },
+        skip: (page - 1) * parseInt(LIMIT),
+        limit: parseInt(LIMIT),
+      },
+    );
+    return { data: allUsersInDb.map((user) => new UserResponseDto(user)) , totalPage};
   }
 
   async changeUserActiveStatus(userId: string, status: boolean): Promise<void> {
@@ -55,7 +73,7 @@ export class UserService {
         const posts = await this.feedRepository.countDocuments({
           author: item._id,
         });
-        return new TopUserDto(user, posts, comments)
+        return new TopUserDto(user, posts, comments);
       }),
     );
     return topUser;

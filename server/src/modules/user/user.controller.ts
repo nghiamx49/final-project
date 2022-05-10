@@ -19,8 +19,8 @@ export class UserController {
   }
 
   @Get('/')
-  async getAllUser(@Query('name') name: string, @Res() response: Response) {
-    const data = await this.userService.getAllUsers(name);
+  async getAllUser(@Query('name') name: string, @Query('page') page: number, @Query('sort') sort: string, @Res() response: Response) {
+    const data = await this.userService.getAllUsers(name, page, sort);
     response.status(200).json(data);
   }
 

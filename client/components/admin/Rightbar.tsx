@@ -4,34 +4,27 @@ import { Container, Row, Spacer, Switch, Text, useTheme } from "@nextui-org/reac
 import dynamic from "next/dynamic";
 import { IoMdMoon } from "react-icons/io";
 import { useTheme as useNextTheme } from "next-themes";
+import { LineChart } from "../../interface/LineChart.interface";
+import { FC } from "react";
+import { BarChart } from "../../interface/BarChart.interface";
 
+interface Props {
+  lineChartData: LineChart,
+  barChartData: BarChart[]
+}
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const Rightbar = () => {
-
-    const {isDark} = useTheme();
-    const {setTheme} = useNextTheme();
+const Rightbar: FC<Props> = ({ lineChartData, barChartData }) => {
+  const { isDark } = useTheme();
+  const { setTheme } = useNextTheme();
   const collumnChartOptions: ApexOptions = {
     chart: {
       type: "bar",
     },
     series: [
       {
-        data: [
-          {
-            x: "08/05/2022",
-            y: 10,
-          },
-          {
-            x: "09/05/2022",
-            y: 18,
-          },
-          {
-            x: "20/05/2022",
-            y: 13,
-          },
-        ],
+        data: barChartData,
       },
     ],
     xaxis: {
@@ -45,12 +38,7 @@ const Rightbar = () => {
     },
   };
   const lineChartOptions: ApexOptions = {
-    series: [
-      {
-        name: "Desktops",
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-      },
-    ],
+    series: lineChartData.series,
     chart: {
       height: 350,
       type: "line",
@@ -71,17 +59,7 @@ const Rightbar = () => {
       },
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
+      categories: lineChartData.categories,
       labels: {
         style: {
           colors: isDark ? "white" : "black",
@@ -97,7 +75,6 @@ const Rightbar = () => {
     },
   };
 
-
   return (
     <Container>
       <Row
@@ -110,7 +87,7 @@ const Rightbar = () => {
         }}
       >
         <Text b>Switch To {isDark ? "Light" : "Dark"} Mode</Text>
-        <Spacer x={.5} />
+        <Spacer x={0.5} />
         <Switch
           checked={isDark}
           iconOff={<IoMdMoon />}
@@ -149,7 +126,7 @@ const Rightbar = () => {
           boxShadow: "$md",
         }}
       >
-        <Text b>Posts By Month</Text>
+        <Text b>Posts Per Day</Text>
         <Chart
           type="line"
           options={lineChartOptions}

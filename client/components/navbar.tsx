@@ -117,9 +117,9 @@ const NavBar: FC<NavBarProps> = ({ authenticateReducer, doLogout }) => {
       const { data, status } = await markNotifcationAsRead(notificationId, token);
       if (status === 200) {
         setNotifications(data.data);
-        push(link);
       }
     }
+    push(link);
   }
 
   useEffect(() => {

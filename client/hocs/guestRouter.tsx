@@ -11,11 +11,16 @@ const guestRouter = (Component: any): any => {
       const authenticateReducer: IAuthenciateState = useSelector(
         (state: IRootState) => state.authenticateReducer
       );
-      const { isAuthenticated } = authenticateReducer;
+      const { isAuthenticated, user } = authenticateReducer;
     const { replace, push } = useRouter();
     useEffect(() => {
       if (isAuthenticated) {
-        push("/");
+        if(user.role === 'Admin') {
+          push("/admin");
+        }
+        else {
+          push('/')
+        }
       }
     }, []);
     return !isAuthenticated ? (

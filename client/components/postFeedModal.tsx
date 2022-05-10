@@ -13,14 +13,14 @@ import {
   Image,
   Loading
 } from "@nextui-org/react";
-import { ChangeEvent, FC, SyntheticEvent, useRef, useState } from "react";
+import { ChangeEvent, FC, SetStateAction, SyntheticEvent, Dispatch, useState } from "react";
 import { IUser } from "../store/interface/user.interface";
 import {FaImage, FaSmile,} from 'react-icons/fa';
 import {AiFillCloseCircle} from 'react-icons/ai';
 import "emoji-mart/css/emoji-mart.css";
 import {NimblePicker, BaseEmoji} from "emoji-mart";
 import data from 'emoji-mart/data/facebook.json'
-import { ICreateFeed } from "../interface/feedItem.interface";
+import { ICreateFeed, IFeed } from "../interface/feedItem.interface";
 import { createdPost } from "../axiosClient/feed.api";
 import { toast } from "react-toastify";
 import { uploader } from "../axiosClient/cloudinary.api";
@@ -29,11 +29,11 @@ import { pushNotification } from "../axiosClient/notification.api";
 
 interface Props {
   user: IUser;
-  reload?: Function;
   token: string;
+  setAllPosts: Dispatch<SetStateAction<IFeed[]>>;
 }
 
-const CreatePost: FC<Props> = ({ user, reload, token }) => {
+const CreatePost: FC<Props> = ({ user, token, setAllPosts }) => {
   const { isDark } = useTheme();
   const [open, setOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<ICreateFeed>({
@@ -80,6 +80,7 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
         await pushNotification(token, {description: 'Had a new post. Check it out!', link: `/post/${postData.data._id}`})
         if (status === 201) {
           toast.success("Your post had been created");
+          setAllPosts((prev) => [postData.data, ...prev]);
           setWaiting(false);
           onClose();
           return;
@@ -93,6 +94,7 @@ const CreatePost: FC<Props> = ({ user, reload, token }) => {
             description: "Had a new post. Check it out!",
             link: `/post/${postData.data._id}`,
           });
+          setAllPosts(prev => ([postData.data, ...prev]))
           setWaiting(false);
           onClose();
           return;
