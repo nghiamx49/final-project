@@ -14,6 +14,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./proxy
+    volumes:
+      - ./certificate:/var/www/certificate:ro
     ports:
       - "80:80"
     depends_on:
