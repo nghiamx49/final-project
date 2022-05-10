@@ -48,12 +48,6 @@ services:
 volumes:
   certbot-etc:
   certbot-var:
-  web-root:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/mxnghia49/fina_project/dist/
-      o: bind
 networks:
   app-network:
     driver: bridge 
