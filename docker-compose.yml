@@ -28,7 +28,6 @@ services:
     volumes:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
     depends_on:
       - webserver
     command: certonly --webroot --webroot-path=/var/www/html --email mxnghia49@gmail.com --agree-tos --no-eff-email --staging -d petslove.tech  -d www.petslove.tech
